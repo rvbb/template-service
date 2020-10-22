@@ -1,0 +1,78 @@
+plugins {
+	id 'org.springframework.boot' version '2.2.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+	id 'idea'
+}
+
+group = 'com.smartosc.lending.lms.service'
+version = '1.0.0-dev'
+sourceCompatibility = '1.8'
+
+repositories {
+	maven { url 'https://repo.spring.io/plugins-release' }
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+	maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
+	jcenter()
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	compile(
+			'org.springframework.integration:spring-integration-mqtt:5.1.6.RELEASE',
+			'io.springfox:springfox-swagger2:2.9.2',
+			'io.springfox:springfox-swagger-ui:2.9.2',
+			'org.mockito:mockito-junit-jupiter:2.23.0',
+			'org.springframework:spring-aop:5.2.2.RELEASE',
+			'org.aspectj:aspectjweaver:1.9.2',
+			'javax.xml.bind:jaxb-api:2.3.1',
+			'org.apache.commons:commons-lang3:3.9',
+			'org.bouncycastle:bcprov-jdk15on:1.64',
+			'org.apache.httpcomponents:httpclient:4.5.10',
+			"org.json:json:20190722",
+			'commons-io:commons-io:2.6',
+			'mysql:mysql-connector-java:8.0.21',
+			'net.logstash.logback:logstash-logback-encoder:6.4',
+			'org.postgresql:postgresql:42.2.18'
+	)
+	compile("org.springframework.plugin:spring-plugin-core:1.2.0.RELEASE") { force = true }
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+	implementation 'junit:junit:4.12'
+}
+
+/*
+ext {
+	set('springCloudVersion', "Greenwich.SR3")
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+*/
+test {
+	useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+	manifest {
+
+		def manifest = attributes 'Implementation-Title': 'SmartOSC Fintech P2P-Lending | LMS Backend | Loan Management Services',
+				'Implementation-Version': project.version,
+				'Main-Class': 'com.smartoscfintech.p2plending.lms.service.LoanApplication'
+		manifest
+	}
+	from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+	with jar
+}
