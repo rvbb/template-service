@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/mongocrud/")
+@RequestMapping(path = "/mongocrud")
 @Api(value = "MongoDB CRUD Controller")
 public class MongoCrudController {
 
@@ -33,7 +33,7 @@ public class MongoCrudController {
 	 */
 	@ApiOperation(value = "Listing all Crud rows")
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "crud row fechted success", response = CrudEntity.class),
+			@ApiResponse(code = 200, message = "crud row fetched success", response = CrudEntity.class),
 			@ApiResponse(code = 400, message = "Bad request", response = FailureResponse.class) })
 	@GetMapping
 	@Cacheable("crudList")

@@ -23,7 +23,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(path = "/bank/")
+@RequestMapping(path = "/bank")
 @Api(value = "BankListDemo Controller")
 public class BankListDemoController {
 
@@ -38,7 +38,7 @@ public class BankListDemoController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "banklistdemo list fechted success", response = BankListDemo.class),
 			@ApiResponse(code = 400, message = "Bad request", response = FailureResponse.class) })
-	@GetMapping()
+	@GetMapping
 	@Cacheable("banklistAll")
 	public Response<List<BankListDemoResponse>> getAllBankListDemo() {
 		return Response.success(service.list());
