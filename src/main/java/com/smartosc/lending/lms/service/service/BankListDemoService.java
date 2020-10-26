@@ -41,7 +41,7 @@ public class BankListDemoService {
 
     private BankListDemoEntity toEntity(BankListDemo bankListDemoDto) {
         BankListDemoEntity entity = new BankListDemoEntity();
-        entity.setBankName(bankListDemoDto.getBankname());
+        entity.setBankName(bankListDemoDto.getBankName());
         entity.setType(bankListDemoDto.getType());
         entity.setCreated(new Date());
 

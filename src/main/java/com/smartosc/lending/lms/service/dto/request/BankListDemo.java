@@ -2,10 +2,17 @@ package com.smartosc.lending.lms.service.dto.request;
 
 import lombok.*;
 
-@Getter @Setter
+import javax.validation.constraints.NotNull;
+
+@Getter
+@Setter
 @Builder
 public class BankListDemo {
-    private String bankname;    
-    private int type;
-    private Long id;
+  @NotNull
+  private String bankName;
+
+  @NotNull
+  private int type;
+
+  private Long id;
 }

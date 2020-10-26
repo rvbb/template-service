@@ -35,3 +35,12 @@
 	gradlew test --tests full_package_and_ClassName
 	gradlew build test --tests *ClassName --> to test one or some classes  
 	Browse APIs via swagger: http://localhost:8080/swagger-ui.html#
+
+### Docker
+Postgres:
+
+    docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD='Devdev!23' --name lmg-postgres postgres
+
+Mongodb:
+
+    docker run -p 27017:27017 --name lms-mongo -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=password -d mongo
