@@ -1,4 +1,4 @@
 package com.smartosc.lending.lms.service.exception.model;
 
-public interface DetailError {
+public abstract class ApiSubError {
 }

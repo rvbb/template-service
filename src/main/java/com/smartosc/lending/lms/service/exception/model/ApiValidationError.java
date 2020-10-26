@@ -2,10 +2,12 @@ package com.smartosc.lending.lms.service.exception.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class ValidationError<T> implements DetailError {
+public class ApiValidationError<T> extends ApiSubError {
   private String object;
 
   private String field;
@@ -14,7 +16,7 @@ public class ValidationError<T> implements DetailError {
 
   private String message;
 
-  public ValidationError(String object, String message) {
+  public ApiValidationError(String object, String message) {
     this.object = object;
     this.message = message;
   }
