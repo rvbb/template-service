@@ -1,9 +1,10 @@
-CREATE TABLE devdb.banklist_demo (
+CREATE TABLE lms_service.banks (
 	id INT auto_increment NOT NULL,
-	bank_name varchar(100) NULL,
+	name varchar(100) NULL,
 	`type` int NULL,
-	created DATETIME NULL,
-	CONSTRAINT banklist_demo_pk PRIMARY KEY (id)
+	created_date DATETIME NULL,
+	last_modified_date DATETIME NULL,
+	CONSTRAINT bank_pk PRIMARY KEY (id)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8
