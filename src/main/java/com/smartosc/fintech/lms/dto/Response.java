@@ -1,19 +1,17 @@
 package com.smartosc.fintech.lms.dto;
 
-import com.smartosc.fintech.lms.constant.ErrorCode;
-import com.smartosc.fintech.lms.constant.MessageCode;
-import com.smartosc.fintech.lms.util.JsonUtils;
+import com.smartosc.fintech.lms.common.constant.ErrorCode;
+import com.smartosc.fintech.lms.common.constant.MessageCode;
+import com.smartosc.fintech.lms.common.util.JsonUtils;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 
 @AllArgsConstructor
-@Builder
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
+@Builder
 @ToString
 public class Response<T> {
-
 	@ApiModelProperty(notes = "result of request: true/false")
 	private boolean success;
 	@ApiModelProperty(notes = "error code")

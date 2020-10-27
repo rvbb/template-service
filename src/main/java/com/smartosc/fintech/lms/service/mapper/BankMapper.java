@@ -1,4 +1,4 @@
-package com.smartosc.fintech.lms.mapper;
+package com.smartosc.fintech.lms.service.mapper;
 
 import com.smartosc.fintech.lms.dto.BankDto;
 import com.smartosc.fintech.lms.entity.BankEntity;

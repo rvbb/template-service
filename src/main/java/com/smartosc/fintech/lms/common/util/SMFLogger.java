@@ -1,4 +1,4 @@
-package com.smartosc.fintech.lms.util;
+package com.smartosc.fintech.lms.common.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

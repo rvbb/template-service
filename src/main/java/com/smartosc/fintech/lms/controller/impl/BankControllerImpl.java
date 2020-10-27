@@ -4,7 +4,7 @@ import com.smartosc.fintech.lms.controller.BankController;
 import com.smartosc.fintech.lms.dto.BankDto;
 import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.service.BankService;
-import com.smartosc.fintech.lms.util.SMFLogger;
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;

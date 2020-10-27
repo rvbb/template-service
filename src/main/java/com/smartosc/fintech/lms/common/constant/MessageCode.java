@@ -1,4 +1,4 @@
-package com.smartosc.fintech.lms.constant;
+package com.smartosc.fintech.lms.common.constant;
 
 public class MessageCode {
 	public static String LOGGER_REQUEST_URL = "url not recognized";

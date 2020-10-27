@@ -1,4 +1,4 @@
-package com.smartosc.fintech.lms.constant;
+package com.smartosc.fintech.lms.common.constant;
 
 import java.util.Map;
 import java.util.stream.Collectors;

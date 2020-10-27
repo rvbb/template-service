@@ -1,4 +1,4 @@
-package com.smartosc.fintech.lms.exception.model;
+package com.smartosc.fintech.lms.controller.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

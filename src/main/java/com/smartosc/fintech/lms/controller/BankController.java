@@ -2,8 +2,7 @@ package com.smartosc.fintech.lms.controller;
 
 import com.smartosc.fintech.lms.dto.BankDto;
 import com.smartosc.fintech.lms.dto.Response;
-import com.smartosc.fintech.lms.exception.model.ApiError;
-import com.smartosc.fintech.lms.util.SMFLogger;
+import com.smartosc.fintech.lms.controller.handler.ApiError;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

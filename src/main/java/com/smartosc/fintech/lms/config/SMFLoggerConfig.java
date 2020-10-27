@@ -1,7 +1,7 @@
 package com.smartosc.fintech.lms.config;
 
-import com.smartosc.fintech.lms.constant.MessageCode;
-import com.smartosc.fintech.lms.util.SMFLogger;
+import com.smartosc.fintech.lms.common.constant.MessageCode;
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -25,7 +25,7 @@ public class SMFLoggerConfig {
   private static final Logger LOGGER = LoggerFactory.getLogger(SMFLoggerConfig.class);
 
   @Before("within(com.smartosc.fintech.lms..*) "
-      + "&& @annotation(com.smartosc.fintech.lms.util.SMFLogger)")
+      + "&& @annotation(com.smartosc.fintech.lms.common.util.SMFLogger)")
   public void writeLogBefore(JoinPoint joinPoint) throws NoSuchMethodException {
     String url = getRequestUrl();
     if (!MessageCode.LOGGER_REQUEST_URL.equals(url)) {
@@ -36,13 +36,13 @@ public class SMFLoggerConfig {
   }
 
   @AfterReturning("within(com.smartosc.fintech.lms..*)"
-      + " && @annotation(com.smartosc.fintech.lms.util.SMFLogger)")
+      + " && @annotation(com.smartosc.fintech.lms.common.util.SMFLogger)")
   public void writeLogAfterReturn(JoinPoint joinPoint) throws NoSuchMethodException {
     LOGGER.info("End: {}", this.getMessage(joinPoint));
   }
 
   @AfterThrowing(value = "within(com.smartosc.fintech.lms..*) "
-      + "&& @annotation(com.smartosc.fintech.lms.util.SMFLogger)", throwing = "e")
+      + "&& @annotation(com.smartosc.fintech.lms.common.util.SMFLogger)", throwing = "e")
   public void writeLogAfterThrow(JoinPoint joinPoint, Exception e) throws NoSuchMethodException {
     LOGGER.error("Exeption in process", e);
     LOGGER.info("Failed: {}", this.getMessage(joinPoint));
