@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface UserController {
     @ApiOperation(value = "Listing all user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "user list fetch successfully", response = Page.class),
+            @ApiResponse(code = 200, message = "Success", response = Page.class),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     @GetMapping
@@ -32,7 +32,9 @@ public interface UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = UserDto.class),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
-            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class)
+            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @GetMapping("/{id}")
     ResponseEntity<UserDto> getUser(@PathVariable long id);
@@ -41,6 +43,8 @@ public interface UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = UserDto.class),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @PostMapping
     ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto);
@@ -49,16 +53,20 @@ public interface UserController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = UserDto.class),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
-            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class)
+            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @PutMapping("/{id}")
     ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDto);
 
     @ApiOperation(value = "Delete a user by id", notes = "id is mandatory")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "success", response = UserDto.class),
+            @ApiResponse(code = 200, message = "Success", response = UserDto.class),
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
-            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class)
+            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @DeleteMapping("/{id}")
     void deleteUser(@PathVariable long id);

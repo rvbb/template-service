@@ -9,12 +9,14 @@ import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class InOutLogInterceptorConfig implements ClientHttpRequestInterceptor {
 
-    public final static String API_3RD="API_3RD";
-    public final static String API_INTERNAL="API_INTERNAL";
+    public static final String API_3RD="API_3RD";
+
+    public static final String API_INTERNAL="API_INTERNAL";
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
@@ -26,23 +28,16 @@ public class InOutLogInterceptorConfig implements ClientHttpRequestInterceptor {
 
     private void logRequest(HttpRequest request, byte[] body) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>equest begin>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            log.debug("URI         : {}", request.getURI());
-            log.debug("Method      : {}", request.getMethod());
-            log.debug("Headers     : {}", request.getHeaders());
-            log.debug("Request_Body: {}", new String(body, "UTF-8"));
-            log.debug(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>request end>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            log.debug("Intercept Request URI: {}, Method: {}, Headers: {}, Request_Body: {}",
+                    request.getURI(), request.getMethod(), request.getHeaders(), new String(body, StandardCharsets.UTF_8));
         }
     }
 
     private void logResponse(ClientHttpResponse response) throws IOException {
         if (log.isDebugEnabled()) {
-            log.debug("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<esponse begin<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-            log.debug("Status_Code  : {}", response.getStatusCode());
-            log.debug("Status_Text  : {}", response.getStatusText());
-            log.debug("Headers      : {}", response.getHeaders());
-            log.debug("Response_Body: {}", StreamUtils.copyToString(response.getBody(), Charset.defaultCharset()));
-            log.debug("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<response end<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+            log.debug("Intercept Response Status_Code: {}, Status_Text: {}, Headers: {}, Response_Body: {}",
+                    response.getStatusCode(), response.getStatusText(), response.getHeaders(),
+                    StreamUtils.copyToString(response.getBody(), Charset.defaultCharset()));
         }
     }
 }

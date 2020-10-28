@@ -13,28 +13,23 @@ import java.util.Set;
 
 @Data
 public class ApiError {
-  private LocalDateTime localDateTime;
-
+  private LocalDateTime timestamp;
+  private String code;
   private String message;
-
-  private String debugMessage;
-
   private List<ApiSubError> apiSubErrors;
 
   public ApiError() {
-    this.localDateTime = LocalDateTime.now();
+    this.timestamp = LocalDateTime.now();
   }
 
-  public ApiError(Throwable throwable) {
-    this();
-    this.message = "Unexpected error";
-    this.debugMessage = throwable.getMessage();
-  }
-
-  public ApiError(String message, Throwable throwable) {
+  public ApiError(String message) {
     this();
     this.message = message;
-    this.debugMessage = throwable.getMessage();
+  }
+
+  public ApiError(String message, String code) {
+    this(message);
+    this.code = code;
   }
 
   private void addSubError(ApiSubError subError) {

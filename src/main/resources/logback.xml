@@ -50,7 +50,7 @@
 		</encoder>
 	</appender>
 
-	<logger name="com.smartoscfintech.p2plending.lms.backend.loan"
+	<logger name="com.smartosc.fintech.lms"
 		level="DEBUG" additivity="false">
 		<appender-ref ref="appLog" />
 		<appender-ref ref="console" />
