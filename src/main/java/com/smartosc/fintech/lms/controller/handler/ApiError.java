@@ -1,8 +1,7 @@
-package com.smartosc.fintech.lms.exception.model;
+package com.smartosc.fintech.lms.controller.handler;
 
 import lombok.Data;
 import org.hibernate.validator.internal.engine.path.PathImpl;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
@@ -14,38 +13,23 @@ import java.util.Set;
 
 @Data
 public class ApiError {
-
-  private HttpStatus httpStatus;
-
-  private LocalDateTime localDateTime;
-
+  private LocalDateTime timestamp;
+  private String code;
   private String message;
-
-  private String debugMessage;
-
   private List<ApiSubError> apiSubErrors;
 
   public ApiError() {
-    this.localDateTime = LocalDateTime.now();
+    this.timestamp = LocalDateTime.now();
   }
 
-  public ApiError(HttpStatus httpStatus) {
+  public ApiError(String message) {
     this();
-    this.httpStatus = httpStatus;
-  }
-
-  public ApiError(HttpStatus httpStatus, Throwable throwable) {
-    this();
-    this.httpStatus = httpStatus;
-    this.message = "Unexpected error";
-    this.debugMessage = throwable.getMessage();
-  }
-
-  public ApiError(HttpStatus httpStatus, String message, Throwable throwable) {
-    this();
-    this.httpStatus = httpStatus;
     this.message = message;
-    this.debugMessage = throwable.getMessage();
+  }
+
+  public ApiError(String message, String code) {
+    this(message);
+    this.code = code;
   }
 
   private void addSubError(ApiSubError subError) {

@@ -1,16 +1,16 @@
 package com.smartosc.fintech.lms.controller.impl;
 
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.controller.BankController;
 import com.smartosc.fintech.lms.dto.BankDto;
-import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.service.BankService;
-import com.smartosc.fintech.lms.util.SMFLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -30,8 +30,8 @@ public class BankControllerImpl implements BankController {
    */
   @Cacheable("banks_cache")
   @Override
-  public Response<Page<BankDto>> get(int page, int size) {
-    return Response.success(bankService.get(PageRequest.of(page, size)));
+  public ResponseEntity<Page<BankDto>> get(int page, int size) {
+    return ResponseEntity.ok(bankService.get(PageRequest.of(page, size)));
   }
 
   /**
@@ -40,8 +40,8 @@ public class BankControllerImpl implements BankController {
    **/
   @Cacheable("bank_cache")
   @Override
-  public Response<BankDto> get(long id) {
-    return Response.success(bankService.get(id));
+  public ResponseEntity<BankDto> get(long id) {
+    return ResponseEntity.ok(bankService.get(id));
   }
 
   /**
@@ -50,8 +50,8 @@ public class BankControllerImpl implements BankController {
    */
   @Override
   @SMFLogger
-  public Response<BankDto> create(BankDto bankDto) {
-    return Response.success(bankService.create(bankDto));
+  public ResponseEntity<BankDto> create(BankDto bankDto) {
+    return ResponseEntity.ok(bankService.create(bankDto));
   }
 
   /**
@@ -60,8 +60,8 @@ public class BankControllerImpl implements BankController {
    */
   @Override
   @SMFLogger
-  public Response<BankDto> update(long id, BankDto bankDto) {
-    return Response.success(bankService.update(id, bankDto));
+  public ResponseEntity<BankDto> update(long id, BankDto bankDto) {
+    return ResponseEntity.ok(bankService.update(id, bankDto));
   }
 
   /**

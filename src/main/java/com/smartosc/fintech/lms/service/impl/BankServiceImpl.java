@@ -2,7 +2,7 @@ package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.dto.BankDto;
 import com.smartosc.fintech.lms.entity.BankEntity;
-import com.smartosc.fintech.lms.mapper.BankMapper;
+import com.smartosc.fintech.lms.service.mapper.BankMapper;
 import com.smartosc.fintech.lms.repository.BankRepository;
 import com.smartosc.fintech.lms.service.BankService;
 import org.springframework.beans.factory.annotation.Autowired;

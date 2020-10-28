@@ -1,4 +1,4 @@
-package com.smartosc.fintech.lms.util;
+package com.smartosc.fintech.lms.common.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -6,6 +6,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -13,11 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUtils {
-
-    private JsonUtils() {
-    }
-
     public static ObjectMapper MAPPER = new ObjectMapper();
     public static ObjectMapper PRETTY_MAPPER = new ObjectMapper();
     private static ObjectMapper objectMapper = new ObjectMapper()
