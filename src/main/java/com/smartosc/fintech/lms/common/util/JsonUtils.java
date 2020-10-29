@@ -19,7 +19,7 @@ import java.util.Map;
 public class JsonUtils {
     public static ObjectMapper MAPPER = new ObjectMapper();
     public static ObjectMapper PRETTY_MAPPER = new ObjectMapper();
-    private static ObjectMapper objectMapper = new ObjectMapper()
+    private static final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     static {
