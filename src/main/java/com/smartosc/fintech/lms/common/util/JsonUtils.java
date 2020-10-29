@@ -17,8 +17,8 @@ import java.util.Map;
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class JsonUtils {
-    public static ObjectMapper MAPPER = new ObjectMapper();
-    public static ObjectMapper PRETTY_MAPPER = new ObjectMapper();
+    public static final ObjectMapper MAPPER = new ObjectMapper();
+    public static final ObjectMapper PRETTY_MAPPER = new ObjectMapper();
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
