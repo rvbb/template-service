@@ -1,13 +1,13 @@
 package com.smartosc.fintech.lms.controller;
 
 import com.smartosc.fintech.lms.controller.handler.ApiError;
+import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.dto.UserDto;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ public interface UserController {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
     })
     @GetMapping
-    ResponseEntity<Page<UserDto>> getUser(@RequestParam int page, @RequestParam int size);
+    Response<Page<UserDto>> getUser(@RequestParam int page, @RequestParam int size);
     
     @ApiOperation(value = "Get users by id", notes = "id is mandatory")
     @ApiResponses(value = {
@@ -37,7 +37,7 @@ public interface UserController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @GetMapping("/{id}")
-    ResponseEntity<UserDto> getUser(@PathVariable long id);
+    Response<UserDto> getUser(@PathVariable long id);
 
     @ApiOperation(value = "Create a user by id", notes = "id is mandatory")
     @ApiResponses(value = {
@@ -47,7 +47,7 @@ public interface UserController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @PostMapping
-    ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto);
+    Response<UserDto> createUser(@RequestBody UserDto userDto);
 
     @ApiOperation(value = "Update a user by id", notes = "id is mandatory")
     @ApiResponses(value = {
@@ -58,7 +58,7 @@ public interface UserController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @PutMapping("/{id}")
-    ResponseEntity<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDto);
+    Response<UserDto> updateUser(@PathVariable long id, @RequestBody UserDto userDto);
 
     @ApiOperation(value = "Delete a user by id", notes = "id is mandatory")
     @ApiResponses(value = {

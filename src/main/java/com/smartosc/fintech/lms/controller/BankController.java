@@ -2,12 +2,12 @@ package com.smartosc.fintech.lms.controller;
 
 import com.smartosc.fintech.lms.controller.handler.ApiError;
 import com.smartosc.fintech.lms.dto.BankDto;
+import com.smartosc.fintech.lms.dto.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +31,7 @@ public interface BankController {
       @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
   })
   @GetMapping
-  ResponseEntity<Page<BankDto>> get(@RequestParam int page, @RequestParam int size);
+  Response<Page<BankDto>> get(@RequestParam int page, @RequestParam int size);
 
   /**
    * Get a bank by ID
@@ -44,7 +44,7 @@ public interface BankController {
       @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class)
   })
   @GetMapping("/{id}")
-  ResponseEntity<BankDto> get(@PathVariable long id);
+  Response<BankDto> get(@PathVariable long id);
 
   /**
    * Create new a bank with DTO directly
@@ -56,7 +56,7 @@ public interface BankController {
       @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
   })
   @PostMapping
-  ResponseEntity<BankDto> create(@RequestBody BankDto bankDto);
+  Response<BankDto> create(@RequestBody BankDto bankDto);
 
   /**
    * Update a bank with DTO directly
@@ -69,7 +69,7 @@ public interface BankController {
       @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class)
   })
   @PutMapping("/{id}")
-  ResponseEntity<BankDto> update(@PathVariable long id, @RequestBody BankDto bankDto);
+  Response<BankDto> update(@PathVariable long id, @RequestBody BankDto bankDto);
 
   /**
    * Remove a bank by ID
