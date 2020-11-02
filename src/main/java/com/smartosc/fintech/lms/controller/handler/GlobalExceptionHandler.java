@@ -219,9 +219,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler(BusinessServiceException.class)
-  protected ResponseEntity<Object> handleInternalService(BusinessServiceException ex) {
+  protected ResponseEntity<Object> handleBusinessService(BusinessServiceException ex) {
     ApiError error = new ApiError(ex.getMessage(), ex.getCode());
     return buildResponseEntity(CONFLICT, error);
+  }
+
+  @ExceptionHandler
+  protected ResponseEntity<Object> handleInternalException(Exception ex) {
+    ApiError error = new ApiError(ex.getMessage(), INTERNAL_SERVER_ERROR.value());
+    return buildResponseEntity(INTERNAL_SERVER_ERROR, error);
   }
 
   private ResponseEntity<Object> buildResponseEntity(HttpStatus httpStatus, ApiError error) {
