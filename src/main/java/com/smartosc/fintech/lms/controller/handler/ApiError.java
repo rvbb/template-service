@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 public class ApiError {
   private LocalDateTime timestamp;
-  private String code;
+  private int code;
   private String message;
   private List<ApiSubError> apiSubErrors;
 
@@ -27,7 +27,12 @@ public class ApiError {
     this.message = message;
   }
 
-  public ApiError(String message, String code) {
+  public ApiError(int code) {
+    this();
+    this.code = code;
+  }
+
+  public ApiError(String message, int code) {
     this(message);
     this.code = code;
   }
