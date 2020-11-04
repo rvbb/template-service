@@ -59,7 +59,7 @@ public class JsonUtils {
         return objectMapper.readValue(json, tClass);
     }
 
-    public static <T> T map2Object(@SuppressWarnings("rawtypes") Map map, TypeReference<T> o) throws IOException {
+    public static <T> T map2Object(Map<? extends String, ? extends String> map, TypeReference<T> o) {
         return objectMapper.convertValue(map, o);
     }
 
@@ -68,6 +68,7 @@ public class JsonUtils {
     }
 
     public static Map<Object, Object> deserializeMap(String json) throws IOException {
-        return MAPPER.readValue(json, new TypeReference<HashMap<Object, Object>>() {});
+        return MAPPER.readValue(json, new TypeReference<HashMap<Object, Object>>() {
+        });
     }
 }
