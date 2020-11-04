@@ -38,8 +38,8 @@ dependencies {
     implementation "org.json:json:20190722"
     implementation 'commons-io:commons-io:2.6'
     implementation 'net.logstash.logback:logstash-logback-encoder:6.4'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 
