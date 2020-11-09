@@ -1,22 +1,23 @@
 package com.smartosc.fintech.lms.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 
+@Entity
 @Table(name = "loan_application", schema = "lms-service", catalog = "")
 public class LoanApplicationEntity {
-    private int id;
+    private Integer id;
     private String uuid;
     private Integer loanAmount;
     private String interestRate;
     private String loanTerm;
     private Integer status;
-    private Timestamp createdDate;
-    private Timestamp lastUpdatedDate;
-    private Timestamp approveDate;
-    private Timestamp closedDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastUpdatedDate;
+    private LocalDateTime approveDate;
+    private LocalDateTime closedDate;
     private String applicationState;
     private String applicationSubState;
     private Integer accruedInterest;
@@ -53,11 +54,11 @@ public class LoanApplicationEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -113,41 +114,41 @@ public class LoanApplicationEntity {
 
     @Basic
     @Column(name = "created_date")
-    public Timestamp getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
     @Basic
     @Column(name = "last_updated_date")
-    public Timestamp getLastUpdatedDate() {
+    public LocalDateTime getLastUpdatedDate() {
         return lastUpdatedDate;
     }
 
-    public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
 
     @Basic
     @Column(name = "approve_date")
-    public Timestamp getApproveDate() {
+    public LocalDateTime getApproveDate() {
         return approveDate;
     }
 
-    public void setApproveDate(Timestamp approveDate) {
+    public void setApproveDate(LocalDateTime approveDate) {
         this.approveDate = approveDate;
     }
 
     @Basic
     @Column(name = "closed_date")
-    public Timestamp getClosedDate() {
+    public LocalDateTime getClosedDate() {
         return closedDate;
     }
 
-    public void setClosedDate(Timestamp closedDate) {
+    public void setClosedDate(LocalDateTime closedDate) {
         this.closedDate = closedDate;
     }
 

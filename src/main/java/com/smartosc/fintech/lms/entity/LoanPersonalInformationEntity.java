@@ -4,9 +4,10 @@ import javax.persistence.*;
 import java.sql.Date;
 import java.util.Objects;
 
+@Entity
 @Table(name = "loan_personal_information", schema = "lms-service", catalog = "")
 public class LoanPersonalInformationEntity {
-    private int id;
+    private Integer id;
     private String fullName;
     private String phoneNumber;
     private Date dateOfBirth;
@@ -16,11 +17,11 @@ public class LoanPersonalInformationEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

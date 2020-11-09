@@ -1,26 +1,27 @@
 package com.smartosc.fintech.lms.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 
+@Entity
 @Table(name = "repayment", schema = "lms-service", catalog = "")
 public class RepaymentEntity {
-    private int id;
+    private Integer id;
     private String uuid;
-    private Timestamp dueDate;
+    private LocalDateTime dueDate;
     private Integer interestDue;
     private Integer interestPaid;
-    private Timestamp lastPaidDate;
-    private Timestamp lastPenaltyAppliedDate;
+    private LocalDateTime lastPaidDate;
+    private LocalDateTime lastPenaltyAppliedDate;
     private Integer penaltyDue;
     private Integer penaltyPaid;
     private Integer principalDue;
     private Integer principalPaid;
     private Integer feeDue;
     private Integer feePaid;
-    private Timestamp repaidDate;
+    private LocalDateTime repaidDate;
     private String state;
     private String notes;
     private UserEntity user;
@@ -29,11 +30,11 @@ public class RepaymentEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -49,11 +50,11 @@ public class RepaymentEntity {
 
     @Basic
     @Column(name = "due_date")
-    public Timestamp getDueDate() {
+    public LocalDateTime getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Timestamp dueDate) {
+    public void setDueDate(LocalDateTime dueDate) {
         this.dueDate = dueDate;
     }
 
@@ -79,21 +80,21 @@ public class RepaymentEntity {
 
     @Basic
     @Column(name = "last_paid_date")
-    public Timestamp getLastPaidDate() {
+    public LocalDateTime getLastPaidDate() {
         return lastPaidDate;
     }
 
-    public void setLastPaidDate(Timestamp lastPaidDate) {
+    public void setLastPaidDate(LocalDateTime lastPaidDate) {
         this.lastPaidDate = lastPaidDate;
     }
 
     @Basic
     @Column(name = "last_penalty_applied_date")
-    public Timestamp getLastPenaltyAppliedDate() {
+    public LocalDateTime getLastPenaltyAppliedDate() {
         return lastPenaltyAppliedDate;
     }
 
-    public void setLastPenaltyAppliedDate(Timestamp lastPenaltyAppliedDate) {
+    public void setLastPenaltyAppliedDate(LocalDateTime lastPenaltyAppliedDate) {
         this.lastPenaltyAppliedDate = lastPenaltyAppliedDate;
     }
 
@@ -159,11 +160,11 @@ public class RepaymentEntity {
 
     @Basic
     @Column(name = "repaid_date")
-    public Timestamp getRepaidDate() {
+    public LocalDateTime getRepaidDate() {
         return repaidDate;
     }
 
-    public void setRepaidDate(Timestamp repaidDate) {
+    public void setRepaidDate(LocalDateTime repaidDate) {
         this.repaidDate = repaidDate;
     }
 

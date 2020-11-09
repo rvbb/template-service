@@ -1,20 +1,21 @@
 package com.smartosc.fintech.lms.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 
+@Entity
 @Table(name = "user", schema = "lms-service", catalog = "")
 public class UserEntity {
-    private int id;
+    private Integer id;
     private String email;
     private String password;
     private Integer status;
-    private Timestamp lastPasswordResetDate;
-    private Timestamp lastLoggedInDate;
-    private Timestamp createdDate;
-    private Timestamp lastUpdatedDate;
+    private LocalDateTime lastPasswordResetDate;
+    private LocalDateTime lastLoggedInDate;
+    private LocalDateTime createdDate;
+    private LocalDateTime lastUpdatedDate;
     private String uuid;
     private Collection<LoanApplicationEntity> loanApplications;
     private Collection<LoanTransactionEntity> loanTransactions;
@@ -22,11 +23,11 @@ public class UserEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -62,41 +63,41 @@ public class UserEntity {
 
     @Basic
     @Column(name = "last_password_reset_date")
-    public Timestamp getLastPasswordResetDate() {
+    public LocalDateTime getLastPasswordResetDate() {
         return lastPasswordResetDate;
     }
 
-    public void setLastPasswordResetDate(Timestamp lastPasswordResetDate) {
+    public void setLastPasswordResetDate(LocalDateTime lastPasswordResetDate) {
         this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     @Basic
     @Column(name = "last_logged_in_date")
-    public Timestamp getLastLoggedInDate() {
+    public LocalDateTime getLastLoggedInDate() {
         return lastLoggedInDate;
     }
 
-    public void setLastLoggedInDate(Timestamp lastLoggedInDate) {
+    public void setLastLoggedInDate(LocalDateTime lastLoggedInDate) {
         this.lastLoggedInDate = lastLoggedInDate;
     }
 
     @Basic
     @Column(name = "created_date")
-    public Timestamp getCreatedDate() {
+    public LocalDateTime getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Timestamp createdDate) {
+    public void setCreatedDate(LocalDateTime createdDate) {
         this.createdDate = createdDate;
     }
 
     @Basic
     @Column(name = "last_updated_date")
-    public Timestamp getLastUpdatedDate() {
+    public LocalDateTime getLastUpdatedDate() {
         return lastUpdatedDate;
     }
 
-    public void setLastUpdatedDate(Timestamp lastUpdatedDate) {
+    public void setLastUpdatedDate(LocalDateTime lastUpdatedDate) {
         this.lastUpdatedDate = lastUpdatedDate;
     }
 
