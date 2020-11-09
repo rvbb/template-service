@@ -1,18 +1,19 @@
 package com.smartosc.fintech.lms.entity;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Objects;
 
+@Entity
 @Table(name = "loan_transaction", schema = "lms-service", catalog = "")
 public class LoanTransactionEntity {
-    private int id;
+    private Integer id;
     private String uuid;
     private Integer amount;
     private Integer balance;
-    private Timestamp creationDate;
-    private Timestamp entryDate;
+    private LocalDateTime creationDate;
+    private LocalDateTime entryDate;
     private Integer feesAmount;
     private Integer interestAmount;
     private Integer interestRate;
@@ -29,11 +30,11 @@ public class LoanTransactionEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -69,21 +70,21 @@ public class LoanTransactionEntity {
 
     @Basic
     @Column(name = "creation_date")
-    public Timestamp getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Timestamp creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
     @Basic
     @Column(name = "entry_date")
-    public Timestamp getEntryDate() {
+    public LocalDateTime getEntryDate() {
         return entryDate;
     }
 
-    public void setEntryDate(Timestamp entryDate) {
+    public void setEntryDate(LocalDateTime entryDate) {
         this.entryDate = entryDate;
     }
 

@@ -3,6 +3,7 @@ package com.smartosc.fintech.lms.entity;
 import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 @Table(name = "loan_disbursement_method", schema = "lms-service", catalog = "")
 public class LoanDisbursementMethodEntity {
     private int id;
@@ -11,11 +12,11 @@ public class LoanDisbursementMethodEntity {
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

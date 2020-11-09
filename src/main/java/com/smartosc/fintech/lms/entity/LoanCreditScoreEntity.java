@@ -3,19 +3,20 @@ package com.smartosc.fintech.lms.entity;
 import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
 @Table(name = "loan_credit_score", schema = "lms-service", catalog = "")
 public class LoanCreditScoreEntity {
-    private int id;
+    private Integer id;
     private Long creditScore;
     private LoanApplicationEntity loanApplication;
 
     @Id
     @Column(name = "id")
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
