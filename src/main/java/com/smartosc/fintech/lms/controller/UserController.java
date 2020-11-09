@@ -27,7 +27,7 @@ public interface UserController {
     })
     @GetMapping
     Response<Page<UserDto>> getUser(@RequestParam int page, @RequestParam int size);
-    
+
     @ApiOperation(value = "Get users by id", notes = "id is mandatory")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = UserDto.class),
