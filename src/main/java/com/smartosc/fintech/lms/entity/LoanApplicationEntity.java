@@ -110,35 +110,35 @@ public class LoanApplicationEntity extends AuditEntity {
   @Column(name = "tax_rate")
   private Integer taxRate;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", referencedColumnName = "id", table = "loan_application")
   private UserEntity user;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "loan_product_id", referencedColumnName = "id", nullable = false, table = "loan_application")
   private LoanProductEntity loanProduct;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanContactInformationEntity> loanContactInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanCreditScoreEntity> loanCreditScores;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanDisbursementMethodEntity> loanDisbursementMethods;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanJobInformationEntity> loanJobInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanKycInformationEntity> loanKycInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanPersonalInformationEntity> loanPersonalInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanTransactionEntity> loanTransactions;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<RepaymentEntity> repayments;
 }

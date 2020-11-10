@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/loan-personal-information")
 @Api(value = "Loan personal information Api")
@@ -24,7 +25,7 @@ public interface PersonalInformationController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @PutMapping("/{id}")
-    public Response<PersonalInformationDto>
+    public Response<List<PersonalInformationDto>>
     updateLoanPersonalInformation(@PathVariable long id, @Valid @RequestBody PersonalInformationDto personalInformationDto);
 
 

@@ -2,7 +2,9 @@ package com.smartosc.fintech.lms.service;
 
 import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 
+import java.util.List;
+
 public interface PersonalInformationService {
 
-    PersonalInformationDto updateLoanPersonalInformation(long id, PersonalInformationDto loanPersonalInformation);
+    List<PersonalInformationDto> updateLoanPersonalInformation(long id, PersonalInformationDto loanPersonalInformation);
 }

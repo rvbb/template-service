@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @Slf4j
@@ -18,9 +20,9 @@ public class PersonalInformationControllerImpl implements PersonalInformationCon
 
     @Override
     @SMFLogger
-    public Response<PersonalInformationDto>
+    public Response<List<PersonalInformationDto>>
         updateLoanPersonalInformation(long id, PersonalInformationDto personalInformationDto) {
-        PersonalInformationDto result = personalInformationService.updateLoanPersonalInformation(id, personalInformationDto);
+        List<PersonalInformationDto> result = personalInformationService.updateLoanPersonalInformation(id, personalInformationDto);
         return Response.ok(result);
     }
 }
