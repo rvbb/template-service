@@ -1,104 +1,36 @@
 package com.smartosc.fintech.lms.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Objects;
 
-@Table(name = "loan_personal_information", schema = "lms-service", catalog = "")
+@Data
+@Entity
+@Table(name = "loan_personal_information")
 public class LoanPersonalInformationEntity {
-    private int id;
-    private String fullName;
-    private String phoneNumber;
-    private Date dateOfBirth;
-    private String emailAddress;
-    private String address;
-    private LoanApplicationEntity loanApplication;
 
-    @Id
-    @Column(name = "id")
-    public int getId() {
-        return id;
-    }
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  @Column(name = "full_name")
+  private String fullName;
 
-    @Basic
-    @Column(name = "full_name")
-    public String getFullName() {
-        return fullName;
-    }
+  @Column(name = "phone_number")
+  private String phoneNumber;
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+  @Column(name = "date_of_birth")
+  private Date dateOfBirth;
 
-    @Basic
-    @Column(name = "phone_number")
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+  @Column(name = "email_address")
+  private String emailAddress;
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
+  @Column(name = "address")
+  private String address;
 
-    @Basic
-    @Column(name = "date_of_birth")
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    @Basic
-    @Column(name = "email_address")
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    @Basic
-    @Column(name = "address")
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        LoanPersonalInformationEntity that = (LoanPersonalInformationEntity) o;
-        return id == that.id &&
-                Objects.equals(fullName, that.fullName) &&
-                Objects.equals(phoneNumber, that.phoneNumber) &&
-                Objects.equals(dateOfBirth, that.dateOfBirth) &&
-                Objects.equals(emailAddress, that.emailAddress) &&
-                Objects.equals(address, that.address);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, fullName, phoneNumber, dateOfBirth, emailAddress, address);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_personal_information")
-    public LoanApplicationEntity getLoanApplication() {
-        return loanApplication;
-    }
-
-    public void setLoanApplication(LoanApplicationEntity loanApplication) {
-        this.loanApplication = loanApplication;
-    }
+  @ManyToOne
+  @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_personal_information")
+  private LoanApplicationEntity loanApplication;
 }

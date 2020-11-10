@@ -7,13 +7,14 @@ import javax.persistence.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Entity(name = "banks")
+@Entity
+@Table(name = "banks")
 public class BankEntity extends AuditEntity {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
-  private Long id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
   @Column(name = "name")
   private String name;
