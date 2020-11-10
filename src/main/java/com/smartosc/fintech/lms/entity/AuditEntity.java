@@ -22,6 +22,6 @@ public class AuditEntity {
   private Timestamp createdDate;
 
   @LastModifiedDate
-  @Column(name = "last_modified_date")
-  private Timestamp lastModifiedDate;
+  @Column(name = "last_updated_date")
+  private Timestamp lastUpdatedDate;
 }
