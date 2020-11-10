@@ -1,5 +1,6 @@
 package com.smartosc.fintech.lms.controller.impl;
 
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.controller.PersonalInformationController;
 import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.dto.Response;
@@ -16,6 +17,7 @@ public class PersonalInformationControllerImpl implements PersonalInformationCon
     private final PersonalInformationService personalInformationService;
 
     @Override
+    @SMFLogger
     public Response<PersonalInformationDto>
         updateLoanPersonalInformation(long id, PersonalInformationDto personalInformationDto) {
         PersonalInformationDto result = personalInformationService.updateLoanPersonalInformation(id, personalInformationDto);
