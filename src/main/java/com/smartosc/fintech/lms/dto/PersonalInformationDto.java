@@ -13,7 +13,7 @@ import java.sql.Date;
 @Getter
 @Setter
 //@MappedSuperclass
-public class LoanPersonalInformationDto {
+public class PersonalInformationDto {
 
     private Integer id;
     private String fullName;

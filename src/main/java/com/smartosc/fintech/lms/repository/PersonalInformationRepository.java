@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LoanPersonalInformationRepository extends JpaRepository<LoanPersonalInformationEntity,Long> {
+public interface PersonalInformationRepository extends JpaRepository<LoanPersonalInformationEntity, Long> {
 
 }
