@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
+
 @Data
 @Entity
 @Table(name = "loan_credit_score")
