@@ -8,10 +8,18 @@ import java.util.List;
 public interface RepaymentService {
 
   /**
-   * Create list of repayment form a loan application.
+   * Generate repayments form a loan application.
    *
    * @param loanApplicationDto a loan application
    * @return List<RepaymentDto> list of repayment
    */
-  List<RepaymentDto> create(LoanApplicationDto loanApplicationDto);
+  List<RepaymentDto> calculate(LoanApplicationDto loanApplicationDto);
+
+  /**
+   * Generate repayments form a loan application by loanApplicationId.
+   *
+   * @param loanApplicationId loan application id
+   * @return List<RepaymentDto> list of repayment
+   */
+  List<RepaymentDto> calculate(long loanApplicationId);
 }
