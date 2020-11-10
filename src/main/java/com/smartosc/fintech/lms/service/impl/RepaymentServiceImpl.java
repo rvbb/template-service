@@ -51,7 +51,14 @@ public class RepaymentServiceImpl implements RepaymentService {
   }
 
   private List<RepaymentEntity> calculate(LoanApplicationEntity loanApplicationEntity) {
-    // TODO: calculate repayment
-    return Collections.emptyList();
+    RepaymentEntity repaymentEntity = new RepaymentEntity();
+    repaymentEntity.setUuid(loanApplicationEntity.getUuid());
+    repaymentEntity.setInterestDue(loanApplicationEntity.getInterestDue());
+    repaymentEntity.setPenaltyDue(loanApplicationEntity.getPenaltyDue());
+    repaymentEntity.setPrincipalDue(loanApplicationEntity.getPrincipalDue());
+    repaymentEntity.setFeeDue(loanApplicationEntity.getFeeDue());
+    repaymentEntity.setUser(loanApplicationEntity.getUser());
+    repaymentEntity.setLoanApplication(loanApplicationEntity);
+    return Collections.singletonList(repaymentEntity);
   }
 }
