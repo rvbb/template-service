@@ -2,12 +2,12 @@ package com.smartosc.fintech.lms.dto;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 public class AuditDto {
 
-  private LocalDateTime createdDate;
+  private Timestamp createdDate;
 
-  private LocalDateTime lastModifiedDate;
+  private Timestamp lastModifiedDate;
 }
