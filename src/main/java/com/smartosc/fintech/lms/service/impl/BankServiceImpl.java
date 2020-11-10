@@ -42,7 +42,6 @@ public class BankServiceImpl implements BankService {
   @Override
   public BankDto create(BankDto bankDto) {
     BankEntity bankEntity = BankMapper.INSTANCE.bankDtoToBankEntity(bankDto);
-    bankEntity.setId(null);
     bankEntity = bankRepository.save(bankEntity);
 
     return BankMapper.INSTANCE.bankEntityToBankDto(bankEntity);

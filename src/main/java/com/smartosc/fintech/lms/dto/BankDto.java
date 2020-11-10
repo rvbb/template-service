@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @Data
 public class BankDto extends AuditDto {
 
-  private Long id;
+  private long id;
 
   private String name;
 

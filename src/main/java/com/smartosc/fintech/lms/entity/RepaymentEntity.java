@@ -1,246 +1,74 @@
 package com.smartosc.fintech.lms.entity;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.Objects;
 
-@Table(name = "repayment", schema = "lms-service", catalog = "")
+@Data
+@Entity
+@Table(name = "repayment")
 public class RepaymentEntity {
-    private int id;
-    private String uuid;
-    private Timestamp dueDate;
-    private Integer interestDue;
-    private Integer interestPaid;
-    private Timestamp lastPaidDate;
-    private Timestamp lastPenaltyAppliedDate;
-    private Integer penaltyDue;
-    private Integer penaltyPaid;
-    private Integer principalDue;
-    private Integer principalPaid;
-    private Integer feeDue;
-    private Integer feePaid;
-    private Timestamp repaidDate;
-    private String state;
-    private String notes;
-    private UserEntity user;
-    private LoanApplicationEntity loanApplication;
-    private Collection<RepaymentFeeDetailsEntity> repaymentFeeDetails;
 
-    @Id
-    @Column(name = "id")
-    public int getId() {
-        return id;
-    }
+  @Id
+  @Column(name = "id")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private long id;
 
-    public void setId(int id) {
-        this.id = id;
-    }
+  @Column(name = "uuid")
+  private String uuid;
 
-    @Basic
-    @Column(name = "uuid")
-    public String getUuid() {
-        return uuid;
-    }
+  @Column(name = "due_date")
+  private Timestamp dueDate;
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+  @Column(name = "interest_due")
+  private Integer interestDue;
 
-    @Basic
-    @Column(name = "due_date")
-    public Timestamp getDueDate() {
-        return dueDate;
-    }
+  @Column(name = "interest_paid")
+  private Integer interestPaid;
 
-    public void setDueDate(Timestamp dueDate) {
-        this.dueDate = dueDate;
-    }
+  @Column(name = "last_paid_date")
+  private Timestamp lastPaidDate;
 
-    @Basic
-    @Column(name = "interest_due")
-    public Integer getInterestDue() {
-        return interestDue;
-    }
+  @Column(name = "last_penalty_applied_date")
+  private Timestamp lastPenaltyAppliedDate;
 
-    public void setInterestDue(Integer interestDue) {
-        this.interestDue = interestDue;
-    }
+  @Column(name = "penalty_due")
+  private Integer penaltyDue;
 
-    @Basic
-    @Column(name = "interest_paid")
-    public Integer getInterestPaid() {
-        return interestPaid;
-    }
+  @Column(name = "penalty_paid")
+  private Integer penaltyPaid;
 
-    public void setInterestPaid(Integer interestPaid) {
-        this.interestPaid = interestPaid;
-    }
+  @Column(name = "principal_due")
+  private Integer principalDue;
 
-    @Basic
-    @Column(name = "last_paid_date")
-    public Timestamp getLastPaidDate() {
-        return lastPaidDate;
-    }
+  @Column(name = "principal_paid")
+  private Integer principalPaid;
 
-    public void setLastPaidDate(Timestamp lastPaidDate) {
-        this.lastPaidDate = lastPaidDate;
-    }
+  @Column(name = "fee_due")
+  private Integer feeDue;
 
-    @Basic
-    @Column(name = "last_penalty_applied_date")
-    public Timestamp getLastPenaltyAppliedDate() {
-        return lastPenaltyAppliedDate;
-    }
+  @Column(name = "fee_paid")
+  private Integer feePaid;
 
-    public void setLastPenaltyAppliedDate(Timestamp lastPenaltyAppliedDate) {
-        this.lastPenaltyAppliedDate = lastPenaltyAppliedDate;
-    }
+  @Column(name = "repaid_date")
+  private Timestamp repaidDate;
 
-    @Basic
-    @Column(name = "penalty_due")
-    public Integer getPenaltyDue() {
-        return penaltyDue;
-    }
+  @Column(name = "state")
+  private String state;
 
-    public void setPenaltyDue(Integer penaltyDue) {
-        this.penaltyDue = penaltyDue;
-    }
+  @Column(name = "notes")
+  private String notes;
 
-    @Basic
-    @Column(name = "penalty_paid")
-    public Integer getPenaltyPaid() {
-        return penaltyPaid;
-    }
+  @ManyToOne
+  @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "repayment")
+  private UserEntity user;
 
-    public void setPenaltyPaid(Integer penaltyPaid) {
-        this.penaltyPaid = penaltyPaid;
-    }
+  @ManyToOne
+  @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "repayment")
+  private LoanApplicationEntity loanApplication;
 
-    @Basic
-    @Column(name = "principal_due")
-    public Integer getPrincipalDue() {
-        return principalDue;
-    }
-
-    public void setPrincipalDue(Integer principalDue) {
-        this.principalDue = principalDue;
-    }
-
-    @Basic
-    @Column(name = "principal_paid")
-    public Integer getPrincipalPaid() {
-        return principalPaid;
-    }
-
-    public void setPrincipalPaid(Integer principalPaid) {
-        this.principalPaid = principalPaid;
-    }
-
-    @Basic
-    @Column(name = "fee_due")
-    public Integer getFeeDue() {
-        return feeDue;
-    }
-
-    public void setFeeDue(Integer feeDue) {
-        this.feeDue = feeDue;
-    }
-
-    @Basic
-    @Column(name = "fee_paid")
-    public Integer getFeePaid() {
-        return feePaid;
-    }
-
-    public void setFeePaid(Integer feePaid) {
-        this.feePaid = feePaid;
-    }
-
-    @Basic
-    @Column(name = "repaid_date")
-    public Timestamp getRepaidDate() {
-        return repaidDate;
-    }
-
-    public void setRepaidDate(Timestamp repaidDate) {
-        this.repaidDate = repaidDate;
-    }
-
-    @Basic
-    @Column(name = "state")
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    @Basic
-    @Column(name = "notes")
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        RepaymentEntity that = (RepaymentEntity) o;
-        return id == that.id &&
-                Objects.equals(uuid, that.uuid) &&
-                Objects.equals(dueDate, that.dueDate) &&
-                Objects.equals(interestDue, that.interestDue) &&
-                Objects.equals(interestPaid, that.interestPaid) &&
-                Objects.equals(lastPaidDate, that.lastPaidDate) &&
-                Objects.equals(lastPenaltyAppliedDate, that.lastPenaltyAppliedDate) &&
-                Objects.equals(penaltyDue, that.penaltyDue) &&
-                Objects.equals(penaltyPaid, that.penaltyPaid) &&
-                Objects.equals(principalDue, that.principalDue) &&
-                Objects.equals(principalPaid, that.principalPaid) &&
-                Objects.equals(feeDue, that.feeDue) &&
-                Objects.equals(feePaid, that.feePaid) &&
-                Objects.equals(repaidDate, that.repaidDate) &&
-                Objects.equals(state, that.state) &&
-                Objects.equals(notes, that.notes);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, uuid, dueDate, interestDue, interestPaid, lastPaidDate, lastPenaltyAppliedDate, penaltyDue, penaltyPaid, principalDue, principalPaid, feeDue, feePaid, repaidDate, state, notes);
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "repayment")
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    @ManyToOne
-    @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "repayment")
-    public LoanApplicationEntity getLoanApplication() {
-        return loanApplication;
-    }
-
-    public void setLoanApplication(LoanApplicationEntity loanApplication) {
-        this.loanApplication = loanApplication;
-    }
-
-    @OneToMany(mappedBy = "repayment")
-    public Collection<RepaymentFeeDetailsEntity> getRepaymentFeeDetails() {
-        return repaymentFeeDetails;
-    }
-
-    public void setRepaymentFeeDetails(Collection<RepaymentFeeDetailsEntity> repaymentFeeDetails) {
-        this.repaymentFeeDetails = repaymentFeeDetails;
-    }
+  @OneToMany(mappedBy = "repayment")
+  private Collection<RepaymentFeeDetailsEntity> repaymentFeeDetails;
 }

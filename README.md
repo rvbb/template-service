@@ -37,10 +37,6 @@
 	Browse APIs via swagger: http://localhost:8080/swagger-ui.html#
 
 ### Docker
-Postgres:
+Mariadb:
 
-    docker run -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD='Devdev!23' --name lmg-postgres postgres
-
-Mongodb:
-
-    docker run -p 27017:27017 --name lms-mongo -e MONGO_INITDB_ROOT_USERNAME=root -e MONGO_INITDB_ROOT_PASSWORD=password -d mongo
+    docker run --name namdq-mariadb -p 3306:3306 -e MARIADB_ROOT_PASSWORD=lms!123 -e MARIADB_DATABASE=lms-service -v mariadb_volume:/var/lib/mysql -d mariadb
