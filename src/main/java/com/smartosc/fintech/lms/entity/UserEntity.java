@@ -1,11 +1,18 @@
 package com.smartosc.fintech.lms.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Collection;
+
 
 @Data
 @EqualsAndHashCode(callSuper = false)
