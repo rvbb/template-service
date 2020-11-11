@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -33,25 +34,21 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     @Override
     public RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto) {
-        LoanApplicationEntity loanApplicationEntity = loanApplicationRepository.findLoanApplicationEntityByUuid(
+        Optional<LoanApplicationEntity>  existedLoanApplication = loanApplicationRepository.findByUuid(
                 repaymentRequestDto.getUuid());
-        if(loanApplicationEntity == null){
-            throw new EntityNotFoundException();
-        }
+        LoanApplicationEntity loanApplicationEntity = existedLoanApplication.orElseThrow(EntityNotFoundException::new);
         LoanTransactionEntity loanTransactionEntity = null;
-
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-
         PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repaymentRequestDto);
         if(paymentResultDto.isSuccessful()){
-            closeLoanApplicationStatus(loanApplicationEntity);
+            closeLoanApplication(loanApplicationEntity);
             loanTransactionEntity = saveRepaymentLoanTransaction(repaymentRequestDto, loanApplicationEntity);
         }
-         repaymentResponseDto.setLoanTransactionEntity(loanTransactionEntity);
+        repaymentResponseDto.setLoanTransactionEntity(loanTransactionEntity);
         return repaymentResponseDto;
     }
 
-    private void closeLoanApplicationStatus(LoanApplicationEntity loanApplicationEntity){
+    private void closeLoanApplication(LoanApplicationEntity loanApplicationEntity){
         loanApplicationEntity.setStatus(LoanApplicationStatus.CLOSED.getValue());
         loanApplicationRepository.save(loanApplicationEntity);
     }
