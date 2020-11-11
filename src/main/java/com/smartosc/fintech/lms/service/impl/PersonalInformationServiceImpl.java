@@ -41,7 +41,8 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     @Override
     public List<PersonalInformationDto> updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
-        LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(EntityNotFoundException::new);
+        LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(
+                () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
 
         Collection<LoanPersonalInformationEntity> personalInformations = loanApplicationEntity.getLoanPersonalInformation();
         List<PersonalInformationDto> personalInformationDtos = new ArrayList<>();
