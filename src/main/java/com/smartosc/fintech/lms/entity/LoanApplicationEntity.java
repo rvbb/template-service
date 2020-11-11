@@ -2,7 +2,6 @@ package com.smartosc.fintech.lms.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +13,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
-
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -33,7 +32,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   private String uuid;
 
   @Column(name = "loan_amount")
-  private Integer loanAmount;
+  private BigDecimal loanAmount;
 
   @Column(name = "interest_rate")
   private String interestRate;

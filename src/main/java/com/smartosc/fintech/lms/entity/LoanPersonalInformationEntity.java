@@ -10,27 +10,27 @@ import java.sql.Date;
 @Table(name = "loan_personal_information")
 public class LoanPersonalInformationEntity {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column(name = "full_name")
-  private String fullName;
+    @Column(name = "full_name")
+    private String fullName;
 
-  @Column(name = "phone_number")
-  private String phoneNumber;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
-  @Column(name = "date_of_birth")
-  private Date dateOfBirth;
+    @Column(name = "date_of_birth")
+    private Date dateOfBirth;
 
-  @Column(name = "email_address")
-  private String emailAddress;
+    @Column(name = "email_address")
+    private String emailAddress;
 
-  @Column(name = "address")
-  private String address;
+    @Column(name = "address")
+    private String address;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_personal_information")
-  private LoanApplicationEntity loanApplication;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_personal_information")
+    private LoanApplicationEntity loanApplication;
 }

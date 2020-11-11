@@ -1,11 +1,15 @@
 package com.smartosc.fintech.lms.service;
 
+
+import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
+import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.RepaymentDto;
-
 import java.util.List;
 
 public interface RepaymentService {
+
+    RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto);
 
   /**
    * Generate repayments form a loan application.
@@ -22,4 +26,5 @@ public interface RepaymentService {
    * @return List<RepaymentDto> list of repayment
    */
   List<RepaymentDto> calculate(String loanApplicationUuid);
+
 }

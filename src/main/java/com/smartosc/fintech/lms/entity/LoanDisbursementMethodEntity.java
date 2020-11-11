@@ -10,15 +10,15 @@ import javax.persistence.*;
 @Table(name = "loan_disbursement_method")
 public class LoanDisbursementMethodEntity {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column(name = "disbursement_method")
-  private Integer disbursementMethod;
+    @Column(name = "disbursement_method")
+    private Integer disbursementMethod;
 
-  @ManyToOne
-  @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_disbursement_method")
-  private LoanApplicationEntity loanApplication;
+    @ManyToOne
+    @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_disbursement_method")
+    private LoanApplicationEntity loanApplication;
 }

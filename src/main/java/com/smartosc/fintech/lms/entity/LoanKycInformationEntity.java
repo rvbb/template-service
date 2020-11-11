@@ -9,12 +9,12 @@ import javax.persistence.*;
 @Table(name = "loan_kyc_information")
 public class LoanKycInformationEntity {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @ManyToOne
-  @JoinColumn(name = "loan_application_id", referencedColumnName = "id", table = "loan_kyc_information")
-  private LoanApplicationEntity loanApplication;
+    @ManyToOne
+    @JoinColumn(name = "loan_application_id", referencedColumnName = "id", table = "loan_kyc_information")
+    private LoanApplicationEntity loanApplication;
 }

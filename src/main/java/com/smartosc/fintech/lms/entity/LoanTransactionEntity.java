@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 @Data
@@ -18,65 +19,65 @@ import java.util.Collection;
 @Table(name = "loan_transaction")
 public class LoanTransactionEntity {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column(name = "uuid")
-  private String uuid;
+    @Column(name = "uuid")
+    private String uuid;
 
-  @Column(name = "amount")
-  private Integer amount;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
-  @Column(name = "balance")
-  private Integer balance;
+    @Column(name = "balance")
+    private BigDecimal balance;
 
-  @Column(name = "creation_date")
-  private Timestamp creationDate;
+    @Column(name = "creation_date")
+    private Timestamp creationDate;
 
-  @Column(name = "entry_date")
-  private Timestamp entryDate;
+    @Column(name = "entry_date")
+    private Timestamp entryDate;
 
-  @Column(name = "fees_amount")
-  private Integer feesAmount;
+    @Column(name = "fees_amount")
+    private BigDecimal feesAmount;
 
-  @Column(name = "interest_amount")
-  private Integer interestAmount;
+    @Column(name = "interest_amount")
+    private BigDecimal interestAmount;
 
-  @Column(name = "interest_rate")
-  private Integer interestRate;
+    @Column(name = "interest_rate")
+    private BigDecimal interestRate;
 
-  @Column(name = "penalty_amount")
-  private Integer penaltyAmount;
+    @Column(name = "penalty_amount")
+    private BigDecimal penaltyAmount;
 
-  @Column(name = "principal_amount")
-  private Integer principalAmount;
+    @Column(name = "principal_amount")
+    private BigDecimal principalAmount;
 
-  @Column(name = "principal_balance")
-  private Integer principalBalance;
+    @Column(name = "principal_balance")
+    private BigDecimal principalBalance;
 
-  @Column(name = "tax_on_fees_amount")
-  private Integer taxOnFeesAmount;
+    @Column(name = "tax_on_fees_amount")
+    private BigDecimal taxOnFeesAmount;
 
-  @Column(name = "tax_on_interest_amount")
-  private Integer taxOnInterestAmount;
+    @Column(name = "tax_on_interest_amount")
+    private BigDecimal taxOnInterestAmount;
 
-  @Column(name = "tax_on_penalty_amount")
-  private Integer taxOnPenaltyAmount;
+    @Column(name = "tax_on_penalty_amount")
+    private BigDecimal taxOnPenaltyAmount;
 
-  @Column(name = "type")
-  private String type;
+    @Column(name = "type")
+    private String type;
 
-  @ManyToOne
-  @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "loan_transaction")
-  private UserEntity user;
+    @ManyToOne
+    @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "loan_transaction")
+    private UserEntity user;
 
-  @ManyToOne
-  @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "loan_transaction")
-  private LoanApplicationEntity loanApplication;
+    @ManyToOne
+    @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "loan_transaction")
+    private LoanApplicationEntity loanApplication;
 
-  @OneToMany(mappedBy = "loanTransaction")
-  private Collection<RepaymentFeeDetailsEntity> repaymentFeeDetails;
+    @OneToMany(mappedBy = "loanTransaction")
+    private Collection<RepaymentFeeDetailsEntity> repaymentFeeDetails;
 
 }

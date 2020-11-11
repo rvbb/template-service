@@ -16,92 +16,92 @@ import java.util.Collection;
 @Table(name = "loan_product")
 public class LoanProductEntity {
 
-  @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  @Column(name = "name")
-  private String name;
+    @Column(name = "name")
+    private String name;
 
-  @Column(name = "description")
-  private String description;
+    @Column(name = "description")
+    private String description;
 
-  @Column(name = "min_amount")
-  private Long minAmount;
+    @Column(name = "min_amount")
+    private Long minAmount;
 
-  @Column(name = "max_amount")
-  private Long maxAmount;
+    @Column(name = "max_amount")
+    private Long maxAmount;
 
-  @Column(name = "interest_rate")
-  private String interestRate;
+    @Column(name = "interest_rate")
+    private String interestRate;
 
-  @Column(name = "type")
-  private Integer type;
+    @Column(name = "type")
+    private Integer type;
 
-  @Column(name = "interest_accrued_accounting_method")
-  private String interestAccruedAccountingMethod;
+    @Column(name = "interest_accrued_accounting_method")
+    private String interestAccruedAccountingMethod;
 
-  @Column(name = "interest_application_method")
-  private String interestApplicationMethod;
+    @Column(name = "interest_application_method")
+    private String interestApplicationMethod;
 
-  @Column(name = "interest_calculation_method")
-  private String interestCalculationMethod;
+    @Column(name = "interest_calculation_method")
+    private String interestCalculationMethod;
 
-  @Column(name = "interest_rate_key")
-  private String interestRateKey;
+    @Column(name = "interest_rate_key")
+    private String interestRateKey;
 
-  @Column(name = "fixed_days_of_month")
-  private Integer fixedDaysOfMonth;
+    @Column(name = "fixed_days_of_month")
+    private Integer fixedDaysOfMonth;
 
-  @Column(name = "penalty_calculation_method")
-  private String penaltyCalculationMethod;
+    @Column(name = "penalty_calculation_method")
+    private String penaltyCalculationMethod;
 
-  @Column(name = "paymentmethod")
-  private String paymentmethod;
+    @Column(name = "paymentmethod")
+    private String paymentmethod;
 
-  @Column(name = "prepayment_acceptance")
-  private String prepaymentAcceptance;
+    @Column(name = "prepayment_acceptance")
+    private String prepaymentAcceptance;
 
-  @Column(name = "prepayment_recalculation_method")
-  private String prepaymentRecalculationMethod;
+    @Column(name = "prepayment_recalculation_method")
+    private String prepaymentRecalculationMethod;
 
-  @Column(name = "principal_paid_installment_status")
-  private String principalPaidInstallmentStatus;
+    @Column(name = "principal_paid_installment_status")
+    private String principalPaidInstallmentStatus;
 
-  @Column(name = "principal_payment_key")
-  private String principalPaymentKey;
+    @Column(name = "principal_payment_key")
+    private String principalPaymentKey;
 
-  @Column(name = "repayment_allocation_order")
-  private String repaymentAllocationOrder;
+    @Column(name = "repayment_allocation_order")
+    private String repaymentAllocationOrder;
 
-  @Column(name = "repayment_period_count")
-  private Integer repaymentPeriodCount;
+    @Column(name = "repayment_period_count")
+    private Integer repaymentPeriodCount;
 
-  @Column(name = "repayment_period_unit")
-  private String repaymentPeriodUnit;
+    @Column(name = "repayment_period_unit")
+    private String repaymentPeriodUnit;
 
-  @Column(name = "repayment_schedule_method")
-  private String repaymentScheduleMethod;
+    @Column(name = "repayment_schedule_method")
+    private String repaymentScheduleMethod;
 
-  @Column(name = "tax_calculation_method")
-  private String taxCalculationMethod;
+    @Column(name = "tax_calculation_method")
+    private String taxCalculationMethod;
 
-  @Column(name = "status")
-  private Integer status;
+    @Column(name = "status")
+    private Integer status;
 
-  @Column(name = "created_date")
-  private Timestamp createdDate;
+    @Column(name = "created_date")
+    private Timestamp createdDate;
 
-  @Column(name = "last_updated_date")
-  private Timestamp lastUpdatedDate;
+    @Column(name = "last_updated_date")
+    private Timestamp lastUpdatedDate;
 
-  @Column(name = "days_in_year")
-  private Integer daysInYear;
+    @Column(name = "days_in_year")
+    private Integer daysInYear;
 
-  @Column(name = "loan_penalty_rate")
-  private String loanPenaltyRate;
+    @Column(name = "loan_penalty_rate")
+    private String loanPenaltyRate;
 
-  @OneToMany(mappedBy = "loanProduct")
-  private Collection<LoanApplicationEntity> loanApplications;
+    @OneToMany(mappedBy = "loanProduct")
+    private Collection<LoanApplicationEntity> loanApplications;
 }
