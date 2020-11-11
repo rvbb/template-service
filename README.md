@@ -37,6 +37,6 @@
 	Browse APIs via swagger: http://localhost:8080/swagger-ui.html#
 
 ### Docker
-Mariadb:
+Mariadb for develop:
 
-    docker run --name namdq-mariadb -p 3306:3306 -e MARIADB_ROOT_PASSWORD=lms!123 -e MARIADB_DATABASE=lms-service -v mariadb_volume:/var/lib/mysql -d mariadb
+    docker run --name lms-mariadb -p 3306:3306 -e MARIADB_ROOT_PASSWORD='lms!123' -e MARIADB_DATABASE=lms-service -v mariadb_volume:/var/lib/mysql -d mariadb/server

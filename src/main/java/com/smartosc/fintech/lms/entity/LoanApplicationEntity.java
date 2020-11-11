@@ -1,8 +1,19 @@
 package com.smartosc.fintech.lms.entity;
 
-import lombok.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -11,7 +22,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "loan_application")
-public class LoanApplicationEntity extends AuditEntity {
+public class LoanApplicationEntity extends AuditEntity implements Serializable {
 
   @Id
   @Column(name = "id")
@@ -108,35 +119,35 @@ public class LoanApplicationEntity extends AuditEntity {
   @Column(name = "tax_rate")
   private Integer taxRate;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", referencedColumnName = "id", table = "loan_application")
   private UserEntity user;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "loan_product_id", referencedColumnName = "id", nullable = false, table = "loan_application")
   private LoanProductEntity loanProduct;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanContactInformationEntity> loanContactInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanCreditScoreEntity> loanCreditScores;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanDisbursementMethodEntity> loanDisbursementMethods;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanJobInformationEntity> loanJobInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanKycInformationEntity> loanKycInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanPersonalInformationEntity> loanPersonalInformation;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<LoanTransactionEntity> loanTransactions;
 
-  @OneToMany(mappedBy = "loanApplication")
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<RepaymentEntity> repayments;
 }
