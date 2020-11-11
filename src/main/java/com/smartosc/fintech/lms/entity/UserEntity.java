@@ -16,7 +16,7 @@ import java.util.Collection;
 
 
 @Data
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "user")
 public class UserEntity extends AuditEntity implements Serializable {
