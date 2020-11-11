@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -24,11 +23,17 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
 
     @Override
     public List<PersonalInformationDto>
-    updateLoanPersonalInformation(long id, PersonalInformationDto personalInformationDto) {
-        if (!loanApplicationRepository.existsById(id)) {
+    updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
+
+        LoanApplicationEntity loanApplicationEntity =
+                loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
+        if (loanApplicationEntity == null) {
             throw new EntityNotFoundException();
         }
-        List<LoanPersonalInformationEntity> personalInformations = personalInformationRepository.getPersonalInformationByLoanApplicationId(id);
+
+        long idLoanApplication = loanApplicationEntity.getId();
+        List<LoanPersonalInformationEntity> personalInformations =
+                personalInformationRepository.getPersonalInformationByLoanApplicationId(idLoanApplication);
         List<PersonalInformationDto> personalInformationDtos = new ArrayList<>();
         for (LoanPersonalInformationEntity personalInformation : personalInformations) {
             personalInformation.setAddress(personalInformationDto.getAddress());

@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface LoanApplicationRepository extends JpaRepository<LoanApplicationEntity, Long> {
 
+    LoanApplicationEntity findLoanApplicationEntityByUuid(String uuid);
 }

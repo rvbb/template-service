@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -21,7 +22,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "loan_application")
-public class LoanApplicationEntity extends AuditEntity {
+public class LoanApplicationEntity extends AuditEntity implements Serializable {
 
   @Id
   @Column(name = "id")
