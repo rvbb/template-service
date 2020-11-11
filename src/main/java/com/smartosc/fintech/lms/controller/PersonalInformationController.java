@@ -24,9 +24,9 @@ public interface PersonalInformationController {
             @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
-    @PutMapping("")
+    @PutMapping("/{uuid}")
     public Response<List<PersonalInformationDto>>
-    updateLoanPersonalInformation(@RequestParam String uuid, @Valid @RequestBody PersonalInformationDto personalInformationDto);
+    updateLoanPersonalInformation(@PathVariable String uuid, @Valid @RequestBody PersonalInformationDto personalInformationDto);
 
 
 }

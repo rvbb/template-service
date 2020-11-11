@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -30,10 +31,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
         if (loanApplicationEntity == null) {
             throw new EntityNotFoundException();
         }
-
-        long idLoanApplication = loanApplicationEntity.getId();
-        List<LoanPersonalInformationEntity> personalInformations =
-                personalInformationRepository.getPersonalInformationByLoanApplicationId(idLoanApplication);
+        Collection<LoanPersonalInformationEntity> personalInformations = loanApplicationEntity.getLoanPersonalInformation();
         List<PersonalInformationDto> personalInformationDtos = new ArrayList<>();
         for (LoanPersonalInformationEntity personalInformation : personalInformations) {
             personalInformation.setAddress(personalInformationDto.getAddress());
