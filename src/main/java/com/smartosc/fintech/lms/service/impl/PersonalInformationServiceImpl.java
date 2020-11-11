@@ -1,5 +1,6 @@
 package com.smartosc.fintech.lms.service.impl;
 
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanPersonalInformationEntity;
@@ -32,8 +33,8 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
      * created by tuanhv2
      */
     @Override
+    @SMFLogger
     public PersonalInformationDto getLoanPersonalInformation(String uuid) {
-        log.info("get personal information by loan application with uuid : {}", uuid);
         LoanPersonalInformationEntity loanPersonalInformation = personalInformationRepository.findPersonalInformationbyLoanAppliaction(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Not found personal information by loan application with uuid : " + uuid));
         return PersonalInformationMapper.INSTANCE.mapToDto(loanPersonalInformation);

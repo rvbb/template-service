@@ -8,8 +8,6 @@ public interface PersonalInformationService {
 
     PersonalInformationDto getLoanPersonalInformation(String uuid);
 
-    PersonalInformationDto updateLoanPersonalInformation(long id, PersonalInformationDto loanPersonalInformation);
-
     List<PersonalInformationDto>
     updateLoanPersonalInformation(String id, PersonalInformationDto loanPersonalInformation);
 }
