@@ -17,10 +17,16 @@ public class PersonalInformationControllerImpl implements PersonalInformationCon
     private final PersonalInformationService personalInformationService;
 
     @Override
+    public Response<PersonalInformationDto> getPersonalInformation(String uuid) {
+        return Response.ok(personalInformationService.getLoanPersonalInformation(uuid));
+    }
+
+    @Override
     @SMFLogger
     public Response<List<PersonalInformationDto>>
         updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
         List<PersonalInformationDto> result = personalInformationService.updateLoanPersonalInformation(uuid, personalInformationDto);
         return Response.ok(result);
     }
+
 }

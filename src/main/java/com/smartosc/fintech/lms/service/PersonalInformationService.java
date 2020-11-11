@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface PersonalInformationService {
 
+    PersonalInformationDto getLoanPersonalInformation(String uuid);
+
     List<PersonalInformationDto>
     updateLoanPersonalInformation(String id, PersonalInformationDto loanPersonalInformation);
 }
