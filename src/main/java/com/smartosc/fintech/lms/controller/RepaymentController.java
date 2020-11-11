@@ -24,12 +24,4 @@ public interface RepaymentController {
     })
     @PostMapping
     Response<RepaymentResponseDto> repayLoan(@RequestBody RepaymentRequestDto repaymentRequestDto);
-
-    @ApiOperation(value = "Calculate interest amount of a loan")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = InterestAmountDto.class),
-            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class)
-    })
-    @GetMapping(path = "calculate-interest-amount")
-    Response<InterestAmountDto> calculateInterestAmount(@RequestParam int id);
 }

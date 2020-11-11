@@ -25,9 +25,4 @@ public class RepaymentControllerImpl implements RepaymentController {
     public Response<RepaymentResponseDto> repayLoan(RepaymentRequestDto repaymentRequestDto) {
         return Response.ok(repaymentService.repayLoan(repaymentRequestDto));
     }
-
-    @Override
-    public Response<InterestAmountDto> calculateInterestAmount(int id) {
-        return null;
-    }
 }
