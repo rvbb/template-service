@@ -11,6 +11,7 @@ import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.service.PaymentService;
 import com.smartosc.fintech.lms.service.RepaymentService;
+import com.smartosc.fintech.lms.service.mapper.LoanTransactionMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,8 @@ public class RepaymentServiceImpl implements RepaymentService {
             closeLoanApplication(loanApplicationEntity);
             loanTransactionEntity = saveRepaymentLoanTransaction(repaymentRequestDto, loanApplicationEntity);
         }
-        repaymentResponseDto.setLoanTransactionEntity(loanTransactionEntity);
+
+        repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
         return repaymentResponseDto;
     }
 
