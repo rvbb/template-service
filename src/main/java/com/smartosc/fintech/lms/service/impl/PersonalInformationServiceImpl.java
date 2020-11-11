@@ -9,21 +9,21 @@ import com.smartosc.fintech.lms.repository.PersonalInformationRepository;
 import com.smartosc.fintech.lms.service.PersonalInformationService;
 import com.smartosc.fintech.lms.service.mapper.PersonalInformationMapper;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class PersonalInformationServiceImpl implements PersonalInformationService {
 
-    @Autowired
-    private PersonalInformationRepository personalInformationRepository;
-    private LoanApplicationRepository loanApplicationRepository;
+    private final PersonalInformationRepository personalInformationRepository;
+    private final LoanApplicationRepository loanApplicationRepository;
+
 
     /**
      * get personal information by loan application with uuid
@@ -39,14 +39,10 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     }
 
     @Override
-    public List<PersonalInformationDto>
-    updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
+    public List<PersonalInformationDto> updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
+        Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
+        LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(EntityNotFoundException::new);
 
-        LoanApplicationEntity loanApplicationEntity =
-                loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
-        if (loanApplicationEntity == null) {
-            throw new EntityNotFoundException();
-        }
         Collection<LoanPersonalInformationEntity> personalInformations = loanApplicationEntity.getLoanPersonalInformation();
         List<PersonalInformationDto> personalInformationDtos = new ArrayList<>();
         for (LoanPersonalInformationEntity personalInformation : personalInformations) {
