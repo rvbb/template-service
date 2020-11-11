@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 
 @Data
 @Entity
@@ -26,16 +27,16 @@ public class RepaymentFeeDetailsEntity {
     private String uuid;
 
     @Column(name = "fee_due")
-    private Integer feeDue;
+    private BigDecimal feeDue;
 
     @Column(name = "fee_paid")
-    private Integer feePaid;
+    private BigDecimal feePaid;
 
     @Column(name = "tax_on_fee_due")
-    private Integer taxOnFeeDue;
+    private BigDecimal taxOnFeeDue;
 
     @Column(name = "tax_on_fee_paid")
-    private Integer taxOnFeePaid;
+    private BigDecimal taxOnFeePaid;
 
     @ManyToOne
     @JoinColumn(name = "repayment_key", referencedColumnName = "uuid", table = "repayment_fee_details")
