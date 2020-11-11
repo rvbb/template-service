@@ -12,6 +12,6 @@ import java.util.Optional;
  */
 @Repository
 public interface LoanApplicationRepository extends JpaRepository<LoanApplicationEntity, Long> {
-    Optional<LoanApplicationEntity> findByUuid(String uuid);
+    Optional<LoanApplicationEntity> findLoanApplicationEntityByUuid(String uuid);
 
 }

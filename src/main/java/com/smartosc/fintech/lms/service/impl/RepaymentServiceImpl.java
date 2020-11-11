@@ -20,21 +20,42 @@ import java.sql.Timestamp;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.smartosc.fintech.lms.common.util.SMFLogger;
+import com.smartosc.fintech.lms.dto.LoanApplicationDto;
+import com.smartosc.fintech.lms.dto.RepaymentDto;
+import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
+import com.smartosc.fintech.lms.entity.RepaymentEntity;
+import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
+import com.smartosc.fintech.lms.repository.RepaymentRepository;
+import com.smartosc.fintech.lms.service.RepaymentService;
+import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 /**
  * @author minhnd3@smartosc.com
  * @since 10-Nov-20
  */
 @Service
 @AllArgsConstructor
+@Slf4j
 public class RepaymentServiceImpl implements RepaymentService {
 
     private LoanApplicationRepository loanApplicationRepository;
     private LoanTransactionRepository loanTransactionRepository;
     private PaymentGatewayService paymentGatewayService;
+    private RepaymentRepository repaymentRepository;
 
     @Override
     public RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto) {
-        Optional<LoanApplicationEntity>  existedLoanApplication = loanApplicationRepository.findByUuid(
+        Optional<LoanApplicationEntity>  existedLoanApplication = loanApplicationRepository.findLoanApplicationEntityByUuid(
                 repaymentRequestDto.getUuid());
         LoanApplicationEntity loanApplicationEntity = existedLoanApplication.orElseThrow(EntityNotFoundException::new);
         LoanTransactionEntity loanTransactionEntity = null;
@@ -82,5 +103,34 @@ public class RepaymentServiceImpl implements RepaymentService {
         loanTransactionEntity.setLoanApplication(loanApplicationEntity);
 
         return loanTransactionEntity;
+    }
+
+    @Override
+    public List<RepaymentDto> calculate(LoanApplicationDto loanApplicationDto) {
+        return calculate(loanApplicationDto.getUuid());
+    }
+
+    @Override
+    @SMFLogger
+    public List<RepaymentDto> calculate(String loanApplicationUuid) {
+        Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(loanApplicationUuid);
+        LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(EntityNotFoundException::new);
+
+        List<RepaymentEntity> repaymentEntities = calculate(loanApplicationEntity);
+        repaymentEntities = repaymentRepository.saveAll(repaymentEntities);
+
+        return repaymentEntities.stream().map(RepaymentMapper.INSTANCE::entityToDto).collect(Collectors.toList());
+    }
+
+    private List<RepaymentEntity> calculate(LoanApplicationEntity loanApplicationEntity) {
+        RepaymentEntity repaymentEntity = new RepaymentEntity();
+        repaymentEntity.setUuid(loanApplicationEntity.getUuid());
+        repaymentEntity.setInterestDue(loanApplicationEntity.getInterestDue());
+        repaymentEntity.setPenaltyDue(loanApplicationEntity.getPenaltyDue());
+        repaymentEntity.setPrincipalDue(loanApplicationEntity.getPrincipalDue());
+        repaymentEntity.setFeeDue(loanApplicationEntity.getFeeDue());
+        repaymentEntity.setUser(loanApplicationEntity.getUser());
+        repaymentEntity.setLoanApplication(loanApplicationEntity);
+        return Collections.singletonList(repaymentEntity);
     }
 }
