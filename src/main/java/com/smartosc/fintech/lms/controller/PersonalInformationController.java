@@ -28,5 +28,14 @@ public interface PersonalInformationController {
     public Response<List<PersonalInformationDto>>
     updateLoanPersonalInformation(@PathVariable String uuid, @Valid @RequestBody PersonalInformationDto personalInformationDto);
 
-
+    @ApiOperation(value = "Get loan personal information by loan application with uuid")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = PersonalInformationDto.class),
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
+    })
+    @GetMapping("/{uuid}")
+    Response<PersonalInformationDto> getPersonalInformation(@PathVariable("uuid") String uuid);
 }
