@@ -7,6 +7,8 @@ import com.smartosc.fintech.lms.common.constant.PaymentHistoryStatus;
 import com.smartosc.fintech.lms.config.ApplicationConfig;
 import com.smartosc.fintech.lms.dto.PaymentRequest;
 import com.smartosc.fintech.lms.dto.PaymentResponse;
+import com.smartosc.fintech.lms.dto.PaymentResultDto;
+import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
 import com.smartosc.fintech.lms.entity.PaymentHistoryEntity;
 import com.smartosc.fintech.lms.exception.BusinessServiceException;
 import com.smartosc.fintech.lms.repository.PaymentHistoryRepository;
@@ -75,5 +77,10 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (JsonProcessingException e) {
             return "";
         }
+    }
+
+    @Override
+    public PaymentResultDto processRepayLoan(RepaymentRequestDto repaymentRequestDto) {
+        return new PaymentResultDto();
     }
 }

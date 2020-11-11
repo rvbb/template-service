@@ -9,7 +9,7 @@ import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
-import com.smartosc.fintech.lms.service.PaymentGatewayService;
+import com.smartosc.fintech.lms.service.PaymentService;
 import com.smartosc.fintech.lms.service.RepaymentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     private LoanApplicationRepository loanApplicationRepository;
     private LoanTransactionRepository loanTransactionRepository;
-    private PaymentGatewayService paymentGatewayService;
+    private PaymentService paymentGatewayService;
     private RepaymentRepository repaymentRepository;
 
     @Override
