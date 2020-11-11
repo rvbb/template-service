@@ -18,8 +18,8 @@ public interface RepaymentService {
   /**
    * Generate repayments form a loan application by loanApplicationId.
    *
-   * @param loanApplicationId loan application id
+   * @param loanApplicationUuid loan application id
    * @return List<RepaymentDto> list of repayment
    */
-  List<RepaymentDto> calculate(long loanApplicationId);
+  List<RepaymentDto> calculate(String loanApplicationUuid);
 }

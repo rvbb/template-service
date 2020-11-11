@@ -1,5 +1,6 @@
 package com.smartosc.fintech.lms.service.impl;
 
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.RepaymentDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
@@ -34,15 +35,14 @@ public class RepaymentServiceImpl implements RepaymentService {
 
   @Override
   public List<RepaymentDto> calculate(LoanApplicationDto loanApplicationDto) {
-    return calculate(loanApplicationDto.getId());
+    return calculate(loanApplicationDto.getUuid());
   }
 
   @Override
-  public List<RepaymentDto> calculate(long loanApplicationId) {
-    Optional<LoanApplicationEntity> optional = loanApplicationRepository.findById(loanApplicationId);
-
+  @SMFLogger
+  public List<RepaymentDto> calculate(String loanApplicationUuid) {
+    Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(loanApplicationUuid);
     LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(EntityNotFoundException::new);
-    log.info(loanApplicationEntity.toString());
 
     List<RepaymentEntity> repaymentEntities = calculate(loanApplicationEntity);
     repaymentEntities = repaymentRepository.saveAll(repaymentEntities);
