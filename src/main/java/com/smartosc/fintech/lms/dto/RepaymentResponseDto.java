@@ -8,10 +8,6 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 @Getter
 @Setter
 @AllArgsConstructor

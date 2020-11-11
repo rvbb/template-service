@@ -6,10 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 @Repository
 public interface LoanApplicationRepository extends JpaRepository<LoanApplicationEntity, Long> {
     Optional<LoanApplicationEntity> findLoanApplicationEntityByUuid(String uuid);

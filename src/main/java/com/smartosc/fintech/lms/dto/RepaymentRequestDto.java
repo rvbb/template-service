@@ -8,10 +8,6 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 @Getter
 @Setter
 @NoArgsConstructor

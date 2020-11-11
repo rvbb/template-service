@@ -23,26 +23,15 @@ import java.util.UUID;
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.RepaymentDto;
-import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
-import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
-import com.smartosc.fintech.lms.service.RepaymentService;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 @Service
 @AllArgsConstructor
 @Slf4j

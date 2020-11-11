@@ -7,10 +7,6 @@ import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.RepaymentDto;
 import java.util.List;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 public interface RepaymentService {
 
     RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto);

@@ -6,10 +6,7 @@ import com.smartosc.fintech.lms.service.PaymentGatewayService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 11-Nov-20
- */
+
 @Service
 @AllArgsConstructor
 public class PaymentGatewayServiceImpl implements PaymentGatewayService {

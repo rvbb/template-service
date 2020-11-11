@@ -10,10 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 @RestController
 @AllArgsConstructor
 @Slf4j

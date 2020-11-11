@@ -8,10 +8,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 10-Nov-20
- */
 @RequestMapping(path = "/repayment")
 @Api(value = "Repayment API")
 public interface RepaymentController {
