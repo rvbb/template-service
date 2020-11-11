@@ -1,18 +1,19 @@
 package com.smartosc.fintech.lms.common.constant;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author minhnd3@smartosc.com
- * @since 11-Nov-20
- */
 @Getter
-@AllArgsConstructor
 public enum LoanApplicationStatus {
-    APPROVED(1),
-    CLOSED(2),
-    REJECTED(0);
+    APPROVED (1),
+    FUNDED (2),
+    PASS_DUE(3),
+    CLOSE(4);
     private int value;
+    LoanApplicationStatus(int value) {
+        this.value = value;
+    }
+
 }

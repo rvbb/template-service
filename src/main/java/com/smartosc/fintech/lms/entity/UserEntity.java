@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -18,7 +19,7 @@ import java.util.Collection;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(name = "user")
-public class UserEntity extends AuditEntity {
+public class UserEntity extends AuditEntity implements Serializable {
 
     @Id
     @Column(name = "id")

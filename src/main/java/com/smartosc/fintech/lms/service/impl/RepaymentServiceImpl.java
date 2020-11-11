@@ -70,7 +70,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     }
 
     private void closeLoanApplication(LoanApplicationEntity loanApplicationEntity){
-        loanApplicationEntity.setStatus(LoanApplicationStatus.CLOSED.getValue());
+        loanApplicationEntity.setStatus(LoanApplicationStatus.CLOSE.getValue());
         loanApplicationRepository.save(loanApplicationEntity);
     }
 
@@ -98,7 +98,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         loanTransactionEntity.setTaxOnFeesAmount(new BigDecimal(0));
         loanTransactionEntity.setTaxOnInterestAmount(new BigDecimal(0));
         loanTransactionEntity.setTaxOnPenaltyAmount(new BigDecimal(0));
-        loanTransactionEntity.setType(LoanTransactionType.REPAYMENT.getType());
+        loanTransactionEntity.setType(LoanTransactionType.REPAYMENT.name());
         loanTransactionEntity.setUser(loanApplicationEntity.getUser());
         loanTransactionEntity.setLoanApplication(loanApplicationEntity);
 

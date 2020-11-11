@@ -10,7 +10,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum LoanTransactionType {
-    REPAYMENT("REPAYMENT"),
-    FUNDING("FUNDING");
-    private String type;
+    FUNDING,
+    REPAYMENT
 }

@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -31,7 +32,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   private String uuid;
 
   @Column(name = "loan_amount")
-  private Integer loanAmount;
+  private BigDecimal loanAmount;
 
   @Column(name = "interest_rate")
   private String interestRate;
