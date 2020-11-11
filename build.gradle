@@ -47,7 +47,6 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     implementation 'junit:junit:4.12'
-    implementation 'org.hibernate:hibernate-validator:6.0.10.Final'
 
 }
 
