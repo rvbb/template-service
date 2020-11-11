@@ -56,16 +56,16 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   private String applicationSubState;
 
   @Column(name = "accrued_interest")
-  private Integer accruedInterest;
+  private BigDecimal accruedInterest;
 
   @Column(name = "accrue_late_interest")
-  private Integer accrueLateInterest;
+  private BigDecimal accrueLateInterest;
 
   @Column(name = "fee_due")
-  private Integer feeDue;
+  private BigDecimal feeDue;
 
   @Column(name = "fee_paid")
-  private Integer feePaid;
+  private BigDecimal feePaid;
 
   @Column(name = "fixed_days_of_month")
   private Integer fixedDaysOfMonth;
@@ -77,25 +77,25 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   private String interestCalculationMethod;
 
   @Column(name = "interest_due")
-  private Integer interestDue;
+  private BigDecimal interestDue;
 
   @Column(name = "interest_paid")
-  private Integer interestPaid;
+  private BigDecimal interestPaid;
 
   @Column(name = "payment_method")
   private String paymentMethod;
 
   @Column(name = "penalty_due")
-  private Integer penaltyDue;
+  private BigDecimal penaltyDue;
 
   @Column(name = "penalty_paid")
-  private Integer penaltyPaid;
+  private BigDecimal penaltyPaid;
 
   @Column(name = "principal_due")
-  private Integer principalDue;
+  private BigDecimal principalDue;
 
   @Column(name = "principal_paid")
-  private Integer principalPaid;
+  private BigDecimal principalPaid;
 
   @Column(name = "loan_product_key")
   private String loanProductKey;
@@ -116,7 +116,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   private String scheduleDueDatesMethod;
 
   @Column(name = "tax_rate")
-  private Integer taxRate;
+  private BigDecimal taxRate;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", referencedColumnName = "id", table = "loan_application")
