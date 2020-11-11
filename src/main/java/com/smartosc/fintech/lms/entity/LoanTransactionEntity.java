@@ -3,6 +3,7 @@ package com.smartosc.fintech.lms.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -20,10 +21,10 @@ public class LoanTransactionEntity {
     private String uuid;
 
     @Column(name = "amount")
-    private Integer amount;
+    private BigDecimal amount;
 
     @Column(name = "balance")
-    private Integer balance;
+    private BigDecimal balance;
 
     @Column(name = "creation_date")
     private Timestamp creationDate;
@@ -32,31 +33,31 @@ public class LoanTransactionEntity {
     private Timestamp entryDate;
 
     @Column(name = "fees_amount")
-    private Integer feesAmount;
+    private BigDecimal feesAmount;
 
     @Column(name = "interest_amount")
-    private Integer interestAmount;
+    private BigDecimal interestAmount;
 
     @Column(name = "interest_rate")
-    private Integer interestRate;
+    private BigDecimal interestRate;
 
     @Column(name = "penalty_amount")
-    private Integer penaltyAmount;
+    private BigDecimal penaltyAmount;
 
     @Column(name = "principal_amount")
-    private Integer principalAmount;
+    private BigDecimal principalAmount;
 
     @Column(name = "principal_balance")
-    private Integer principalBalance;
+    private BigDecimal principalBalance;
 
     @Column(name = "tax_on_fees_amount")
-    private Integer taxOnFeesAmount;
+    private BigDecimal taxOnFeesAmount;
 
     @Column(name = "tax_on_interest_amount")
-    private Integer taxOnInterestAmount;
+    private BigDecimal taxOnInterestAmount;
 
     @Column(name = "tax_on_penalty_amount")
-    private Integer taxOnPenaltyAmount;
+    private BigDecimal taxOnPenaltyAmount;
 
     @Column(name = "type")
     private String type;
