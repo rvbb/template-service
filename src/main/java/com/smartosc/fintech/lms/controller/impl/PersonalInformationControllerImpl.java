@@ -6,12 +6,12 @@ import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.service.PersonalInformationService;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@Slf4j
 public class PersonalInformationControllerImpl implements PersonalInformationController {
 
     private final PersonalInformationService personalInformationService;
@@ -23,9 +23,9 @@ public class PersonalInformationControllerImpl implements PersonalInformationCon
 
     @Override
     @SMFLogger
-    public Response<PersonalInformationDto>
-        updateLoanPersonalInformation(long id, PersonalInformationDto personalInformationDto) {
-        PersonalInformationDto result = personalInformationService.updateLoanPersonalInformation(id, personalInformationDto);
+    public Response<List<PersonalInformationDto>>
+        updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
+        List<PersonalInformationDto> result = personalInformationService.updateLoanPersonalInformation(uuid, personalInformationDto);
         return Response.ok(result);
     }
 

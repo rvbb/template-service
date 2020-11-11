@@ -37,7 +37,7 @@ public interface UserController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @GetMapping("/{id}")
-    Response<UserDto> getUser(@PathVariable Integer id);
+    Response<UserDto> getUser(@PathVariable Long id);
 
     @ApiOperation(value = "Create a user by id", notes = "id is mandatory")
     @ApiResponses(value = {
@@ -58,7 +58,7 @@ public interface UserController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @PutMapping("/{id}")
-    Response<UserDto> updateUser(@PathVariable Integer id, @RequestBody UserDto userDto);
+    Response<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto);
 
     @ApiOperation(value = "Delete a user by id", notes = "id is mandatory")
     @ApiResponses(value = {
@@ -69,7 +69,7 @@ public interface UserController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @DeleteMapping("/{id}")
-    void deleteUser(@PathVariable Integer id);
+    void deleteUser(@PathVariable Long id);
 
     @ApiOperation(value = "Evict user cache")
     @DeleteMapping(path = "/cache/evict")

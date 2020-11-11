@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/loan-personal-information")
 @Api(value = "Loan personal information Api")
@@ -23,9 +24,9 @@ public interface PersonalInformationController {
             @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
-    @PutMapping("/{id}")
-    public Response<PersonalInformationDto>
-    updateLoanPersonalInformation(@PathVariable long id, @Valid @RequestBody PersonalInformationDto personalInformationDto);
+    @PutMapping("/{uuid}")
+    public Response<List<PersonalInformationDto>>
+    updateLoanPersonalInformation(@PathVariable String uuid, @Valid @RequestBody PersonalInformationDto personalInformationDto);
 
     @ApiOperation(value = "Get loan personal information by loan application with uuid")
     @ApiResponses(value = {

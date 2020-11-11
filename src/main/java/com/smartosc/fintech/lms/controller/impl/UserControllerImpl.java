@@ -28,7 +28,7 @@ public class UserControllerImpl implements UserController {
 
     @Cacheable("user_cache")
     @Override
-    public Response<UserDto> getUser(Integer id) {
+    public Response<UserDto> getUser(Long id) {
         UserDto response = userService.getUser(id);
         return Response.ok(response);
     }
@@ -42,14 +42,14 @@ public class UserControllerImpl implements UserController {
 
     @SMFLogger
     @Override
-    public Response<UserDto> updateUser(Integer id, UserDto userDto) {
+    public Response<UserDto> updateUser(Long id, UserDto userDto) {
         UserDto response = userService.updateUser(id, userDto);
         return Response.ok(response);
     }
 
     @SMFLogger
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         userService.deleteUser(id);
     }
 

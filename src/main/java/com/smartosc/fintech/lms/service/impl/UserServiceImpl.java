@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUser(Integer id) {
+    public UserDto getUser(Long id) {
         Optional<UserEntity> user = userRepository.findById(id);
         if (!user.isPresent()) {
             throw new EntityNotFoundException();
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Integer id, UserDto userDto) {
+    public UserDto updateUser(Long id, UserDto userDto) {
         if (!userRepository.existsById(id)) {
             throw new EntityNotFoundException();
         }
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Integer id) {
+    public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 }
