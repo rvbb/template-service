@@ -15,7 +15,10 @@ public class RepayRequestInPaymentServiceDto {
     private String transactionId;
     private BigDecimal moneyAmount;
     private String description;
-    private String account;
-    private String bankName;
-    private String bankCode;
+    private String lenderAccount;
+    private String lenderBankName;
+    private String lenderBankCode;
+    private String borrowerAccount;
+    private String borrowerBankName;
+    private String borrowerBankCode;
 }

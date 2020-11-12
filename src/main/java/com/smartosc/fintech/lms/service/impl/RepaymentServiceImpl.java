@@ -61,13 +61,22 @@ public class RepaymentServiceImpl implements RepaymentService {
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
         Collection<BankAccount> bankAccounts = loanApplicationEntity.getBankAccounts();
         if(bankAccounts != null && bankAccounts.size() > 0){
-            BankAccount bankAccount = bankAccounts.stream()
+            BankAccount lenderBankAccount = bankAccounts.stream()
                     .filter(b -> b.getType() == BankAccountType.TYPE_LENDER.getValue())
                     .iterator().next();
-            if(bankAccount != null){
-                repayRequestInPaymentServiceDto.setAccount(bankAccount.getAccount());
-                repayRequestInPaymentServiceDto.setBankName(bankAccount.getBankName());
-                repayRequestInPaymentServiceDto.setBankCode(bankAccount.getBankCode());
+            if(lenderBankAccount != null){
+                repayRequestInPaymentServiceDto.setLenderAccount(lenderBankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setLenderBankName(lenderBankAccount.getBankName());
+                repayRequestInPaymentServiceDto.setLenderBankCode(lenderBankAccount.getBankCode()); ;
+            }
+
+            BankAccount borrowerBankAccount = bankAccounts.stream()
+                    .filter(b -> b.getType() == BankAccountType.TYPE_BORROWER.getValue())
+                    .iterator().next();
+            if(borrowerBankAccount != null){
+                repayRequestInPaymentServiceDto.setBorrowerAccount(borrowerBankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setBorrowerBankName(borrowerBankAccount.getBankName());
+                repayRequestInPaymentServiceDto.setBorrowerBankCode(borrowerBankAccount.getBankCode()); ;
             }
         }
 
