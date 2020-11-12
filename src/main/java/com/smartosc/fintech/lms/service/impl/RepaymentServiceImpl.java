@@ -3,6 +3,7 @@ package com.smartosc.fintech.lms.service.impl;
 import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
 import com.smartosc.fintech.lms.dto.*;
+import com.smartosc.fintech.lms.entity.LenderBankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
@@ -16,8 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
@@ -25,8 +25,6 @@ import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,6 +58,14 @@ public class RepaymentServiceImpl implements RepaymentService {
     private RepayRequestInPaymentServiceDto buildRepayRequestInPaymentServiceDto(RepaymentRequestDto repaymentRequestDto,
                                                                                  LoanApplicationEntity loanApplicationEntity){
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
+        Collection<LenderBankAccount> lenderBankAccounts = loanApplicationEntity.getLenderBankAccounts();
+        if(lenderBankAccounts != null && lenderBankAccounts.size() > 0){
+            LenderBankAccount lenderBankAccount = lenderBankAccounts.iterator().next();
+            repayRequestInPaymentServiceDto.setAccount(lenderBankAccount.getAccount());
+            repayRequestInPaymentServiceDto.setBankName(lenderBankAccount.getBankName());
+            repayRequestInPaymentServiceDto.setBankCode(lenderBankAccount.getBankCode());
+        }
+
         repayRequestInPaymentServiceDto.setTransactionId(repaymentRequestDto.getUuid());
         repayRequestInPaymentServiceDto.setMoneyAmount(repaymentRequestDto.getTotalMoney());
         repayRequestInPaymentServiceDto.setDescription("Repay loan " + repaymentRequestDto.getUuid());
