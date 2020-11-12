@@ -3,6 +3,7 @@ package com.smartosc.fintech.lms.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartosc.fintech.lms.common.constant.ErrorCode;
+import com.smartosc.fintech.lms.common.constant.PaymentGatewayStatus;
 import com.smartosc.fintech.lms.common.constant.PaymentHistoryStatus;
 import com.smartosc.fintech.lms.config.ApplicationConfig;
 import com.smartosc.fintech.lms.dto.*;
@@ -86,11 +87,11 @@ public class PaymentServiceImpl implements PaymentService {
         history.setUuid(UUID.randomUUID().toString());
         history.setAmount(repayRequestInPaymentServiceDto.getAmount());
         history.setBody(convertObject(repayRequestInPaymentServiceDto));
-        history.setUrl(applicationConfig.getPaymentGatewayUrl());
+        history.setUrl(applicationConfig.getRepaymentGatewayUrl());
 
         try {
             ResponseEntity<PaymentResponse> response =
-                    restTemplate.postForEntity(applicationConfig.getPaymentGatewayUrl(), repayRequestInPaymentServiceDto, PaymentResponse.class);
+                    restTemplate.postForEntity(applicationConfig.getRepaymentGatewayUrl(), repayRequestInPaymentServiceDto, PaymentResponse.class);
             history.setResponse(convertObject(response));
             paymentResultDto.setData(response.getBody());
             if (response.getStatusCodeValue() >= HttpStatus.BAD_REQUEST.value()) {
@@ -99,7 +100,12 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentResultDto.setFailed(true);
                 throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
-
+            if(response.getBody().getStatus().getCode() != PaymentGatewayStatus.SUCCESS.getValue()){
+                history.setStatus(PaymentHistoryStatus.FAIL.getValue());
+                paymentRepository.save(history);
+                paymentResultDto.setFailed(true);
+                throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+            }
             history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
             paymentRepository.save(history);
             paymentResultDto.setSuccessful(true);

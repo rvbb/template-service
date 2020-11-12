@@ -9,4 +9,6 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfig {
     @Value("${payment.gateway.url}")
     private String paymentGatewayUrl;
+    @Value("${repayment.gateway.url}")
+    private String repaymentGatewayUrl;
 }
