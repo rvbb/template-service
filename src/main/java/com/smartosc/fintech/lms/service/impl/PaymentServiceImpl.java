@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
@@ -98,7 +97,7 @@ public class PaymentServiceImpl implements PaymentService {
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
                 paymentRepository.save(history);
                 paymentResultDto.setFailed(true);
-                return paymentResultDto;
+                throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
 
             history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
@@ -109,6 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
             history.setStatus(PaymentHistoryStatus.TIMEOUT.getValue());
             history.setMessage(ex.getMessage());
             paymentRepository.save(history);
+            throw new BusinessServiceException("Call payment gateway timeout", ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
         }
         return paymentResultDto;
     }

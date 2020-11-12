@@ -1,7 +1,6 @@
 package com.smartosc.fintech.lms.controller.impl;
 
 import com.smartosc.fintech.lms.controller.RepaymentController;
-import com.smartosc.fintech.lms.dto.InterestAmountDto;
 import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
 import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.dto.Response;
