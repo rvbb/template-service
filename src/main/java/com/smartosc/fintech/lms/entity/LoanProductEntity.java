@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -102,6 +103,6 @@ public class LoanProductEntity {
     @Column(name = "loan_penalty_rate")
     private String loanPenaltyRate;
 
-    @OneToMany(mappedBy = "loanProduct")
+    @OneToMany(mappedBy = "loanProduct", fetch = FetchType.LAZY)
     private Collection<LoanApplicationEntity> loanApplications;
 }

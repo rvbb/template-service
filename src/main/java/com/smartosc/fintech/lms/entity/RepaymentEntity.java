@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -31,10 +33,10 @@ public class RepaymentEntity {
     private Timestamp dueDate;
 
     @Column(name = "interest_due")
-    private Integer interestDue;
+    private BigDecimal interestDue;
 
     @Column(name = "interest_paid")
-    private Integer interestPaid;
+    private BigDecimal interestPaid;
 
     @Column(name = "last_paid_date")
     private Timestamp lastPaidDate;
@@ -43,22 +45,22 @@ public class RepaymentEntity {
     private Timestamp lastPenaltyAppliedDate;
 
     @Column(name = "penalty_due")
-    private Integer penaltyDue;
+    private BigDecimal penaltyDue;
 
     @Column(name = "penalty_paid")
-    private Integer penaltyPaid;
+    private BigDecimal penaltyPaid;
 
     @Column(name = "principal_due")
-    private Integer principalDue;
+    private BigDecimal principalDue;
 
     @Column(name = "principal_paid")
-    private Integer principalPaid;
+    private BigDecimal principalPaid;
 
     @Column(name = "fee_due")
-    private Integer feeDue;
+    private BigDecimal feeDue;
 
     @Column(name = "fee_paid")
-    private Integer feePaid;
+    private BigDecimal feePaid;
 
     @Column(name = "repaid_date")
     private Timestamp repaidDate;
@@ -77,6 +79,6 @@ public class RepaymentEntity {
     @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "repayment")
     private LoanApplicationEntity loanApplication;
 
-    @OneToMany(mappedBy = "repayment")
+    @OneToMany(mappedBy = "repayment", fetch = FetchType.LAZY)
     private Collection<RepaymentFeeDetailsEntity> repaymentFeeDetails;
 }
