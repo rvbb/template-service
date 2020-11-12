@@ -1,12 +1,14 @@
 package com.smartosc.fintech.lms.service.impl;
 
+import com.smartosc.fintech.lms.common.constant.BankAccountType;
+import com.smartosc.fintech.lms.common.constant.ErrorCode;
 import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
-import com.smartosc.fintech.lms.dto.PaymentResultDto;
-import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
-import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
+import com.smartosc.fintech.lms.dto.*;
+import com.smartosc.fintech.lms.entity.BankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
+import com.smartosc.fintech.lms.exception.BusinessServiceException;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.service.PaymentService;
@@ -24,8 +26,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
-import com.smartosc.fintech.lms.dto.LoanApplicationDto;
-import com.smartosc.fintech.lms.dto.RepaymentDto;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
@@ -48,17 +48,54 @@ public class RepaymentServiceImpl implements RepaymentService {
         Optional<LoanApplicationEntity> existedLoanApplication = loanApplicationRepository.findLoanApplicationEntityByUuid(
                 repaymentRequestDto.getUuid());
         LoanApplicationEntity loanApplicationEntity = existedLoanApplication.orElseThrow(EntityNotFoundException::new);
+        validateData(repaymentRequestDto, loanApplicationEntity);
         LoanTransactionEntity loanTransactionEntity = null;
-        RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-        PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repaymentRequestDto);
+        RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
+                repaymentRequestDto, loanApplicationEntity);
+        PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
         if (paymentResultDto.isSuccessful()) {
             closeLoanApplication(loanApplicationEntity);
             loanTransactionEntity = saveRepaymentLoanTransaction(repaymentRequestDto, loanApplicationEntity);
         }
-
+        RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
         repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
         return repaymentResponseDto;
     }
+
+    private void validateData(RepaymentRequestDto repaymentRequestDto, LoanApplicationEntity loanApplicationEntity){
+        if(loanApplicationEntity.getStatus() == LoanApplicationStatus.CLOSE.getValue()){
+            throw new BusinessServiceException("Loan was close already!", ErrorCode.LOAN_APPLICATION_CLOSE_ALREADY);
+        }
+    }
+
+    private RepayRequestInPaymentServiceDto buildRepayRequestInPaymentServiceDto(RepaymentRequestDto repaymentRequestDto,
+                                                                                 LoanApplicationEntity loanApplicationEntity){
+        RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
+        Collection<BankAccount> bankAccounts = loanApplicationEntity.getBankAccounts();
+        if(bankAccounts != null && bankAccounts.size() > 0){
+            BankAccount lenderBankAccount = bankAccounts.stream()
+                    .filter(b -> b.getType() == BankAccountType.TYPE_LENDER.getValue())
+                    .iterator().next();
+            if(lenderBankAccount != null){
+                repayRequestInPaymentServiceDto.setReceivedAccount(lenderBankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setReceivedBank(lenderBankAccount.getBankCode());
+            }
+
+            BankAccount borrowerBankAccount = bankAccounts.stream()
+                    .filter(b -> b.getType() == BankAccountType.TYPE_BORROWER.getValue())
+                    .iterator().next();
+            if(borrowerBankAccount != null){
+                repayRequestInPaymentServiceDto.setSendAccount(borrowerBankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setSendBank(borrowerBankAccount.getBankCode());
+            }
+        }
+
+        repayRequestInPaymentServiceDto.setApplicationUuid(UUID.randomUUID().toString());
+        repayRequestInPaymentServiceDto.setAmount(repaymentRequestDto.getTotalMoney());
+        repayRequestInPaymentServiceDto.setMessage("Repay loan " + repaymentRequestDto.getUuid());
+        return repayRequestInPaymentServiceDto;
+    }
+
 
     private void closeLoanApplication(LoanApplicationEntity loanApplicationEntity) {
         loanApplicationEntity.setStatus(LoanApplicationStatus.CLOSE.getValue());

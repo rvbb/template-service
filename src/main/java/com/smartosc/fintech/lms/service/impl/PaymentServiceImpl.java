@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.smartosc.fintech.lms.common.constant.ErrorCode;
 import com.smartosc.fintech.lms.common.constant.PaymentHistoryStatus;
 import com.smartosc.fintech.lms.config.ApplicationConfig;
-import com.smartosc.fintech.lms.dto.PaymentRequest;
-import com.smartosc.fintech.lms.dto.PaymentResponse;
-import com.smartosc.fintech.lms.dto.PaymentResultDto;
-import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
+import com.smartosc.fintech.lms.dto.*;
 import com.smartosc.fintech.lms.entity.PaymentHistoryEntity;
 import com.smartosc.fintech.lms.exception.BusinessServiceException;
 import com.smartosc.fintech.lms.repository.PaymentHistoryRepository;
@@ -18,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
@@ -80,7 +78,43 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResultDto processRepayLoan(RepaymentRequestDto repaymentRequestDto) {
-        return new PaymentResultDto();
+    public PaymentResultDto processRepayLoan(RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto) {
+        PaymentResultDto paymentResultDto = new PaymentResultDto();
+        PaymentHistoryEntity history = new PaymentHistoryEntity();
+        Timestamp creationDate = new Timestamp(new Date().getTime());
+        history.setCreationDate(creationDate);
+        history.setUuid(UUID.randomUUID().toString());
+        history.setAmount(repayRequestInPaymentServiceDto.getAmount());
+        history.setBody(convertObject(repayRequestInPaymentServiceDto));
+        history.setUrl(applicationConfig.getPaymentGatewayUrl());
+
+        try {
+            ResponseEntity<PaymentResponse> response =
+                    restTemplate.postForEntity(applicationConfig.getPaymentGatewayUrl(), repayRequestInPaymentServiceDto, PaymentResponse.class);
+            history.setResponse(convertObject(response));
+            paymentResultDto.setData(response.getBody());
+            if (response.getStatusCodeValue() >= HttpStatus.BAD_REQUEST.value()) {
+                history.setStatus(PaymentHistoryStatus.FAIL.getValue());
+                paymentRepository.save(history);
+                paymentResultDto.setFailed(true);
+                throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+            }
+
+            history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
+            paymentRepository.save(history);
+            paymentResultDto.setSuccessful(true);
+        } catch (ResourceAccessException ex) {
+            //handle connection timeout
+            history.setStatus(PaymentHistoryStatus.TIMEOUT.getValue());
+            history.setMessage(ex.getMessage());
+            paymentRepository.save(history);
+            throw new BusinessServiceException("Call payment gateway timeout", ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
+        }catch (Exception ex){
+            history.setStatus(PaymentHistoryStatus.FAIL.getValue());
+            history.setMessage(ex.getMessage());
+            paymentRepository.save(history);
+            throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+        }
+        return paymentResultDto;
     }
 }

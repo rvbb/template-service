@@ -149,4 +149,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
 
   @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<RepaymentEntity> repayments;
+
+  @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
+  private Collection<BankAccount> bankAccounts;
 }
