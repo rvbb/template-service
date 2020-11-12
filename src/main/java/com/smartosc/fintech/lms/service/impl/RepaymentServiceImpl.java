@@ -17,9 +17,11 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
-import java.util.Optional;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
@@ -29,8 +31,6 @@ import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,20 +38,20 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RepaymentServiceImpl implements RepaymentService {
 
-    private LoanApplicationRepository loanApplicationRepository;
-    private LoanTransactionRepository loanTransactionRepository;
-    private PaymentService paymentGatewayService;
-    private RepaymentRepository repaymentRepository;
+    private final LoanApplicationRepository loanApplicationRepository;
+    private final LoanTransactionRepository loanTransactionRepository;
+    private final PaymentService paymentGatewayService;
+    private final RepaymentRepository repaymentRepository;
 
     @Override
     public RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto) {
-        Optional<LoanApplicationEntity>  existedLoanApplication = loanApplicationRepository.findLoanApplicationEntityByUuid(
+        Optional<LoanApplicationEntity> existedLoanApplication = loanApplicationRepository.findLoanApplicationEntityByUuid(
                 repaymentRequestDto.getUuid());
         LoanApplicationEntity loanApplicationEntity = existedLoanApplication.orElseThrow(EntityNotFoundException::new);
         LoanTransactionEntity loanTransactionEntity = null;
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
         PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repaymentRequestDto);
-        if(paymentResultDto.isSuccessful()){
+        if (paymentResultDto.isSuccessful()) {
             closeLoanApplication(loanApplicationEntity);
             loanTransactionEntity = saveRepaymentLoanTransaction(repaymentRequestDto, loanApplicationEntity);
         }
@@ -60,13 +60,13 @@ public class RepaymentServiceImpl implements RepaymentService {
         return repaymentResponseDto;
     }
 
-    private void closeLoanApplication(LoanApplicationEntity loanApplicationEntity){
+    private void closeLoanApplication(LoanApplicationEntity loanApplicationEntity) {
         loanApplicationEntity.setStatus(LoanApplicationStatus.CLOSE.getValue());
         loanApplicationRepository.save(loanApplicationEntity);
     }
 
     private LoanTransactionEntity saveRepaymentLoanTransaction(RepaymentRequestDto repaymentRequestDto,
-                                              LoanApplicationEntity loanApplicationEntity){
+                                                               LoanApplicationEntity loanApplicationEntity) {
         LoanTransactionEntity loanTransactionEntity = createNewRepaymentLoanTransaction(
                 repaymentRequestDto, loanApplicationEntity);
         loanTransactionRepository.save(loanTransactionEntity);
@@ -74,7 +74,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     }
 
     private LoanTransactionEntity createNewRepaymentLoanTransaction(RepaymentRequestDto repaymentRequestDto,
-                                                                    LoanApplicationEntity loanApplicationEntity){
+                                                                    LoanApplicationEntity loanApplicationEntity) {
         Timestamp currentTimeStamp = new Timestamp(System.currentTimeMillis());
         LoanTransactionEntity loanTransactionEntity = new LoanTransactionEntity();
         UUID uuid = UUID.randomUUID();
@@ -114,14 +114,31 @@ public class RepaymentServiceImpl implements RepaymentService {
     }
 
     private List<RepaymentEntity> calculate(LoanApplicationEntity loanApplicationEntity) {
+        BigDecimal interestDue = calculateInterestDue(
+                loanApplicationEntity.getInterestDue(),
+                loanApplicationEntity.getApproveDate()
+        );
+
         RepaymentEntity repaymentEntity = new RepaymentEntity();
-        repaymentEntity.setUuid(loanApplicationEntity.getUuid());
-        repaymentEntity.setInterestDue(loanApplicationEntity.getInterestDue());
-        repaymentEntity.setPenaltyDue(loanApplicationEntity.getPenaltyDue());
+        repaymentEntity.setUuid(UUID.randomUUID().toString());
+        repaymentEntity.setInterestDue(interestDue);
         repaymentEntity.setPrincipalDue(loanApplicationEntity.getPrincipalDue());
-        repaymentEntity.setFeeDue(loanApplicationEntity.getFeeDue());
         repaymentEntity.setUser(loanApplicationEntity.getUser());
         repaymentEntity.setLoanApplication(loanApplicationEntity);
         return Collections.singletonList(repaymentEntity);
+    }
+
+    private BigDecimal calculateInterestDue(BigDecimal interestDue, Timestamp approveDate) {
+        BigDecimal daysOfYear = new BigDecimal(LocalDateTime.now().getDayOfYear());
+        BigDecimal interestDueOfDay = interestDue.divide(daysOfYear, RoundingMode.CEILING);
+        BigDecimal diffDays = getDiffDays(approveDate);
+        return interestDueOfDay.multiply(diffDays);
+    }
+
+    private BigDecimal getDiffDays(Timestamp approveDate) {
+        LocalDateTime startDate = approveDate.toLocalDateTime();
+        LocalDateTime currentDay = LocalDateTime.now();
+        long diffDays = Duration.between(currentDay, startDate).toDays();
+        return BigDecimal.valueOf(diffDays);
     }
 }

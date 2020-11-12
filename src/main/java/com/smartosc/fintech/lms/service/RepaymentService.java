@@ -22,7 +22,7 @@ public interface RepaymentService {
   /**
    * Generate repayments form a loan application by loanApplicationId.
    *
-   * @param loanApplicationUuid loan application id
+   * @param loanApplicationUuid loan application uuid
    * @return List<RepaymentDto> list of repayment
    */
   List<RepaymentDto> calculate(String loanApplicationUuid);
