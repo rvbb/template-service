@@ -6,7 +6,10 @@ import com.smartosc.fintech.lms.common.constant.ErrorCode;
 import com.smartosc.fintech.lms.common.constant.PaymentGatewayStatus;
 import com.smartosc.fintech.lms.common.constant.PaymentHistoryStatus;
 import com.smartosc.fintech.lms.config.ApplicationConfig;
-import com.smartosc.fintech.lms.dto.*;
+import com.smartosc.fintech.lms.dto.PaymentRequest;
+import com.smartosc.fintech.lms.dto.PaymentResponse;
+import com.smartosc.fintech.lms.dto.PaymentResultDto;
+import com.smartosc.fintech.lms.dto.RepayRequestInPaymentServiceDto;
 import com.smartosc.fintech.lms.entity.PaymentHistoryEntity;
 import com.smartosc.fintech.lms.exception.BusinessServiceException;
 import com.smartosc.fintech.lms.repository.PaymentHistoryRepository;
@@ -25,6 +28,9 @@ import java.util.UUID;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
+    private static final String TIMEOUT_MESSAGE = "Call payment gateway timeout";
+    private static final String FAIL_MESSAGE = "Call payment gateway fail";
+
     private RestTemplate restTemplate;
     private ApplicationConfig applicationConfig;
     private PaymentHistoryRepository paymentRepository;
@@ -39,7 +45,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void makePayment(PaymentRequest paymentRequest) {
+    public void processFunding(PaymentRequest paymentRequest) {
         PaymentHistoryEntity history = new PaymentHistoryEntity();
         Timestamp creationDate = new Timestamp(new Date().getTime());
         history.setCreationDate(creationDate);
@@ -52,20 +58,18 @@ public class PaymentServiceImpl implements PaymentService {
             ResponseEntity<PaymentResponse> response =
                     restTemplate.postForEntity(applicationConfig.getPaymentGatewayUrl(), paymentRequest, PaymentResponse.class);
             history.setResponse(convertObject(response));
-
-            if (response.getStatusCodeValue() >= HttpStatus.BAD_REQUEST.value()) {
-                history.setStatus(PaymentHistoryStatus.FAIL.getValue());
-                paymentRepository.save(history);
-                throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
-            }
-
             history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
             paymentRepository.save(history);
+        } catch (ResourceAccessException ex) {
+            history.setStatus(PaymentHistoryStatus.TIMEOUT.getValue());
+            history.setMessage(ex.getMessage());
+            paymentRepository.save(history);
+            throw new BusinessServiceException(TIMEOUT_MESSAGE, ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
         } catch (Exception ex) {
             history.setStatus(PaymentHistoryStatus.FAIL.getValue());
             history.setMessage(ex.getMessage());
             paymentRepository.save(history);
-            throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+            throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
         }
     }
 
@@ -98,7 +102,7 @@ public class PaymentServiceImpl implements PaymentService {
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
                 paymentRepository.save(history);
                 paymentResultDto.setFailed(true);
-                throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+                throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
             if(response.getBody().getStatus().getCode() != PaymentGatewayStatus.SUCCESS.getValue()){
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
@@ -114,12 +118,12 @@ public class PaymentServiceImpl implements PaymentService {
             history.setStatus(PaymentHistoryStatus.TIMEOUT.getValue());
             history.setMessage(ex.getMessage());
             paymentRepository.save(history);
-            throw new BusinessServiceException("Call payment gateway timeout", ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
+            throw new BusinessServiceException(TIMEOUT_MESSAGE, ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
         }catch (Exception ex){
             history.setStatus(PaymentHistoryStatus.FAIL.getValue());
             history.setMessage(ex.getMessage());
             paymentRepository.save(history);
-            throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+            throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
         }
         return paymentResultDto;
     }
