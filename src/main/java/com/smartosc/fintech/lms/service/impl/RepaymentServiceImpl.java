@@ -2,9 +2,7 @@ package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
-import com.smartosc.fintech.lms.dto.PaymentResultDto;
-import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
-import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
+import com.smartosc.fintech.lms.dto.*;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
@@ -22,8 +20,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
-import com.smartosc.fintech.lms.dto.LoanApplicationDto;
-import com.smartosc.fintech.lms.dto.RepaymentDto;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
@@ -49,15 +45,25 @@ public class RepaymentServiceImpl implements RepaymentService {
                 repaymentRequestDto.getUuid());
         LoanApplicationEntity loanApplicationEntity = existedLoanApplication.orElseThrow(EntityNotFoundException::new);
         LoanTransactionEntity loanTransactionEntity = null;
-        RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-        PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repaymentRequestDto);
+        RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
+                repaymentRequestDto, loanApplicationEntity);
+        PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
         if(paymentResultDto.isSuccessful()){
             closeLoanApplication(loanApplicationEntity);
             loanTransactionEntity = saveRepaymentLoanTransaction(repaymentRequestDto, loanApplicationEntity);
         }
-
+        RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
         repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
         return repaymentResponseDto;
+    }
+
+    private RepayRequestInPaymentServiceDto buildRepayRequestInPaymentServiceDto(RepaymentRequestDto repaymentRequestDto,
+                                                                                 LoanApplicationEntity loanApplicationEntity){
+        RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
+        repayRequestInPaymentServiceDto.setTransactionId(repaymentRequestDto.getUuid());
+        repayRequestInPaymentServiceDto.setMoneyAmount(repaymentRequestDto.getTotalMoney());
+        repayRequestInPaymentServiceDto.setDescription("Repay loan " + repaymentRequestDto.getUuid());
+        return repayRequestInPaymentServiceDto;
     }
 
     private void closeLoanApplication(LoanApplicationEntity loanApplicationEntity){

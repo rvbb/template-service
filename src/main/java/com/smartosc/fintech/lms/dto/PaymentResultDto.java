@@ -14,5 +14,5 @@ import java.io.Serializable;
 public class PaymentResultDto implements Serializable {
     private boolean isSuccessful;
     private boolean isFailed;
-    private Object data;
+    private PaymentResponse data;
 }
