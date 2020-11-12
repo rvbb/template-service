@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class RepaymentControllerImpl implements RepaymentController {
 
-    private RepaymentService repaymentService;
+    private final RepaymentService repaymentService;
 
     @Override
     public Response<RepaymentResponseDto> repayLoan(RepaymentRequestDto repaymentRequestDto) {
