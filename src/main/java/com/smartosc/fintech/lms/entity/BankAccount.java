@@ -6,8 +6,8 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name = "lender_bank_account")
-public class LenderBankAccount {
+@Table(name = "bank_account")
+public class BankAccount {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +25,11 @@ public class LenderBankAccount {
     @Column(name = "bank_name")
     private String bankName;
 
+    @Column(name = "type")
+    private Integer type;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "lender_bank_account")
+    @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "bank_account")
     private LoanApplicationEntity loanApplication;
 
 }

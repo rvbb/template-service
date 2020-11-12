@@ -151,5 +151,5 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   private Collection<RepaymentEntity> repayments;
 
   @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
-  private Collection<LenderBankAccount> lenderBankAccounts;
+  private Collection<BankAccount> bankAccounts;
 }

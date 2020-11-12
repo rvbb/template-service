@@ -1,9 +1,10 @@
 package com.smartosc.fintech.lms.service.impl;
 
+import com.smartosc.fintech.lms.common.constant.BankAccountType;
 import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
 import com.smartosc.fintech.lms.dto.*;
-import com.smartosc.fintech.lms.entity.LenderBankAccount;
+import com.smartosc.fintech.lms.entity.BankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
@@ -58,12 +59,16 @@ public class RepaymentServiceImpl implements RepaymentService {
     private RepayRequestInPaymentServiceDto buildRepayRequestInPaymentServiceDto(RepaymentRequestDto repaymentRequestDto,
                                                                                  LoanApplicationEntity loanApplicationEntity){
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
-        Collection<LenderBankAccount> lenderBankAccounts = loanApplicationEntity.getLenderBankAccounts();
-        if(lenderBankAccounts != null && lenderBankAccounts.size() > 0){
-            LenderBankAccount lenderBankAccount = lenderBankAccounts.iterator().next();
-            repayRequestInPaymentServiceDto.setAccount(lenderBankAccount.getAccount());
-            repayRequestInPaymentServiceDto.setBankName(lenderBankAccount.getBankName());
-            repayRequestInPaymentServiceDto.setBankCode(lenderBankAccount.getBankCode());
+        Collection<BankAccount> bankAccounts = loanApplicationEntity.getBankAccounts();
+        if(bankAccounts != null && bankAccounts.size() > 0){
+            BankAccount bankAccount = bankAccounts.stream()
+                    .filter(b -> b.getType() == BankAccountType.TYPE_LENDER.getValue())
+                    .iterator().next();
+            if(bankAccount != null){
+                repayRequestInPaymentServiceDto.setAccount(bankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setBankName(bankAccount.getBankName());
+                repayRequestInPaymentServiceDto.setBankCode(bankAccount.getBankCode());
+            }
         }
 
         repayRequestInPaymentServiceDto.setTransactionId(repaymentRequestDto.getUuid());
