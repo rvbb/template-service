@@ -1,7 +1,6 @@
 package com.smartosc.fintech.lms.controller.impl;
 
 import com.smartosc.fintech.lms.controller.RepaymentController;
-import com.smartosc.fintech.lms.dto.InterestAmountDto;
 import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
 import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.dto.Response;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class RepaymentControllerImpl implements RepaymentController {
 
-    private RepaymentService repaymentService;
+    private final RepaymentService repaymentService;
 
     @Override
     public Response<RepaymentResponseDto> repayLoan(RepaymentRequestDto repaymentRequestDto) {
