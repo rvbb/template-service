@@ -3,7 +3,10 @@ package com.smartosc.fintech.lms.service.mapper;
 import com.smartosc.fintech.lms.dto.RepaymentDto;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 import org.mapstruct.Mapper;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+
+import java.util.Collection;
 
 @Mapper
 public interface RepaymentMapper {
@@ -13,4 +16,8 @@ public interface RepaymentMapper {
   RepaymentDto entityToDto(RepaymentEntity repaymentEntity);
 
   RepaymentEntity dtoToEntity(RepaymentDto repaymentDto);
+
+  @Named("mapToListRepaymentDto")
+  Collection<RepaymentDto> mapToListRepaymentDto(Collection<RepaymentEntity> repaymentDto);
+
 }

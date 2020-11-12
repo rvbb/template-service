@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,4 +26,15 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
         return LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
     }
+
+    @Override
+    public List<LoanApplicationDto> findLoanApplicationByUser(long id) {
+        List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
+        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationByUser(id);
+        for (LoanApplicationEntity loanApplication : loanApplicationEntities) {
+            loanApplicationDtos.add(LoanApplicationMapper.INSTANCE.mapToDto(loanApplication));
+        }
+        return loanApplicationDtos;
+    }
+
 }

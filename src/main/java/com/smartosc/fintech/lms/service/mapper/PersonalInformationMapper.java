@@ -12,6 +12,8 @@ public interface PersonalInformationMapper {
 
     LoanPersonalInformationEntity mapToEntity(PersonalInformationDto personalInformationDto);
 
-    PersonalInformationDto mapToDto(LoanPersonalInformationEntity loanPersonalInformationEntity);
+    PersonalInformationDto mapToDto(LoanPersonalInformationEntity personalInformationDto);
+
+    PersonalInformationDto mapToListDto(LoanPersonalInformationEntity loanPersonalInformationEntity);
 
 }

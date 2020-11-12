@@ -18,7 +18,7 @@ public class LoanCreditScoreEntity {
     @Column(name = "credit_score")
     private Long creditScore;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_credit_score")
     private LoanApplicationEntity loanApplication;
 }

@@ -11,6 +11,9 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @RequestMapping("/loan-application")
 @Api(value = "Loan Application Api")
@@ -26,4 +29,17 @@ public interface LoanApplicationController {
     })
     @GetMapping("/{uuid}")
     public Response<LoanApplicationDto> getLoanApplication(@PathVariable String uuid);
+
+    @ApiOperation(value = "get list of loan application")
+    @ApiResponses(value={
+            @ApiResponse(code = 200,message = "Success",response =LoanApplicationDto.class),
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 404, message = "Not Found Exception", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
+    })
+    @GetMapping()
+    public Response<List<LoanApplicationDto>> getListLoanApplication(@RequestParam long userId);
+
+
 }

@@ -7,6 +7,8 @@ import com.smartosc.fintech.lms.service.LoanApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class LoanApplicationControllerImpl implements LoanApplicationController {
@@ -17,6 +19,12 @@ public class LoanApplicationControllerImpl implements LoanApplicationController 
     public Response<LoanApplicationDto> getLoanApplication(String uuid) {
         LoanApplicationDto loanApplicationDto = loanApplicationService.findLoanApplicationEntityByUuid(uuid);
         return Response.ok(loanApplicationDto);
+    }
+
+    @Override
+    public Response<List<LoanApplicationDto>> getListLoanApplication(long userId) {
+        List<LoanApplicationDto> loanApplicationDtos = loanApplicationService.findLoanApplicationByUser(userId);
+        return Response.ok(loanApplicationDtos);
     }
 
 }

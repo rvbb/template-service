@@ -71,11 +71,11 @@ public class RepaymentEntity {
     @Column(name = "notes")
     private String notes;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "repayment")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "repayment")
     private LoanApplicationEntity loanApplication;
 

@@ -70,11 +70,11 @@ public class LoanTransactionEntity {
     @Column(name = "type")
     private String type;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "loan_transaction")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "loan_transaction")
     private LoanApplicationEntity loanApplication;
 
