@@ -1,15 +1,19 @@
 package com.smartosc.fintech.lms.service.impl;
 
+import com.smartosc.fintech.lms.common.constant.BankAccountType;
 import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
 import com.smartosc.fintech.lms.dto.FundingRequest;
 import com.smartosc.fintech.lms.dto.PaymentRequest;
+import com.smartosc.fintech.lms.entity.BankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
+import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.FundingService;
 import com.smartosc.fintech.lms.service.PaymentService;
+import com.smartosc.fintech.lms.service.RepaymentService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,24 +28,28 @@ import java.util.UUID;
 public class FundingServiceImpl implements FundingService {
     private final LoanApplicationRepository applicationRepository;
     private final LoanTransactionRepository transactionRepository;
+    private final RepaymentRepository repaymentRepository;
     private final PaymentService paymentService;
+    private final RepaymentService repaymentService;
 
     @Override
     public void makeFunding(FundingRequest request) {
         Optional<LoanApplicationEntity> existApplication = applicationRepository.findLoanApplicationEntityByUuid(request.getApplicationUuid());
         LoanApplicationEntity application = existApplication.orElseThrow(EntityNotFoundException::new);
-        if (application.getStatus() != null && application.getStatus() != LoanApplicationStatus.APPROVED.getValue()) {
+        if (application.getStatus() != null && application.getStatus() != LoanApplicationStatus.SIGN.getValue()) {
             throw new EntityNotFoundException();
         }
 
-        PaymentRequest paymentRequest = createPaymentDto();
-        paymentService.makePayment(paymentRequest);
+        PaymentRequest paymentRequest = createPaymentRequest(application);
+        paymentService.processFunding(paymentRequest);
 
         LoanTransactionEntity transaction = createTransactionEntity(application);
         transactionRepository.save(transaction);
 
+        generateRepaymentPlan(application);
+
         application.getLoanTransactions().add(transaction);
-        application.setStatus(LoanApplicationStatus.FUNDED.getValue());
+        application.setStatus(LoanApplicationStatus.ACTIVE.getValue());
         applicationRepository.save(application);
     }
 
@@ -59,9 +67,32 @@ public class FundingServiceImpl implements FundingService {
         return transaction;
     }
 
-    private PaymentRequest createPaymentDto() {
-        PaymentRequest paymentRequest = new PaymentRequest();
+    private PaymentRequest createPaymentRequest(LoanApplicationEntity application) {
+        PaymentRequest request = new PaymentRequest();
+        request.setApplicationUuid(application.getUuid());
+        request.setAmount(application.getLoanAmount());
 
-        return paymentRequest;
+        BankAccount receivedAccount = application.getBankAccounts()
+                .stream()
+                .filter(account -> BankAccountType.TYPE_BORROWER.getValue().equals(account.getType()))
+                .findFirst().orElseGet(BankAccount::new);
+        request.setReceivedAccount(receivedAccount.getAccount());
+        request.setReceivedBank(receivedAccount.getBankCode());
+
+        BankAccount sendAccount = application.getBankAccounts()
+                .stream()
+                .filter(account -> BankAccountType.TYPE_LENDER.getValue().equals(account.getType()))
+                .findFirst().orElseGet(BankAccount::new);
+        request.setSendAccount(sendAccount.getAccount());
+        request.setSendBank(sendAccount.getBankCode());
+
+        String message = String.format("Disbursement for loan %s", application.getUuid());
+        request.setMessage(message);
+
+        return request;
+    }
+
+    private void generateRepaymentPlan(LoanApplicationEntity application) {
+        repaymentService.calculate(application.getUuid());
     }
 }

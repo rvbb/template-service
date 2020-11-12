@@ -4,5 +4,12 @@ import lombok.Data;
 
 @Data
 public class PaymentResponse {
-    private String status;
+    @Data
+    public static class PaymentResponseStatus {
+        private int code;
+        private String message;
+    }
+
+    private PaymentResponseStatus status;
+    private String data;
 }

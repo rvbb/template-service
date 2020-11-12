@@ -7,7 +7,6 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.Collection;
-
 @Mapper
 public interface LoanTransactionMapper {
 
