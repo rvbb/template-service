@@ -86,11 +86,11 @@ public class PaymentServiceImpl implements PaymentService {
         history.setUuid(UUID.randomUUID().toString());
         history.setAmount(repayRequestInPaymentServiceDto.getAmount());
         history.setBody(convertObject(repayRequestInPaymentServiceDto));
-        history.setUrl(applicationConfig.getPaymentGatewayUrl());
+        history.setUrl(applicationConfig.getRepaymentGatewayUrl());
 
         try {
             ResponseEntity<PaymentResponse> response =
-                    restTemplate.postForEntity(applicationConfig.getPaymentGatewayUrl(), repayRequestInPaymentServiceDto, PaymentResponse.class);
+                    restTemplate.postForEntity(applicationConfig.getRepaymentGatewayUrl(), repayRequestInPaymentServiceDto, PaymentResponse.class);
             history.setResponse(convertObject(response));
             paymentResultDto.setData(response.getBody());
             if (response.getStatusCodeValue() >= HttpStatus.BAD_REQUEST.value()) {
