@@ -84,7 +84,7 @@ public class PaymentServiceImpl implements PaymentService {
         Timestamp creationDate = new Timestamp(new Date().getTime());
         history.setCreationDate(creationDate);
         history.setUuid(UUID.randomUUID().toString());
-        history.setAmount(repayRequestInPaymentServiceDto.getMoneyAmount());
+        history.setAmount(repayRequestInPaymentServiceDto.getAmount());
         history.setBody(convertObject(repayRequestInPaymentServiceDto));
         history.setUrl(applicationConfig.getPaymentGatewayUrl());
 
@@ -109,6 +109,11 @@ public class PaymentServiceImpl implements PaymentService {
             history.setMessage(ex.getMessage());
             paymentRepository.save(history);
             throw new BusinessServiceException("Call payment gateway timeout", ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
+        }catch (Exception ex){
+            history.setStatus(PaymentHistoryStatus.FAIL.getValue());
+            history.setMessage(ex.getMessage());
+            paymentRepository.save(history);
+            throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
         }
         return paymentResultDto;
     }

@@ -12,13 +12,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RepayRequestInPaymentServiceDto {
-    private String transactionId;
-    private BigDecimal moneyAmount;
-    private String description;
-    private String lenderAccount;
-    private String lenderBankName;
-    private String lenderBankCode;
-    private String borrowerAccount;
-    private String borrowerBankName;
-    private String borrowerBankCode;
+    private String applicationUuid;
+    private BigDecimal amount;
+    private String message;
+    private String receivedAccount;
+    private String receivedBank;
+    private String sendAccount;
+    private String sendBank;
 }

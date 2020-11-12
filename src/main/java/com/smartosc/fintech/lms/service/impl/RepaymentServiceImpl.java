@@ -1,12 +1,14 @@
 package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.constant.BankAccountType;
+import com.smartosc.fintech.lms.common.constant.ErrorCode;
 import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
 import com.smartosc.fintech.lms.dto.*;
 import com.smartosc.fintech.lms.entity.BankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
+import com.smartosc.fintech.lms.exception.BusinessServiceException;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.service.PaymentService;
@@ -43,6 +45,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         Optional<LoanApplicationEntity>  existedLoanApplication = loanApplicationRepository.findLoanApplicationEntityByUuid(
                 repaymentRequestDto.getUuid());
         LoanApplicationEntity loanApplicationEntity = existedLoanApplication.orElseThrow(EntityNotFoundException::new);
+        validateData(repaymentRequestDto, loanApplicationEntity);
         LoanTransactionEntity loanTransactionEntity = null;
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
                 repaymentRequestDto, loanApplicationEntity);
@@ -56,6 +59,12 @@ public class RepaymentServiceImpl implements RepaymentService {
         return repaymentResponseDto;
     }
 
+    private void validateData(RepaymentRequestDto repaymentRequestDto, LoanApplicationEntity loanApplicationEntity){
+        if(loanApplicationEntity.getStatus() == LoanApplicationStatus.CLOSE.getValue()){
+            throw new BusinessServiceException("Loan was close already!", ErrorCode.LOAN_APPLICATION_CLOSE_ALREADY);
+        }
+    }
+
     private RepayRequestInPaymentServiceDto buildRepayRequestInPaymentServiceDto(RepaymentRequestDto repaymentRequestDto,
                                                                                  LoanApplicationEntity loanApplicationEntity){
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
@@ -65,24 +74,22 @@ public class RepaymentServiceImpl implements RepaymentService {
                     .filter(b -> b.getType() == BankAccountType.TYPE_LENDER.getValue())
                     .iterator().next();
             if(lenderBankAccount != null){
-                repayRequestInPaymentServiceDto.setLenderAccount(lenderBankAccount.getAccount());
-                repayRequestInPaymentServiceDto.setLenderBankName(lenderBankAccount.getBankName());
-                repayRequestInPaymentServiceDto.setLenderBankCode(lenderBankAccount.getBankCode()); ;
+                repayRequestInPaymentServiceDto.setReceivedAccount(lenderBankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setReceivedBank(lenderBankAccount.getBankCode());
             }
 
             BankAccount borrowerBankAccount = bankAccounts.stream()
                     .filter(b -> b.getType() == BankAccountType.TYPE_BORROWER.getValue())
                     .iterator().next();
             if(borrowerBankAccount != null){
-                repayRequestInPaymentServiceDto.setBorrowerAccount(borrowerBankAccount.getAccount());
-                repayRequestInPaymentServiceDto.setBorrowerBankName(borrowerBankAccount.getBankName());
-                repayRequestInPaymentServiceDto.setBorrowerBankCode(borrowerBankAccount.getBankCode()); ;
+                repayRequestInPaymentServiceDto.setSendAccount(borrowerBankAccount.getAccount());
+                repayRequestInPaymentServiceDto.setSendBank(borrowerBankAccount.getBankCode());
             }
         }
 
-        repayRequestInPaymentServiceDto.setTransactionId(repaymentRequestDto.getUuid());
-        repayRequestInPaymentServiceDto.setMoneyAmount(repaymentRequestDto.getTotalMoney());
-        repayRequestInPaymentServiceDto.setDescription("Repay loan " + repaymentRequestDto.getUuid());
+        repayRequestInPaymentServiceDto.setApplicationUuid(UUID.randomUUID().toString());
+        repayRequestInPaymentServiceDto.setAmount(repaymentRequestDto.getTotalMoney());
+        repayRequestInPaymentServiceDto.setMessage("Repay loan " + repaymentRequestDto.getUuid());
         return repayRequestInPaymentServiceDto;
     }
 
