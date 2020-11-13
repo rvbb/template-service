@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -19,7 +20,7 @@ import java.util.Collection;
 @Data
 @Entity
 @Table(name = "repayment")
-public class RepaymentEntity {
+public class RepaymentEntity implements Serializable {
 
     @Id
     @Column(name = "id")

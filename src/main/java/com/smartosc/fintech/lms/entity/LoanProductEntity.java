@@ -10,12 +10,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Collection;
 @Data
 @Entity
 @Table(name = "loan_product")
-public class LoanProductEntity {
+public class LoanProductEntity implements Serializable {
 
     @Id
     @Column(name = "id")
