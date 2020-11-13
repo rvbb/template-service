@@ -33,7 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private RestTemplate restTemplate;
     private ApplicationConfig applicationConfig;
-    private PaymentHistoryRepository paymentRepository;
+    private PaymentHistoryRepository paymentHistoryRepository;
 
     @Autowired
     public PaymentServiceImpl(@Qualifier("RT") RestTemplate restTemplate,
@@ -41,7 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
                               PaymentHistoryRepository paymentRepository) {
         this.restTemplate = restTemplate;
         this.applicationConfig = applicationConfig;
-        this.paymentRepository = paymentRepository;
+        this.paymentHistoryRepository = paymentRepository;
     }
 
     @Override
@@ -59,16 +59,16 @@ public class PaymentServiceImpl implements PaymentService {
                     restTemplate.postForEntity(applicationConfig.getPaymentGatewayUrl(), paymentRequest, PaymentResponse.class);
             history.setResponse(convertObject(response));
             history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
-            paymentRepository.save(history);
+            paymentHistoryRepository.save(history);
         } catch (ResourceAccessException ex) {
             history.setStatus(PaymentHistoryStatus.TIMEOUT.getValue());
             history.setMessage(ex.getMessage());
-            paymentRepository.save(history);
+            paymentHistoryRepository.save(history);
             throw new BusinessServiceException(TIMEOUT_MESSAGE, ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
         } catch (Exception ex) {
             history.setStatus(PaymentHistoryStatus.FAIL.getValue());
             history.setMessage(ex.getMessage());
-            paymentRepository.save(history);
+            paymentHistoryRepository.save(history);
             throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
         }
     }
@@ -100,29 +100,29 @@ public class PaymentServiceImpl implements PaymentService {
             paymentResultDto.setData(response.getBody());
             if (response.getStatusCodeValue() >= HttpStatus.BAD_REQUEST.value()) {
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
-                paymentRepository.save(history);
+                paymentHistoryRepository.save(history);
                 paymentResultDto.setFailed(true);
                 throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
-            if(response.getBody().getStatus().getCode() != PaymentGatewayStatus.SUCCESS.getValue()){
+            if (response.getBody().getStatus().getCode() != PaymentGatewayStatus.SUCCESS.getValue()) {
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
-                paymentRepository.save(history);
+                paymentHistoryRepository.save(history);
                 paymentResultDto.setFailed(true);
                 throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
             history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
-            paymentRepository.save(history);
+            paymentHistoryRepository.save(history);
             paymentResultDto.setSuccessful(true);
         } catch (ResourceAccessException ex) {
             //handle connection timeout
             history.setStatus(PaymentHistoryStatus.TIMEOUT.getValue());
             history.setMessage(ex.getMessage());
-            paymentRepository.save(history);
+            paymentHistoryRepository.save(history);
             throw new BusinessServiceException(TIMEOUT_MESSAGE, ErrorCode.PAYMENT_GATEWAY_TIMEOUT);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             history.setStatus(PaymentHistoryStatus.FAIL.getValue());
             history.setMessage(ex.getMessage());
-            paymentRepository.save(history);
+            paymentHistoryRepository.save(history);
             throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
         }
         return paymentResultDto;

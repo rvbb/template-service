@@ -1,6 +1,7 @@
 package com.smartosc.fintech.lms.controller.impl;
 
 import com.smartosc.fintech.lms.controller.RepaymentController;
+import com.smartosc.fintech.lms.dto.*;
 import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
 import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.dto.Response;
@@ -19,5 +20,10 @@ public class RepaymentControllerImpl implements RepaymentController {
     @Override
     public Response<RepaymentResponseDto> repayLoan(RepaymentRequestDto repaymentRequestDto) {
         return Response.ok(repaymentService.repayLoan(repaymentRequestDto));
+    }
+
+    @Override
+    public Response<RepaymentDto> get(String id) {
+        return Response.ok(repaymentService.get(id));
     }
 }

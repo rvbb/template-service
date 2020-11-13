@@ -2,16 +2,8 @@ package com.smartosc.fintech.lms.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -19,7 +11,7 @@ import java.util.Collection;
 @Data
 @Entity
 @Table(name = "repayment")
-public class RepaymentEntity {
+public class RepaymentEntity implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -75,7 +67,7 @@ public class RepaymentEntity {
     @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "repayment")
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "repayment")
     private LoanApplicationEntity loanApplication;
 

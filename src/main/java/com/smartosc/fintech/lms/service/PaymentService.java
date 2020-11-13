@@ -6,5 +6,6 @@ import com.smartosc.fintech.lms.dto.RepayRequestInPaymentServiceDto;
 
 public interface PaymentService {
     void processFunding(PaymentRequest paymentRequest);
+
     PaymentResultDto processRepayLoan(RepayRequestInPaymentServiceDto repaymentRequestDto);
 }
