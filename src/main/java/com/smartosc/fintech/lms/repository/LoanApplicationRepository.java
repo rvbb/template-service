@@ -11,7 +11,6 @@ import java.util.Optional;
 public interface LoanApplicationRepository extends JpaRepository<LoanApplicationEntity, Long> {
     Optional<LoanApplicationEntity> findLoanApplicationEntityByUuid(String uuid);
 
-//    @Query(value = "SELECT * FROM `lms-service`.loan_application where user_id=?1", nativeQuery = true)
     List<LoanApplicationEntity> findLoanApplicationEntityByUserId(long userId);
 
 }
