@@ -1,43 +1,44 @@
 package com.smartosc.fintech.lms.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-@Getter
-@Setter
+@Data
 public class RepaymentDto {
 
-  private long id;
+    private long id;
 
-  private String uuid;
+    private String uuid;
 
-  private Timestamp dueDate;
+    private Timestamp dueDate;
 
-  private Integer interestDue;
+    private BigDecimal interestDue;
 
-  private Integer interestPaid;
+    private BigDecimal interestPaid;
 
-  private Timestamp lastPaidDate;
+    private Timestamp lastPaidDate;
 
-  private Timestamp lastPenaltyAppliedDate;
+    private Timestamp lastPenaltyAppliedDate;
 
-  private Integer penaltyDue;
+    private BigDecimal penaltyDue;
 
-  private Integer penaltyPaid;
+    private BigDecimal penaltyPaid;
 
-  private Integer principalDue;
+    private BigDecimal principalDue;
 
-  private Integer principalPaid;
+    private BigDecimal principalPaid;
 
-  private Integer feeDue;
+    private BigDecimal feeDue;
 
-  private Integer feePaid;
+    private BigDecimal feePaid;
 
-  private Timestamp repaidDate;
+    private Timestamp repaidDate;
 
-  private String state;
+    private String state;
 
-  private String notes;
+    private String notes;
+
+    private BigDecimal totalAmount;
 }

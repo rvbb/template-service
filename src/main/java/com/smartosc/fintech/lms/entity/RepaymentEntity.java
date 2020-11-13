@@ -2,6 +2,7 @@ package com.smartosc.fintech.lms.entity;
 
 import lombok.Data;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -76,7 +77,7 @@ public class RepaymentEntity implements Serializable {
     @JoinColumn(name = "user_key", referencedColumnName = "uuid", table = "repayment")
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "loan_application_key", referencedColumnName = "uuid", table = "repayment")
     private LoanApplicationEntity loanApplication;
 
