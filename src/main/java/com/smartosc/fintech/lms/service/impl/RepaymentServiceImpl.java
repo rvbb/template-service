@@ -152,31 +152,30 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     private List<RepaymentEntity> calculate(LoanApplicationEntity loanApplicationEntity) {
         BigDecimal interestDue = calculateInterestDue(
-                loanApplicationEntity.getInterestDue(),
+                loanApplicationEntity.getLoanAmount(),
+                new BigDecimal(loanApplicationEntity.getInterestRate()),
                 loanApplicationEntity.getApproveDate()
         );
 
         RepaymentEntity repaymentEntity = new RepaymentEntity();
         repaymentEntity.setUuid(UUID.randomUUID().toString());
         repaymentEntity.setInterestDue(interestDue);
-        repaymentEntity.setPrincipalDue(loanApplicationEntity.getPrincipalDue());
+        repaymentEntity.setPrincipalDue(loanApplicationEntity.getLoanAmount());
         repaymentEntity.setUser(loanApplicationEntity.getUser());
         repaymentEntity.setLoanApplication(loanApplicationEntity);
         return Collections.singletonList(repaymentEntity);
     }
 
-    private BigDecimal calculateInterestDue(BigDecimal interestDue, Timestamp approveDate) {
-        BigDecimal daysOfYear = new BigDecimal(LocalDateTime.now().getDayOfYear());
-        BigDecimal interestDueOfDay = interestDue.divide(daysOfYear, RoundingMode.CEILING);
+    private BigDecimal calculateInterestDue(BigDecimal loanAmount, BigDecimal interestRate, Timestamp approveDate) {
         BigDecimal diffDays = getDiffDays(approveDate);
-        return interestDueOfDay.multiply(diffDays);
+        return interestRate.multiply(loanAmount).multiply(diffDays);
     }
 
     private BigDecimal getDiffDays(Timestamp approveDate) {
         LocalDateTime startDate = approveDate.toLocalDateTime();
         LocalDateTime currentDay = LocalDateTime.now();
-        long diffDays = Duration.between(currentDay, startDate).toDays();
-        return BigDecimal.valueOf(diffDays);
+        long diffDays = Duration.between(startDate, currentDay).toDays();
+        return BigDecimal.valueOf(diffDays + 1);
     }
 
     public void calculateAndSaveRepayment(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
@@ -188,14 +187,28 @@ public class RepaymentServiceImpl implements RepaymentService {
         repaymentEntity.setLastPaidDate(current);
         repaymentEntity.setLastPenaltyAppliedDate(current);
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
-        loanApplicationEntity.setPrincipalPaid(loanApplicationEntity.getPrincipalPaid().add(repaymentEntity.getPrincipalPaid()));
-        loanApplicationEntity.setInterestPaid(loanApplicationEntity.getInterestPaid().add(repaymentEntity.getInterestPaid()));
-        loanApplicationEntity.setFeePaid(loanApplicationEntity.getFeePaid().add(repaymentEntity.getFeePaid()));
+        if (loanApplicationEntity.getPrincipalPaid() == null) {
+            loanApplicationEntity.setPrincipalPaid(new BigDecimal("0"));
+        }
+        if (loanApplicationEntity.getInterestPaid() == null) {
+            loanApplicationEntity.setInterestPaid(new BigDecimal("0"));
+        }
+        if (loanApplicationEntity.getFeePaid() == null) {
+            loanApplicationEntity.setFeePaid(new BigDecimal("0"));
+        }
+        loanApplicationEntity.setPrincipalPaid(loanApplicationEntity.getPrincipalPaid().add(repaymentEntity.getPrincipalDue()));
+        BigDecimal interestPaid = repaymentRequestDto.getAmount().subtract(repaymentEntity.getPrincipalDue());
+        loanApplicationEntity.setInterestPaid(loanApplicationEntity.getInterestPaid().add(interestPaid));
+        repaymentEntity.setInterestPaid(interestPaid);
         repaymentRepository.save(repaymentEntity);
     }
 
     private void calculateAmount(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
-        BigDecimal remainAmount = repaymentRequestDto.getAmount().subtract(repaymentEntity.getFeeDue());
+        BigDecimal remainAmount = repaymentRequestDto.getAmount();
+        if (repaymentEntity.getFeeDue() != null) {
+            remainAmount = repaymentRequestDto.getAmount().subtract(repaymentEntity.getFeeDue());
+        }
+
         repaymentEntity.setFeePaid(repaymentEntity.getFeeDue());
 
         if (remainAmount.compareTo(repaymentEntity.getPrincipalDue()) < 1) {
