@@ -14,7 +14,5 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class RepaymentRequestDto implements Serializable {
     private String uuid;
-    private BigDecimal totalMoney;
-    private BigDecimal principalAmount;
-    private BigDecimal interestAmount;
+    private BigDecimal amount;
 }
