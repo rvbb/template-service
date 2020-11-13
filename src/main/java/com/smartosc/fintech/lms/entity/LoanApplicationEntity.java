@@ -125,7 +125,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   @Column(name = "tax_rate")
   private BigDecimal taxRate;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", referencedColumnName = "id", table = "loan_application")
   private UserEntity user;
 

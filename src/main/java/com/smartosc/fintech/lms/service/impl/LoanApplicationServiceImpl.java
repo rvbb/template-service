@@ -30,7 +30,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     @Override
     public List<LoanApplicationDto> findLoanApplicationByUser(long id) {
         List<LoanApplicationDto> loanApplicationDtos = new ArrayList<>();
-        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationByUser(id);
+        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserId(id);
         for (LoanApplicationEntity loanApplication : loanApplicationEntities) {
             loanApplicationDtos.add(LoanApplicationMapper.INSTANCE.mapToDto(loanApplication));
         }
