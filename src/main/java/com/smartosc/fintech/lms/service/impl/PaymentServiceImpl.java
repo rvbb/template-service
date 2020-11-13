@@ -108,7 +108,7 @@ public class PaymentServiceImpl implements PaymentService {
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
                 paymentHistoryRepository.save(history);
                 paymentResultDto.setFailed(true);
-                throw new BusinessServiceException("Call payment gateway fail", ErrorCode.PAYMENT_GATEWAY_FAIL);
+                throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
             history.setStatus(PaymentHistoryStatus.SUCCESS.getValue());
             paymentHistoryRepository.save(history);

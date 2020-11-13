@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -73,9 +72,9 @@ public class RepaymentServiceImpl implements RepaymentService {
                                                                                  LoanApplicationEntity loanApplicationEntity) {
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = new RepayRequestInPaymentServiceDto();
         Collection<BankAccount> bankAccounts = loanApplicationEntity.getBankAccounts();
-        if (bankAccounts != null && bankAccounts.size() > 0) {
+        if (bankAccounts != null && !bankAccounts.isEmpty()) {
             BankAccount lenderBankAccount = bankAccounts.stream()
-                    .filter(b -> b.getType() == BankAccountType.TYPE_LENDER.getValue())
+                    .filter(b -> BankAccountType.TYPE_LENDER.getValue().equals(b.getType()) )
                     .iterator().next();
             if (lenderBankAccount != null) {
                 repayRequestInPaymentServiceDto.setReceivedAccount(lenderBankAccount.getAccount());
@@ -83,7 +82,7 @@ public class RepaymentServiceImpl implements RepaymentService {
             }
 
             BankAccount borrowerBankAccount = bankAccounts.stream()
-                    .filter(b -> b.getType() == BankAccountType.TYPE_BORROWER.getValue())
+                    .filter(b -> BankAccountType.TYPE_BORROWER.getValue().equals(b.getType()))
                     .iterator().next();
             if (borrowerBankAccount != null) {
                 repayRequestInPaymentServiceDto.setSendAccount(borrowerBankAccount.getAccount());
