@@ -2,13 +2,22 @@ package com.smartosc.fintech.lms.entity;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import java.io.Serializable;
 import java.sql.Date;
 
 @Data
 @Entity
 @Table(name = "loan_personal_information")
-public class LoanPersonalInformationEntity {
+public class LoanPersonalInformationEntity implements Serializable {
 
     @Id
     @Column(name = "id")

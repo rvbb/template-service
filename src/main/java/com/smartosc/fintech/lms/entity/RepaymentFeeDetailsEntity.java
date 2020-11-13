@@ -11,12 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
 @Entity
 @Table(name = "repayment_fee_details")
-public class RepaymentFeeDetailsEntity {
+public class RepaymentFeeDetailsEntity implements Serializable {
 
     @Id
     @Column(name = "id")
