@@ -1,10 +1,17 @@
 package com.smartosc.fintech.lms.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Getter
 @Setter
 public class LoanApplicationDto {
@@ -70,4 +77,24 @@ public class LoanApplicationDto {
   private String scheduleDueDatesMethod;
 
   private Integer taxRate;
+
+  private UserDto user;
+
+  private LoanProductDto loanProduct;
+
+  private Collection<LoanContactInformationDto> loanContactInformation;
+
+  private Collection<LoanCreditScoreDto> loanCreditScores;
+
+  private Collection<LoanDisbursementMethodDto> loanDisbursementMethods;
+
+  private Collection<LoanJobInformationDto> loanJobInformation;
+
+  private Collection<LoanKycInformationDto> loanKycInformation;
+
+  private Collection<LoanPersonalInformationDto> loanPersonalInformation;
+
+  private Collection<LoanTransactionDto> loanTransactions;
+
+  private Collection<RepaymentDto> repayments;
 }

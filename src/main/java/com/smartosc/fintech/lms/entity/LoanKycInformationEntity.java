@@ -14,7 +14,7 @@ public class LoanKycInformationEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", table = "loan_kyc_information")
     private LoanApplicationEntity loanApplication;
 }

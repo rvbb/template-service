@@ -33,7 +33,7 @@ public class LoanContactInformationEntity {
     @Column(name = "ref_address")
     private String refAddress;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_contact_information")
     private LoanApplicationEntity loanApplication;
 }

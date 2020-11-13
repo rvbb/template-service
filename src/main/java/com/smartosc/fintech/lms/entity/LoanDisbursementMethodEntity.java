@@ -18,7 +18,7 @@ public class LoanDisbursementMethodEntity {
     @Column(name = "disbursement_method")
     private Integer disbursementMethod;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_disbursement_method")
     private LoanApplicationEntity loanApplication;
 }

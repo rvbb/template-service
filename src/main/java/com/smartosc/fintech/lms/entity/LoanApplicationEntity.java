@@ -1,7 +1,11 @@
 package com.smartosc.fintech.lms.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,6 +22,9 @@ import java.sql.Timestamp;
 import java.util.Collection;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "loan_application")
@@ -118,7 +125,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   @Column(name = "tax_rate")
   private BigDecimal taxRate;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @JoinColumn(name = "user_id", referencedColumnName = "id", table = "loan_application")
   private UserEntity user;
 
