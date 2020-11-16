@@ -35,9 +35,9 @@ public class FundingServiceImpl implements FundingService {
     @Override
     public void makeFunding(FundingRequest request) {
         Optional<LoanApplicationEntity> existApplication = applicationRepository.findLoanApplicationEntityByUuid(request.getApplicationUuid());
-        LoanApplicationEntity application = existApplication.orElseThrow(EntityNotFoundException::new);
+        LoanApplicationEntity application = existApplication.orElseThrow(() -> new EntityNotFoundException("Loan application not found"));
         if (application.getStatus() != null && application.getStatus() != LoanApplicationStatus.SIGN.getValue()) {
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException("Loan application not found");
         }
 
         PaymentRequest paymentRequest = createPaymentRequest(application);
