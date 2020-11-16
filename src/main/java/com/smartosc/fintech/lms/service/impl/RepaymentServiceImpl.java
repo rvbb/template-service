@@ -47,25 +47,36 @@ public class RepaymentServiceImpl implements RepaymentService {
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validateData(repaymentRequestDto, loanApplicationEntity);
         LoanTransactionEntity loanTransactionEntity = null;
-        RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
-                repaymentRequestDto, loanApplicationEntity);
-        PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
+        PaymentResultDto paymentResultDto = processRepayWithPaymentGateway(repaymentRequestDto, loanApplicationEntity);
         if (paymentResultDto.isSuccessful()) {
-            calculateAndSaveRepayment(repaymentRequestDto, repaymentEntity);
-            closeLoanApplication(loanApplicationEntity);
-            loanTransactionEntity = saveRepaymentLoanTransaction(repaymentRequestDto, repaymentEntity);
+            loanTransactionEntity = processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
         }
-
-        RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-        closeLoanApplication(loanApplicationEntity);
-        repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
-        return repaymentResponseDto;
+        return buildRepaymentResponse(loanTransactionEntity);
     }
 
     private void validateData(RepaymentRequestDto repaymentRequestDto, LoanApplicationEntity loanApplicationEntity) {
         if (loanApplicationEntity.getStatus() == LoanApplicationStatus.CLOSE.getValue()) {
             throw new BusinessServiceException("Loan was close already!", ErrorCode.LOAN_APPLICATION_CLOSE_ALREADY);
         }
+    }
+
+    private LoanTransactionEntity processWhenRepaySuccess(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity){
+        calculateAndSaveRepayment(repaymentRequestDto, repaymentEntity);
+        closeLoanApplication(repaymentEntity.getLoanApplication());
+        return saveRepaymentLoanTransaction(repaymentRequestDto, repaymentEntity);
+    }
+
+    private PaymentResultDto processRepayWithPaymentGateway(RepaymentRequestDto repaymentRequestDto,
+                                                            LoanApplicationEntity loanApplicationEntity){
+        RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
+                repaymentRequestDto, loanApplicationEntity);
+        return paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
+    }
+
+    private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity){
+        RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
+        repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
+        return repaymentResponseDto;
     }
 
     private RepayRequestInPaymentServiceDto buildRepayRequestInPaymentServiceDto(RepaymentRequestDto repaymentRequestDto,
@@ -185,6 +196,10 @@ public class RepaymentServiceImpl implements RepaymentService {
         Timestamp current = new Timestamp(System.currentTimeMillis());
         repaymentEntity.setLastPaidDate(current);
         repaymentEntity.setLastPenaltyAppliedDate(current);
+        /**Carefully: this repayment just set repaid date in this MVP,
+         * in the future, the repayment will be updated when all repayments were paid
+          */
+        repaymentEntity.setRepaidDate(current);
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         if (loanApplicationEntity.getPrincipalPaid() == null) {
             loanApplicationEntity.setPrincipalPaid(new BigDecimal("0"));
