@@ -70,8 +70,7 @@ public class RepaymentServiceImpl implements RepaymentService {
                                                             LoanApplicationEntity loanApplicationEntity){
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
                 repaymentRequestDto, loanApplicationEntity);
-        PaymentResultDto paymentResultDto = paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
-        return paymentResultDto;
+        return paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
     }
 
     private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity){
