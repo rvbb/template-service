@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface RepaymentService {
 
-    RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto);
+    RepaymentResponseDto payBack(RepaymentRequestDto repaymentRequestDto);
 
     /**
      * Generate repayments form a loan application.

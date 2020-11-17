@@ -18,8 +18,8 @@ public class RepaymentControllerImpl implements RepaymentController {
     private final RepaymentService repaymentService;
 
     @Override
-    public Response<RepaymentResponseDto> repayLoan(RepaymentRequestDto repaymentRequestDto) {
-        return Response.ok(repaymentService.repayLoan(repaymentRequestDto));
+    public Response<RepaymentResponseDto> payBack(RepaymentRequestDto repaymentRequestDto) {
+        return Response.ok(repaymentService.payBack(repaymentRequestDto));
     }
 
     @Override

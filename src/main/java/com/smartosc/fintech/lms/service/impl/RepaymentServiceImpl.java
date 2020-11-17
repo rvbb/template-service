@@ -39,7 +39,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final RepaymentRepository repaymentRepository;
 
     @Override
-    public RepaymentResponseDto repayLoan(RepaymentRequestDto repaymentRequestDto) {
+    public RepaymentResponseDto payBack(RepaymentRequestDto repaymentRequestDto) {
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(repaymentRequestDto.getUuid()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + repaymentRequestDto.getUuid()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validateData(repaymentRequestDto, loanApplicationEntity);
