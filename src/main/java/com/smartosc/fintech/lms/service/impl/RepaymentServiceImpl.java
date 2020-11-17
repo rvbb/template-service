@@ -1,9 +1,6 @@
 package com.smartosc.fintech.lms.service.impl;
 
-import com.smartosc.fintech.lms.common.constant.BankAccountType;
-import com.smartosc.fintech.lms.common.constant.ErrorCode;
-import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
-import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
+import com.smartosc.fintech.lms.common.constant.*;
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.*;
 import com.smartosc.fintech.lms.entity.BankAccount;
@@ -51,7 +48,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         if (paymentResultDto.isSuccessful()) {
             loanTransactionEntity = processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
         }
-        return buildRepaymentResponse(loanTransactionEntity);
+        return buildRepaymentResponse(loanTransactionEntity, repaymentEntity);
     }
 
     private void validateData(RepaymentRequestDto repaymentRequestDto, LoanApplicationEntity loanApplicationEntity) {
@@ -73,9 +70,10 @@ public class RepaymentServiceImpl implements RepaymentService {
         return paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
     }
 
-    private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity){
+    private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity, RepaymentEntity repaymentEntity){
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
         repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
+        repaymentResponseDto.setRepayment(RepaymentMapper.INSTANCE.entityToDto(repaymentEntity));
         return repaymentResponseDto;
     }
 
@@ -214,6 +212,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         BigDecimal interestPaid = repaymentRequestDto.getAmount().subtract(repaymentEntity.getPrincipalDue());
         loanApplicationEntity.setInterestPaid(loanApplicationEntity.getInterestPaid().add(interestPaid));
         repaymentEntity.setInterestPaid(interestPaid);
+        repaymentEntity.setState(RepaymentState.PAID.name());
         repaymentRepository.save(repaymentEntity);
     }
 
