@@ -18,7 +18,7 @@ public interface RepaymentController {
             @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
-    @PostMapping
+    @PostMapping("/pay-back")
     Response<RepaymentResponseDto> repayLoan(@RequestBody RepaymentRequestDto repaymentRequestDto);
 
     @ApiOperation(value = "Get repayment detail", notes = "id is mandatory")

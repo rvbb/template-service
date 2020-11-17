@@ -13,4 +13,5 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class RepaymentResponseDto implements Serializable {
     private LoanTransactionDto loanTransactionDto;
+    private RepaymentDto repayment;
 }
