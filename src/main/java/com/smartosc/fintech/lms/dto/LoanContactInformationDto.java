@@ -2,8 +2,6 @@ package com.smartosc.fintech.lms.dto;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 
 @Data
 public class LoanContactInformationDto {
@@ -16,7 +14,7 @@ public class LoanContactInformationDto {
 
     private String refPhoneNumber;
 
-    private Date refDob;
+    private String refDob;
 
     private String refEmail;
 

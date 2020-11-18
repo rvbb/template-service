@@ -1,6 +1,7 @@
 package com.smartosc.fintech.lms.controller;
 
 import com.smartosc.fintech.lms.controller.handler.ApiError;
+import com.smartosc.fintech.lms.dto.LoanPersonalInformationDto;
 import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.dto.Response;
 import io.swagger.annotations.Api;
@@ -37,5 +38,5 @@ public interface PersonalInformationController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @GetMapping("/{uuid}")
-    Response<PersonalInformationDto> getPersonalInformation(@PathVariable("uuid") String uuid);
+    Response<LoanPersonalInformationDto> getPersonalInformation(@PathVariable("uuid") String uuid);
 }

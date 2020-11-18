@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,16 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
         LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(
                 () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
-        return LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
+        LoanApplicationDto loanApplicationDto = LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
+
+        BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
+        if (loanApplicationEntity.getPrincipalPaid() != null) {
+            outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
+            loanApplicationDto.setOutstanding_balance(outstandingBalance);
+        }
+        loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
+
+        return loanApplicationDto;
     }
 
     @Override
