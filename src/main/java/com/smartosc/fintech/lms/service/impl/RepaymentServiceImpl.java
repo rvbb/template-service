@@ -39,7 +39,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final PaymentService paymentGatewayService;
     private final RepaymentRepository repaymentRepository;
 
-    private final static BigDecimal DAY_OF_YEAR = BigDecimal.valueOf(365);
+    private static final BigDecimal DAY_OF_YEAR = BigDecimal.valueOf(365);
 
     @Override
     public RepaymentResponseDto payBack(RepaymentRequestDto repaymentRequestDto) {
@@ -151,6 +151,15 @@ public class RepaymentServiceImpl implements RepaymentService {
         repaymentEntities = repaymentRepository.saveAll(repaymentEntities);
 
         return repaymentEntities.stream().map(RepaymentMapper.INSTANCE::entityToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity) {
+        return calculateInterestDue(
+                loanApplicationEntity.getLoanAmount(),
+                new BigDecimal(loanApplicationEntity.getInterestRate()),
+                loanApplicationEntity.getApproveDate()
+        );
     }
 
     @Override
