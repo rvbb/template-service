@@ -38,6 +38,9 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   @Column(name = "uuid")
   private String uuid;
 
+  @Column(name = "contract_number")
+  private String contractNumber;
+
   @Column(name = "loan_amount")
   private BigDecimal loanAmount;
 

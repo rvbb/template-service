@@ -20,6 +20,8 @@ public class LoanApplicationDto {
 
   private String uuid;
 
+  private String contractNumber;
+
   private Integer loanAmount;
 
   private String interestRate;
