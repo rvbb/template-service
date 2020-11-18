@@ -5,8 +5,10 @@ import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
 import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.RepaymentDto;
+import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface RepaymentService {
@@ -28,6 +30,14 @@ public interface RepaymentService {
      * @return List<RepaymentDto> list of repayment
      */
     List<RepaymentDto> calculate(String loanApplicationUuid);
+
+    /**
+     * Calculate Accrued Interest
+     *
+     * @param loanApplicationEntity loan application
+     * @return BigDecimal
+     */
+    BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity);
 
     RepaymentDto get(String id);
 
