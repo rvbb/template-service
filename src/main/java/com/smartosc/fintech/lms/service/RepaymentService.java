@@ -1,6 +1,7 @@
 package com.smartosc.fintech.lms.service;
 
 
+import com.smartosc.fintech.lms.dto.PaymentResponse;
 import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
 import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
@@ -42,4 +43,6 @@ public interface RepaymentService {
     RepaymentDto get(String id);
 
     void calculateAndSaveRepayment(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity);
+
+    RepaymentResponseDto processPayResult(PaymentResponse paymentResponse);
 }
