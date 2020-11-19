@@ -1,10 +1,15 @@
 package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
+import com.smartosc.fintech.lms.dto.PaymentAmountDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
+import com.smartosc.fintech.lms.entity.RepaymentEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
+import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.LoanApplicationService;
+import com.smartosc.fintech.lms.service.RepaymentService;
 import com.smartosc.fintech.lms.service.mapper.LoanApplicationMapper;
+import com.smartosc.fintech.lms.service.mapper.PaymentAmountMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +25,10 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private final LoanApplicationRepository loanApplicationRepository;
 
+    private RepaymentRepository repaymentRepository;
+
+    private RepaymentService repaymentService;
+
     @Override
     public LoanApplicationDto findLoanApplicationEntityByUuid(String uuid) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
@@ -34,6 +43,11 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         }
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
+
+        RepaymentEntity latestPayment = repaymentRepository.findRepaymentOfLoanOrderByDuedate(uuid).get(0);
+        PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
+        paymentAmountDto.setInterest(repaymentService.calculateAccruedInterest(loanApplicationEntity));
+        loanApplicationDto.setPaymentAmount(paymentAmountDto);
         return loanApplicationDto;
     }
 

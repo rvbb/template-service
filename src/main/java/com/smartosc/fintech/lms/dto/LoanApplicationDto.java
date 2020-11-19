@@ -44,5 +44,5 @@ public class LoanApplicationDto {
 
   private Collection<LoanPersonalInformationDto> loanPersonalInformation;
 
-  private Collection<PaymentAmountDto> paymentAmount;
+  private PaymentAmountDto paymentAmount;
 }

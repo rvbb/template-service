@@ -24,8 +24,7 @@ public interface LoanApplicationMapper {
                     qualifiedByName = "mapListContactInformationToDto"),
             @Mapping(source = "loanJobInformation", target = "loanJobInformation",
                     qualifiedByName = "mapToListJobInformationDto"),
-            @Mapping(source = "repayments", target = "paymentAmount",
-                    qualifiedByName = "mapToListPaymentAmount"),
+
     })
     LoanApplicationDto mapToDto(LoanApplicationEntity loanApplicationEntity);
 
