@@ -19,7 +19,7 @@ public interface PaymentAmountMapper {
   PaymentAmountMapper INSTANCE = Mappers.getMapper(PaymentAmountMapper.class);
 
   @Mappings({
-          @Mapping(source = "principalPaid",target = "principal"),
+          @Mapping(source = "principalDue",target = "principal"),
           @Mapping(source = "dueDate",target = "dueDate",qualifiedByName = "mapDuedateToString")
   })
   PaymentAmountDto entityToDto(RepaymentEntity repaymentEntity);
