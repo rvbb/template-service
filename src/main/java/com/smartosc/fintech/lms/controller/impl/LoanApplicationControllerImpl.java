@@ -1,6 +1,7 @@
 package com.smartosc.fintech.lms.controller.impl;
 
 import com.smartosc.fintech.lms.controller.LoanApplicationController;
+import com.smartosc.fintech.lms.dto.BriefLoanDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.service.LoanApplicationService;
@@ -22,8 +23,8 @@ public class LoanApplicationControllerImpl implements LoanApplicationController 
     }
 
     @Override
-    public Response<List<LoanApplicationDto>> getListLoanApplication(long userId) {
-        List<LoanApplicationDto> loanApplicationDtos = loanApplicationService.findLoanApplicationByUser(userId);
+    public Response<List<BriefLoanDto>> getListLoanApplication(long userId) {
+        List<BriefLoanDto> loanApplicationDtos = loanApplicationService.findLoanApplicationByUser(userId);
         return Response.ok(loanApplicationDtos);
     }
 

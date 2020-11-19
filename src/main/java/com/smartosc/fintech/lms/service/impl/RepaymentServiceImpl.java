@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -39,6 +40,8 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final PaymentService paymentGatewayService;
     private final RepaymentRepository repaymentRepository;
     private final RepaymentRequestValidator repaymentRequestValidator;
+
+    private static final BigDecimal DAY_OF_YEAR = BigDecimal.valueOf(365);
 
     @Override
     public RepaymentResponseDto payBack(RepaymentRequestDto repaymentRequestDto) {
@@ -63,20 +66,20 @@ public class RepaymentServiceImpl implements RepaymentService {
         }
     }
 
-    private LoanTransactionEntity processWhenRepaySuccess(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity){
+    private LoanTransactionEntity processWhenRepaySuccess(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
         calculateAndSaveRepayment(repaymentRequestDto, repaymentEntity);
         closeLoanApplication(repaymentEntity.getLoanApplication());
         return saveRepaymentLoanTransaction(repaymentRequestDto, repaymentEntity);
     }
 
     private PaymentResultDto processRepayWithPaymentGateway(RepaymentRequestDto repaymentRequestDto,
-                                                            LoanApplicationEntity loanApplicationEntity){
+                                                            LoanApplicationEntity loanApplicationEntity) {
         RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto = buildRepayRequestInPaymentServiceDto(
                 repaymentRequestDto, loanApplicationEntity);
         return paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
     }
 
-    private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity, RepaymentEntity repaymentEntity){
+    private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity, RepaymentEntity repaymentEntity) {
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
         repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
         repaymentResponseDto.setRepayment(RepaymentMapper.INSTANCE.entityToDto(repaymentEntity));
@@ -89,7 +92,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         Collection<BankAccount> bankAccounts = loanApplicationEntity.getBankAccounts();
         if (bankAccounts != null && !bankAccounts.isEmpty()) {
             BankAccount lenderBankAccount = bankAccounts.stream()
-                    .filter(b -> BankAccountType.TYPE_LENDER.getValue().equals(b.getType()) )
+                    .filter(b -> BankAccountType.TYPE_LENDER.getValue().equals(b.getType()))
                     .iterator().next();
             if (lenderBankAccount != null) {
                 repayRequestInPaymentServiceDto.setReceivedAccount(lenderBankAccount.getAccount());
@@ -157,6 +160,15 @@ public class RepaymentServiceImpl implements RepaymentService {
     }
 
     @Override
+    public BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity) {
+        return calculateInterestDue(
+                loanApplicationEntity.getLoanAmount(),
+                loanApplicationEntity.getInterestRate(),
+                loanApplicationEntity.getApproveDate()
+        );
+    }
+
+    @Override
     public RepaymentDto get(String id) {
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(id).orElseThrow(() -> new EntityNotFoundException("entity not found"));
         RepaymentDto dto = RepaymentMapper.INSTANCE.entityToDto(repaymentEntity);
@@ -168,7 +180,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         BigDecimal interestDue = calculateInterestDue(
                 loanApplicationEntity.getLoanAmount(),
                 new BigDecimal(loanApplicationEntity.getInterestRate()),
-                loanApplicationEntity.getApproveDate()
+                loanApplicationEntity.getLoanTerm()
         );
 
         RepaymentEntity repaymentEntity = new RepaymentEntity();
@@ -180,9 +192,16 @@ public class RepaymentServiceImpl implements RepaymentService {
         return Collections.singletonList(repaymentEntity);
     }
 
-    private BigDecimal calculateInterestDue(BigDecimal loanAmount, BigDecimal interestRate, Timestamp approveDate) {
+    private BigDecimal calculateInterestDue(BigDecimal loanAmount, BigDecimal interestRate, String loanTerm) {
+        return loanAmount.multiply(interestRate).multiply(BigDecimal.valueOf(Integer.parseInt(loanTerm)))
+                .divide(DAY_OF_YEAR, RoundingMode.CEILING);
+    }
+
+    private BigDecimal calculateInterestDue(BigDecimal loanAmount, String interestRate, Timestamp approveDate) {
+        BigDecimal interestRated = new BigDecimal(interestRate);
         BigDecimal diffDays = getDiffDays(approveDate);
-        return interestRate.multiply(loanAmount).multiply(diffDays);
+        return loanAmount.multiply(interestRated).multiply(diffDays)
+                .divide(DAY_OF_YEAR, RoundingMode.CEILING);
     }
 
     private BigDecimal getDiffDays(Timestamp approveDate) {
@@ -202,7 +221,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         repaymentEntity.setLastPenaltyAppliedDate(current);
         /**Carefully: this repayment just set repaid date in this MVP,
          * in the future, the repayment will be updated when all repayments were paid
-          */
+         */
         repaymentEntity.setRepaidDate(current);
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         if (loanApplicationEntity.getPrincipalPaid() == null) {

@@ -2,6 +2,7 @@ package com.smartosc.fintech.lms.controller;
 
 
 import com.smartosc.fintech.lms.controller.handler.ApiError;
+import com.smartosc.fintech.lms.dto.BriefLoanDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.Response;
 import io.swagger.annotations.Api;
@@ -39,7 +40,7 @@ public interface LoanApplicationController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
     })
     @GetMapping()
-    public Response<List<LoanApplicationDto>> getListLoanApplication(@RequestParam long userId);
+    public Response<List<BriefLoanDto>> getListLoanApplication(@RequestParam long userId);
 
 
 }

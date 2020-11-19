@@ -2,8 +2,6 @@ package com.smartosc.fintech.lms.dto;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 @Data
 public class LoanPersonalInformationDto {
 
@@ -13,7 +11,7 @@ public class LoanPersonalInformationDto {
 
     private String phoneNumber;
 
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
     private String emailAddress;
 

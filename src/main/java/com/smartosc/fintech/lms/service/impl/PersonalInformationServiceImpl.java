@@ -1,12 +1,14 @@
 package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
+import com.smartosc.fintech.lms.dto.LoanPersonalInformationDto;
 import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanPersonalInformationEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.PersonalInformationRepository;
 import com.smartosc.fintech.lms.service.PersonalInformationService;
+import com.smartosc.fintech.lms.service.mapper.LoanPersonalInformationMapper;
 import com.smartosc.fintech.lms.service.mapper.PersonalInformationMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,10 +34,10 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
      */
     @Override
     @SMFLogger
-    public PersonalInformationDto getLoanPersonalInformation(String uuid) {
+    public LoanPersonalInformationDto getLoanPersonalInformation(String uuid) {
         LoanPersonalInformationEntity loanPersonalInformation = personalInformationRepository.findByLoanApplicationUuid(uuid)
                 .orElseThrow(() -> new EntityNotFoundException("Not found personal information by loan application with uuid : " + uuid));
-        return PersonalInformationMapper.INSTANCE.mapToDto(loanPersonalInformation);
+        return LoanPersonalInformationMapper.INSTANCE.mapToDto(loanPersonalInformation);
     }
 
     @Override
