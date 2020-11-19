@@ -240,4 +240,41 @@ public class RepaymentServiceImpl implements RepaymentService {
         repaymentEntity.setInterestPaid(repaymentEntity.getInterestDue());
         remainAmount = remainAmount.subtract(repaymentEntity.getInterestDue());
     }
+
+    @Override
+    public RepaymentResponseDto processPayResult(PaymentResponse paymentResponse) {
+        RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(paymentResponse.getData()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + paymentResponse.getData()));
+        LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
+        validatePayResult(loanApplicationEntity);
+        LoanTransactionEntity loanTransactionEntity = null;
+        if (isPayResultSuccess(paymentResponse)) {
+            RepaymentRequestDto repaymentRequestDto = createRepaymentRequest(repaymentEntity);
+            loanTransactionEntity = processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
+        }
+        return buildRepaymentResponse(loanTransactionEntity, repaymentEntity);
+    }
+
+    private boolean isPayResultSuccess(PaymentResponse paymentResponse){
+        return PaymentGatewayStatus.SUCCESS.getValue() == paymentResponse.getStatus().getCode();
+    }
+
+    private void validatePayResult(LoanApplicationEntity loanApplicationEntity){
+        if (loanApplicationEntity.getStatus() == LoanApplicationStatus.CLOSE.getValue()) {
+            throw new BusinessServiceException("Loan was close already!", ErrorCode.LOAN_APPLICATION_CLOSE_ALREADY);
+        }
+    }
+
+    private RepaymentRequestDto createRepaymentRequest(RepaymentEntity repaymentEntity){
+        RepaymentRequestDto repaymentRequestDto = new RepaymentRequestDto();
+        BigDecimal amount = new BigDecimal(0);
+        if(repaymentEntity.getInterestDue() != null){
+            amount = amount.add(repaymentEntity.getInterestDue());
+        }
+        if(repaymentEntity.getPrincipalDue() != null){
+            amount = amount.add(repaymentEntity.getPrincipalDue());
+        }
+        repaymentRequestDto.setAmount(amount);
+        repaymentRequestDto.setUuid(repaymentEntity.getUuid());
+        return repaymentRequestDto;
+    }
 }
