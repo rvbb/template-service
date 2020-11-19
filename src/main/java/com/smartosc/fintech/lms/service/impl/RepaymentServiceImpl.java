@@ -268,6 +268,7 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     @Override
     public RepaymentResponseDto processPayResult(PaymentResponse paymentResponse) {
+        validatePayResultInput(paymentResponse);
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(paymentResponse.getData()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + paymentResponse.getData()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validatePayResult(loanApplicationEntity);
@@ -281,6 +282,15 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     private boolean isPayResultSuccess(PaymentResponse paymentResponse){
         return PaymentGatewayStatus.SUCCESS.getValue() == paymentResponse.getStatus().getCode();
+    }
+
+    private void validatePayResultInput(PaymentResponse paymentResponse){
+        if(paymentResponse.getData() == null || paymentResponse.getData().trim().isEmpty()){
+            throw new BusinessServiceException("UUID is empty", ErrorCode.REPAYMENT_UUID_EMPTY);
+        }
+        if(paymentResponse.getStatus() == null){
+            throw new BusinessServiceException("Status is empty", ErrorCode.REPAYMENT_RESULT_EMPTY);
+        }
     }
 
     private void validatePayResult(LoanApplicationEntity loanApplicationEntity){
