@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,16 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     @Override
     public List<BriefLoanDto> findLoanApplicationByUser(long id) {
         List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserId(id);
-        return BriefLoanMapper.INSTANCE.mapToListBriefLoanDto(loanApplicationEntities);
+        List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
+        for (LoanApplicationEntity loanApplicationEntity : loanApplicationEntities) {
+            BriefLoanDto briefLoanDto= BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
+            BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
+            if (loanApplicationEntity.getPrincipalPaid() != null)
+                outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
+            briefLoanDto.setOutstandingBalance(outstandingBalance);
+            briefLoanDtos.add(briefLoanDto);
+        }
+        return briefLoanDtos;
     }
 
 }
