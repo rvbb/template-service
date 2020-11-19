@@ -2,8 +2,8 @@ package com.smartosc.fintech.lms.controller.impl;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.controller.PersonalInformationController;
+import com.smartosc.fintech.lms.dto.InputPersonalInformationDto;
 import com.smartosc.fintech.lms.dto.LoanPersonalInformationDto;
-import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.service.PersonalInformationService;
 import lombok.AllArgsConstructor;
@@ -24,9 +24,9 @@ public class PersonalInformationControllerImpl implements PersonalInformationCon
 
     @Override
     @SMFLogger
-    public Response<List<PersonalInformationDto>>
-        updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
-        List<PersonalInformationDto> result = personalInformationService.updateLoanPersonalInformation(uuid, personalInformationDto);
+    public Response<List<LoanPersonalInformationDto>>
+        updateLoanPersonalInformation(String uuid, InputPersonalInformationDto inputPersonalInformationDto) {
+        List<LoanPersonalInformationDto> result = personalInformationService.updateLoanPersonalInformation(uuid, inputPersonalInformationDto);
         return Response.ok(result);
     }
 

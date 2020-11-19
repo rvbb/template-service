@@ -6,16 +6,10 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.sql.Date;
 
 @Getter
 @Setter
-public class PersonalInformationDto {
-
-    private Integer id;
-    private String fullName;
-    private String phoneNumber;
-    private Date dateOfBirth;
+public class InputPersonalInformationDto {
 
     @EmailConstraint
     private String emailAddress;
