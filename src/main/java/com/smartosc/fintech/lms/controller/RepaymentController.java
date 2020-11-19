@@ -31,4 +31,14 @@ public interface RepaymentController {
     })
     @GetMapping("/{id}")
     Response<RepaymentDto> get(@PathVariable String uuid);
+
+    @ApiOperation(value = "Process pay result of a repayment", notes = "id is mandatory")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = RepaymentResponseDto.class),
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
+    })
+    @PostMapping("/process-pay-result")
+    Response<RepaymentResponseDto> processPayResult(@RequestBody PaymentResponse paymentResponse);
 }

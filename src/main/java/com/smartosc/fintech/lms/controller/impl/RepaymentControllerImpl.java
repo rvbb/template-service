@@ -26,4 +26,9 @@ public class RepaymentControllerImpl implements RepaymentController {
     public Response<RepaymentDto> get(String id) {
         return Response.ok(repaymentService.get(id));
     }
+
+    @Override
+    public Response<RepaymentResponseDto> processPayResult(PaymentResponse paymentResponse) {
+        return Response.ok(repaymentService.processPayResult(paymentResponse));
+    }
 }
