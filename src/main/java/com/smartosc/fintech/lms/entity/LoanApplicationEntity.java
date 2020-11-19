@@ -2,9 +2,10 @@ package com.smartosc.fintech.lms.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,7 +22,8 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -162,4 +164,9 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
 
   @OneToMany(mappedBy = "loanApplication",fetch = FetchType.LAZY)
   private Collection<BankAccount> bankAccounts;
+
+  @Override
+  public String toString() {
+    return "LoanApplicationEntity";
+  }
 }

@@ -157,7 +157,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     public BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity) {
         return calculateInterestDue(
                 loanApplicationEntity.getLoanAmount(),
-                new BigDecimal(loanApplicationEntity.getInterestRate()),
+                loanApplicationEntity.getInterestRate(),
                 loanApplicationEntity.getApproveDate()
         );
     }
@@ -191,9 +191,10 @@ public class RepaymentServiceImpl implements RepaymentService {
                 .divide(DAY_OF_YEAR, RoundingMode.CEILING);
     }
 
-    private BigDecimal calculateInterestDue(BigDecimal loanAmount, BigDecimal interestRate, Timestamp approveDate) {
+    private BigDecimal calculateInterestDue(BigDecimal loanAmount, String interestRate, Timestamp approveDate) {
+        BigDecimal interestRated = new BigDecimal(interestRate);
         BigDecimal diffDays = getDiffDays(approveDate);
-        return loanAmount.multiply(interestRate).multiply(diffDays)
+        return loanAmount.multiply(interestRated).multiply(diffDays)
                 .divide(DAY_OF_YEAR, RoundingMode.CEILING);
     }
 

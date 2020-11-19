@@ -2,6 +2,7 @@ package com.smartosc.fintech.lms.controller.impl;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.controller.PersonalInformationController;
+import com.smartosc.fintech.lms.dto.LoanPersonalInformationDto;
 import com.smartosc.fintech.lms.dto.PersonalInformationDto;
 import com.smartosc.fintech.lms.dto.Response;
 import com.smartosc.fintech.lms.service.PersonalInformationService;
@@ -17,7 +18,7 @@ public class PersonalInformationControllerImpl implements PersonalInformationCon
     private final PersonalInformationService personalInformationService;
 
     @Override
-    public Response<PersonalInformationDto> getPersonalInformation(String uuid) {
+    public Response<LoanPersonalInformationDto> getPersonalInformation(String uuid) {
         return Response.ok(personalInformationService.getLoanPersonalInformation(uuid));
     }
 
