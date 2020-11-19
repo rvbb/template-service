@@ -2,14 +2,13 @@ package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.LoanPersonalInformationDto;
-import com.smartosc.fintech.lms.dto.PersonalInformationDto;
+import com.smartosc.fintech.lms.dto.InputPersonalInformationDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanPersonalInformationEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.PersonalInformationRepository;
 import com.smartosc.fintech.lms.service.PersonalInformationService;
 import com.smartosc.fintech.lms.service.mapper.LoanPersonalInformationMapper;
-import com.smartosc.fintech.lms.service.mapper.PersonalInformationMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -41,20 +40,20 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     }
 
     @Override
-    public List<PersonalInformationDto> updateLoanPersonalInformation(String uuid, PersonalInformationDto personalInformationDto) {
+    public List<LoanPersonalInformationDto> updateLoanPersonalInformation(String uuid, InputPersonalInformationDto inputPersonalInformationDto) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
         LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(
                 () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
 
         Collection<LoanPersonalInformationEntity> personalInformations = loanApplicationEntity.getLoanPersonalInformation();
-        List<PersonalInformationDto> personalInformationDtos = new ArrayList<>();
+        List<LoanPersonalInformationDto> loanPersonalInformationDtos = new ArrayList<>();
         for (LoanPersonalInformationEntity personalInformation : personalInformations) {
-            personalInformation.setAddress(personalInformationDto.getAddress());
-            personalInformation.setEmailAddress(personalInformationDto.getEmailAddress());
+            personalInformation.setAddress(inputPersonalInformationDto.getAddress());
+            personalInformation.setEmailAddress(inputPersonalInformationDto.getEmailAddress());
             personalInformationRepository.save(personalInformation);
-            personalInformationDtos.add(PersonalInformationMapper.INSTANCE.mapToDto(personalInformation));
+            loanPersonalInformationDtos.add(LoanPersonalInformationMapper.INSTANCE.mapToDto(personalInformation));
         }
-        return personalInformationDtos;
+        return loanPersonalInformationDtos;
     }
 
 }
