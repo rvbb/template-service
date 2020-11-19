@@ -43,7 +43,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
         List<RepaymentEntity> repaymentEntities = repaymentRepository.findByLoanApplicationUuidOrderByDueDateDesc(uuid);
-        if (repaymentEntities!=null) {
+        if (!repaymentEntities.isEmpty()) {
             RepaymentEntity latestPayment = repaymentRepository.findByLoanApplicationUuidOrderByDueDateDesc(uuid).get(0);
             PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
             paymentAmountDto.setInterest(repaymentService.calculateAccruedInterest(loanApplicationEntity));

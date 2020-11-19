@@ -26,7 +26,7 @@ public class LoanApplicationDto {
 
   private BigDecimal outstandingBalance;
 
-  private Integer interestAccrued;
+  private BigDecimal interestAccrued;
 
   private String interestRate;
 
@@ -36,7 +36,7 @@ public class LoanApplicationDto {
 
   private Integer loanStatus;
 
-  private String expire_date;
+  private String expireDate;
 
   private Collection<LoanContactInformationDto> loanContactInformation;
 

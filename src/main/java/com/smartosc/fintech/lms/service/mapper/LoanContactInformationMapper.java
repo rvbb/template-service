@@ -28,10 +28,7 @@ public interface LoanContactInformationMapper {
 
     @Named("mapBirthdayToString")
     static String mapBirthdayToString(Date date) throws ParseException {
-        if (date != null) {
            return DateTimeUtil.formatDate(date);
-        }
-        return "";
     }
 
 }

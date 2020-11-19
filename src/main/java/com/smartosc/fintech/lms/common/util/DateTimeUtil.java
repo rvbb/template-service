@@ -14,11 +14,20 @@ public class DateTimeUtil {
     private final static String FORMAT_TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     public static String formatDate(Date date) {
-        DateFormat format = new SimpleDateFormat(FORMAT_DATE);
-        return format.format(date);
+        if (date != null) {
+            DateFormat format = new SimpleDateFormat(FORMAT_DATE);
+            return format.format(date);
+        }
+        return "";
+
     }
-    public static  String getFormatTimestamp(Timestamp date) {
-        DateFormat format = new SimpleDateFormat(FORMAT_TIMESTAMP);
-        return format.format(date);
+
+    public static String getFormatTimestamp(Timestamp date) {
+        if (date != null) {
+            DateFormat format = new SimpleDateFormat(FORMAT_TIMESTAMP);
+            return format.format(date);
+        }
+        return "";
+
     }
 }

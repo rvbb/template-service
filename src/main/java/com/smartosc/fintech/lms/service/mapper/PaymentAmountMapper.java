@@ -30,9 +30,6 @@ public interface PaymentAmountMapper {
 
   @Named("mapDuedateToString")
   static String mapBirthdayToString(Timestamp date) throws ParseException {
-    if (date != null) {
       return DateTimeUtil.getFormatTimestamp(date);
-    }
-    return "";
   }
 }
