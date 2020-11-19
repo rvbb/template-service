@@ -15,6 +15,7 @@ import com.smartosc.fintech.lms.service.PaymentService;
 import com.smartosc.fintech.lms.service.RepaymentService;
 import com.smartosc.fintech.lms.service.mapper.LoanTransactionMapper;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
+import com.smartosc.fintech.lms.validator.RepaymentRequestValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,12 +38,14 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final LoanTransactionRepository loanTransactionRepository;
     private final PaymentService paymentGatewayService;
     private final RepaymentRepository repaymentRepository;
+    private final RepaymentRequestValidator repaymentRequestValidator;
 
     @Override
     public RepaymentResponseDto payBack(RepaymentRequestDto repaymentRequestDto) {
+        validateInput(repaymentRequestDto);
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(repaymentRequestDto.getUuid()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + repaymentRequestDto.getUuid()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
-        validateData(repaymentRequestDto, loanApplicationEntity);
+        validateData(loanApplicationEntity);
         LoanTransactionEntity loanTransactionEntity = null;
         PaymentResultDto paymentResultDto = processRepayWithPaymentGateway(repaymentRequestDto, loanApplicationEntity);
         if (paymentResultDto.isSuccessful()) {
@@ -51,8 +54,11 @@ public class RepaymentServiceImpl implements RepaymentService {
         return buildRepaymentResponse(loanTransactionEntity, repaymentEntity);
     }
 
-    private void validateData(RepaymentRequestDto repaymentRequestDto, LoanApplicationEntity loanApplicationEntity) {
-        if (loanApplicationEntity.getStatus() == LoanApplicationStatus.CLOSE.getValue()) {
+    private void validateInput(RepaymentRequestDto repaymentRequestDto) {
+        repaymentRequestValidator.validateRepaymentRequest(repaymentRequestDto);
+    }
+    private void validateData(LoanApplicationEntity loanApplicationEntity){
+        if (loanApplicationEntity != null && loanApplicationEntity.getStatus() == LoanApplicationStatus.CLOSE.getValue()) {
             throw new BusinessServiceException("Loan was close already!", ErrorCode.LOAN_APPLICATION_CLOSE_ALREADY);
         }
     }
