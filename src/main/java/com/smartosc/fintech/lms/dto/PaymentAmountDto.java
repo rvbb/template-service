@@ -13,6 +13,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class PaymentAmountDto {
 
+    private String uuid;
+
     private BigDecimal principal;
 
     private BigDecimal interest;

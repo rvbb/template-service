@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface RepaymentRepository extends JpaRepository<RepaymentEntity, Long> {
     Optional<RepaymentEntity> findFirstByUuid(String uuid);
 
-    List<RepaymentEntity> findByLoanApplicationUuidOrderByDueDateDesc(String loanKey);
+    List<RepaymentEntity> findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(String loanKey, String state);
 
 }
