@@ -24,7 +24,7 @@ public class LoanApplicationDto {
 
   private BigDecimal loanAmount;
 
-  private BigDecimal outstanding_balance;
+  private BigDecimal outstandingBalance;
 
   private Integer interestAccrued;
 

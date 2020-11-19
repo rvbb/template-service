@@ -1,5 +1,6 @@
 package com.smartosc.fintech.lms.service.mapper;
 
+import com.smartosc.fintech.lms.common.util.DateTimeUtil;
 import com.smartosc.fintech.lms.dto.LoanContactInformationDto;
 import com.smartosc.fintech.lms.entity.LoanContactInformationEntity;
 import org.mapstruct.Mapper;
@@ -9,9 +10,7 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 
 @Mapper(uses = {LoanContactInformationMapper.class})
@@ -30,8 +29,7 @@ public interface LoanContactInformationMapper {
     @Named("mapBirthdayToString")
     static String mapBirthdayToString(Date date) throws ParseException {
         if (date != null) {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            return format.format(date);
+           return DateTimeUtil.formatDate(date);
         }
         return "";
     }

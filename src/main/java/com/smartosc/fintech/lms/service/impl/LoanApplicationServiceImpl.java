@@ -37,17 +37,18 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         LoanApplicationDto loanApplicationDto = LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
 
         BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
-        if (loanApplicationEntity.getPrincipalPaid() != null) {
+        if (loanApplicationEntity.getPrincipalPaid() != null)
             outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-            loanApplicationDto.setOutstanding_balance(outstandingBalance);
-        }
+        loanApplicationDto.setOutstandingBalance(outstandingBalance);
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
-
-        RepaymentEntity latestPayment = repaymentRepository.findRepaymentOfLoanOrderByDuedate(uuid).get(0);
-        PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
-        paymentAmountDto.setInterest(repaymentService.calculateAccruedInterest(loanApplicationEntity));
-        loanApplicationDto.setPaymentAmount(paymentAmountDto);
+        List<RepaymentEntity> repaymentEntities = repaymentRepository.findByLoanApplicationUuidOrderByDueDateDesc(uuid);
+        if (repaymentEntities!=null) {
+            RepaymentEntity latestPayment = repaymentRepository.findByLoanApplicationUuidOrderByDueDateDesc(uuid).get(0);
+            PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
+            paymentAmountDto.setInterest(repaymentService.calculateAccruedInterest(loanApplicationEntity));
+            loanApplicationDto.setPaymentAmount(paymentAmountDto);
+        }
         return loanApplicationDto;
     }
 

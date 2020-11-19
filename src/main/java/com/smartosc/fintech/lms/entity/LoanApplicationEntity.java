@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 
-//@Data
 @Getter
 @Setter
 @Builder
@@ -168,6 +167,6 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
 
   @Override
   public String toString() {
-    return "LoanApplicationEntity{";
+    return "LoanApplicationEntity";
   }
 }
