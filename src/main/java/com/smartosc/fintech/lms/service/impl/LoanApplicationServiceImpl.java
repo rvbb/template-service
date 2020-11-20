@@ -43,13 +43,14 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         if (loanApplicationEntity.getPrincipalPaid() != null)
             outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
         loanApplicationDto.setOutstandingBalance(outstandingBalance);
+        loanApplicationDto.setInterestAccrued(repaymentService.calculateAccruedInterest(loanApplicationEntity));
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
-        List<RepaymentEntity> repaymentEntities = repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
+        List<RepaymentEntity> repaymentEntities =
+                repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
         if (!repaymentEntities.isEmpty()) {
             RepaymentEntity latestPayment = repaymentEntities.get(0);
             PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
-            paymentAmountDto.setInterest(repaymentService.calculateAccruedInterest(loanApplicationEntity));
             loanApplicationDto.setPaymentAmount(paymentAmountDto);
         }
         return loanApplicationDto;
@@ -60,7 +61,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserId(id);
         List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
         for (LoanApplicationEntity loanApplicationEntity : loanApplicationEntities) {
-            BriefLoanDto briefLoanDto= BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
+            BriefLoanDto briefLoanDto = BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
             BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
             if (loanApplicationEntity.getPrincipalPaid() != null)
                 outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
