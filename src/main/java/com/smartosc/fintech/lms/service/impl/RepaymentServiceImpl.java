@@ -50,10 +50,6 @@ public class RepaymentServiceImpl implements RepaymentService {
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(repaymentRequestDto.getUuid()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + repaymentRequestDto.getUuid()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validateData(loanApplicationEntity);
-//        PaymentResultDto paymentResultDto = processRepayWithPaymentGateway(repaymentRequestDto, loanApplicationEntity);
-//        if (paymentResultDto.isSuccessful()) {
-//            processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
-//        }
         return buildRepaymentResponse(repaymentRequestDto, repaymentEntity);
     }
 
