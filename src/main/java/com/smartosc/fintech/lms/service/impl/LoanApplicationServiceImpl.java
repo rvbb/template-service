@@ -51,14 +51,12 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
         LoanApplicationDto loanApplicationDto = LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
 
+        /*set outstandingBalance*/
         BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
         if (loanApplicationEntity.getPrincipalPaid() != null)
             outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
         loanApplicationDto.setOutstandingBalance(outstandingBalance);
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
-
-        if (loanApplicationEntity.getStatus() == ACTIVE.getValue())
-            loanApplicationDto.setInterestAccrued(repaymentService.calculateAccruedInterest(loanApplicationEntity));
 
         /*set expire date*/
         LoanTransactionEntity loanTransactionEntity =
@@ -70,6 +68,15 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(expireTimestamp));
         }
 
+        /*set interest accrued*/
+        if (loanApplicationEntity.getStatus() == ACTIVE.getValue()) {
+            if (loanTransactionEntity != null){
+                BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
+                loanApplicationDto.setInterestAccrued(interestAccrued);
+            }
+        }
+
+        /*set payment amount*/
         List<RepaymentEntity> repaymentEntities =
                 repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
         if (!repaymentEntities.isEmpty()) {

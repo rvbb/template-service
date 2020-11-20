@@ -160,11 +160,11 @@ public class RepaymentServiceImpl implements RepaymentService {
     }
 
     @Override
-    public BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity) {
+    public BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity, Timestamp fundedDate) {
         return calculateInterestDue(
                 loanApplicationEntity.getLoanAmount(),
                 loanApplicationEntity.getInterestRate(),
-                loanApplicationEntity.getApproveDate()
+                fundedDate
         );
     }
 
