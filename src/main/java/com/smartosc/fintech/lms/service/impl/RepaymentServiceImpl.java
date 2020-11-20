@@ -2,6 +2,7 @@ package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.constant.*;
 import com.smartosc.fintech.lms.common.util.SMFLogger;
+import com.smartosc.fintech.lms.config.ApplicationConfig;
 import com.smartosc.fintech.lms.dto.*;
 import com.smartosc.fintech.lms.entity.BankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
@@ -13,7 +14,6 @@ import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.PaymentService;
 import com.smartosc.fintech.lms.service.RepaymentService;
-import com.smartosc.fintech.lms.service.mapper.LoanTransactionMapper;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
 import com.smartosc.fintech.lms.validator.RepaymentRequestValidator;
 import lombok.AllArgsConstructor;
@@ -40,6 +40,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final PaymentService paymentGatewayService;
     private final RepaymentRepository repaymentRepository;
     private final RepaymentRequestValidator repaymentRequestValidator;
+    private final ApplicationConfig applicationConfig;
 
     private static final BigDecimal DAY_OF_YEAR = BigDecimal.valueOf(365);
 
@@ -49,12 +50,11 @@ public class RepaymentServiceImpl implements RepaymentService {
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(repaymentRequestDto.getUuid()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + repaymentRequestDto.getUuid()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validateData(loanApplicationEntity);
-        LoanTransactionEntity loanTransactionEntity = null;
-        PaymentResultDto paymentResultDto = processRepayWithPaymentGateway(repaymentRequestDto, loanApplicationEntity);
-        if (paymentResultDto.isSuccessful()) {
-            loanTransactionEntity = processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
-        }
-        return buildRepaymentResponse(loanTransactionEntity, repaymentEntity);
+//        PaymentResultDto paymentResultDto = processRepayWithPaymentGateway(repaymentRequestDto, loanApplicationEntity);
+//        if (paymentResultDto.isSuccessful()) {
+//            processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
+//        }
+        return buildRepaymentResponse(repaymentRequestDto, repaymentEntity);
     }
 
     private void validateInput(RepaymentRequestDto repaymentRequestDto) {
@@ -79,10 +79,20 @@ public class RepaymentServiceImpl implements RepaymentService {
         return paymentGatewayService.processRepayLoan(repayRequestInPaymentServiceDto);
     }
 
-    private RepaymentResponseDto buildRepaymentResponse(LoanTransactionEntity loanTransactionEntity, RepaymentEntity repaymentEntity) {
+    private String buildPaymentUrl(RepaymentRequestDto repaymentRequestDto){
+        StringBuilder paymentUrlBuilder = new StringBuilder().append(applicationConfig.getRepaymentGatewayUrl());
+        paymentUrlBuilder.append(PaymentGatewayConstants.PARAM_START)
+                .append(PaymentGatewayConstants.AMOUNT_PARAM).append(PaymentGatewayConstants.EQUAL).append(repaymentRequestDto.getAmount().toString())
+                .append(PaymentGatewayConstants.AND)
+                .append(PaymentGatewayConstants.UUID_PARAM).append(PaymentGatewayConstants.EQUAL).append(repaymentRequestDto.getUuid());
+        return paymentUrlBuilder.toString();
+
+    }
+
+    private RepaymentResponseDto buildRepaymentResponse(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-        repaymentResponseDto.setLoanTransactionDto(LoanTransactionMapper.INSTANCE.mapToDto(loanTransactionEntity));
         repaymentResponseDto.setRepayment(RepaymentMapper.INSTANCE.entityToDto(repaymentEntity));
+        repaymentResponseDto.setPaymentUrl(buildPaymentUrl(repaymentRequestDto));
         return repaymentResponseDto;
     }
 
@@ -272,12 +282,11 @@ public class RepaymentServiceImpl implements RepaymentService {
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(paymentResponse.getData()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + paymentResponse.getData()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validatePayResult(loanApplicationEntity);
-        LoanTransactionEntity loanTransactionEntity = null;
+        RepaymentRequestDto repaymentRequestDto = createRepaymentRequest(repaymentEntity);
         if (isPayResultSuccess(paymentResponse)) {
-            RepaymentRequestDto repaymentRequestDto = createRepaymentRequest(repaymentEntity);
-            loanTransactionEntity = processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
+            processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
         }
-        return buildRepaymentResponse(loanTransactionEntity, repaymentEntity);
+        return buildRepaymentResponse(repaymentRequestDto, repaymentEntity);
     }
 
     private boolean isPayResultSuccess(PaymentResponse paymentResponse){
