@@ -5,6 +5,7 @@ import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
 import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
 import com.smartosc.fintech.lms.dto.FundingRequest;
 import com.smartosc.fintech.lms.dto.PaymentRequest;
+import com.smartosc.fintech.lms.dto.RepaymentDto;
 import com.smartosc.fintech.lms.entity.BankAccount;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
@@ -18,8 +19,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,18 +49,25 @@ public class FundingServiceImpl implements FundingService {
         LoanTransactionEntity transaction = createTransactionEntity(application);
         transactionRepository.save(transaction);
 
-        generateRepaymentPlan(application);
+        List<RepaymentDto> repaymentDtos = generateRepaymentPlan(application);
+        BigDecimal principalDue = repaymentDtos.stream()
+                                    .map(RepaymentDto::getPrincipalDue).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal interestDue = repaymentDtos.stream()
+                .map(RepaymentDto::getInterestDue).reduce(BigDecimal.ZERO, BigDecimal::add);
 
         application.getLoanTransactions().add(transaction);
         application.setStatus(LoanApplicationStatus.ACTIVE.getValue());
+        application.setPrincipalDue(principalDue);
+        application.setInterestDue(interestDue);
         applicationRepository.save(application);
     }
 
     private LoanTransactionEntity createTransactionEntity(LoanApplicationEntity application) {
         LoanTransactionEntity transaction = new LoanTransactionEntity();
 
-        Timestamp creationDate = new Timestamp(new Date().getTime());
-        transaction.setCreationDate(creationDate);
+        Timestamp currentDate = new Timestamp(new Date().getTime());
+        transaction.setCreationDate(currentDate);
+        transaction.setEntryDate(currentDate);
 
         transaction.setUuid(UUID.randomUUID().toString());
         transaction.setLoanApplication(application);
@@ -92,7 +102,7 @@ public class FundingServiceImpl implements FundingService {
         return request;
     }
 
-    private void generateRepaymentPlan(LoanApplicationEntity application) {
-        repaymentService.calculate(application.getUuid());
+    private List<RepaymentDto> generateRepaymentPlan(LoanApplicationEntity application) {
+        return repaymentService.calculate(application.getUuid());
     }
 }
