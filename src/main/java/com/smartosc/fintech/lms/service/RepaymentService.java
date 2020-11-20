@@ -10,6 +10,7 @@ import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface RepaymentService {
@@ -38,7 +39,7 @@ public interface RepaymentService {
      * @param loanApplicationEntity loan application
      * @return BigDecimal
      */
-    BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity);
+    BigDecimal calculateAccruedInterest(LoanApplicationEntity loanApplicationEntity, Timestamp fundedDate);
 
     RepaymentDto get(String id);
 
