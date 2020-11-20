@@ -20,6 +20,7 @@ public interface PaymentAmountMapper {
 
   @Mappings({
           @Mapping(source = "principalDue",target = "principal"),
+          @Mapping(source = "interestDue",target = "interest"),
           @Mapping(source = "dueDate",target = "dueDate",qualifiedByName = "mapDuedateToString")
   })
   PaymentAmountDto entityToDto(RepaymentEntity repaymentEntity);
