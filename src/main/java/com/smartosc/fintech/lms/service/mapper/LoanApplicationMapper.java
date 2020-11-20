@@ -5,7 +5,10 @@ import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
+import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
+
+import java.math.BigDecimal;
 
 @Mapper(uses = {LoanContactInformationMapper.class,
         LoanJobInformationMapper.class,
@@ -20,6 +23,7 @@ public interface LoanApplicationMapper {
             @Mapping(source = "contractNumber", target = "accountNumber"),
             @Mapping(source = "accruedInterest", target = "interestAccrued"),
             @Mapping(source = "status", target = "loanStatus"),
+            @Mapping(source = "interestRate", target = "interestRate",qualifiedByName = "mapInterestRateToInteger"),
             @Mapping(source = "loanContactInformation", target = "loanContactInformation",
                     qualifiedByName = "mapListContactInformationToDto"),
             @Mapping(source = "loanJobInformation", target = "loanJobInformation",
@@ -28,5 +32,8 @@ public interface LoanApplicationMapper {
     })
     LoanApplicationDto mapToDto(LoanApplicationEntity loanApplicationEntity);
 
-
+    @Named("mapInterestRateToInteger")
+    static BigDecimal mapInterestRateToInteger(String interestRate) {
+        return new BigDecimal(interestRate);
+    }
 }

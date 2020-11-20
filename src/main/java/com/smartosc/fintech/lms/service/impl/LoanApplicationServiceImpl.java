@@ -1,12 +1,15 @@
 package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.constant.RepaymentState;
+import com.smartosc.fintech.lms.common.util.DateTimeUtil;
 import com.smartosc.fintech.lms.dto.BriefLoanDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.PaymentAmountDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
+import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
+import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.LoanApplicationService;
 import com.smartosc.fintech.lms.service.RepaymentService;
@@ -18,9 +21,16 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.ACTIVE;
+import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.DROP_OFF;
+import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
 
 @Service
 @AllArgsConstructor
@@ -31,6 +41,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private RepaymentRepository repaymentRepository;
 
     private RepaymentService repaymentService;
+
+    private LoanTransactionRepository loanTransactionRepository;
 
     @Override
     public LoanApplicationDto findLoanApplicationEntityByUuid(String uuid) {
@@ -43,8 +55,20 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         if (loanApplicationEntity.getPrincipalPaid() != null)
             outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
         loanApplicationDto.setOutstandingBalance(outstandingBalance);
-        loanApplicationDto.setInterestAccrued(repaymentService.calculateAccruedInterest(loanApplicationEntity));
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
+
+        if (loanApplicationEntity.getStatus() == ACTIVE.getValue())
+            loanApplicationDto.setInterestAccrued(repaymentService.calculateAccruedInterest(loanApplicationEntity));
+
+        /*set expire date*/
+        LoanTransactionEntity loanTransactionEntity =
+                loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(uuid, FUNDING.name());
+        if (loanTransactionEntity != null) {
+            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
+            LocalDateTime expireDate = loanTransactionEntity.getEntryDate().toLocalDateTime().plus(period);
+            Timestamp expireTimestamp = Timestamp.valueOf(expireDate);
+            loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(expireTimestamp));
+        }
 
         List<RepaymentEntity> repaymentEntities =
                 repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
@@ -58,7 +82,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     @Override
     public List<BriefLoanDto> findLoanApplicationByUser(long id) {
-        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserId(id);
+        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserIdAndStatusNot(id, DROP_OFF.getValue());
         List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
         for (LoanApplicationEntity loanApplicationEntity : loanApplicationEntities) {
             BriefLoanDto briefLoanDto = BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
