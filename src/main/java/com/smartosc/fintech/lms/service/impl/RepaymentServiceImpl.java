@@ -185,6 +185,7 @@ public class RepaymentServiceImpl implements RepaymentService {
 
         RepaymentEntity repaymentEntity = new RepaymentEntity();
         repaymentEntity.setUuid(UUID.randomUUID().toString());
+        repaymentEntity.setState(RepaymentState.PENDING.name());
         repaymentEntity.setInterestDue(interestDue);
         repaymentEntity.setPrincipalDue(loanApplicationEntity.getLoanAmount());
         repaymentEntity.setUser(loanApplicationEntity.getUser());

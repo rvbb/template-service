@@ -65,8 +65,9 @@ public class FundingServiceImpl implements FundingService {
     private LoanTransactionEntity createTransactionEntity(LoanApplicationEntity application) {
         LoanTransactionEntity transaction = new LoanTransactionEntity();
 
-        Timestamp creationDate = new Timestamp(new Date().getTime());
-        transaction.setCreationDate(creationDate);
+        Timestamp currentDate = new Timestamp(new Date().getTime());
+        transaction.setCreationDate(currentDate);
+        transaction.setEntryDate(currentDate);
 
         transaction.setUuid(UUID.randomUUID().toString());
         transaction.setLoanApplication(application);
