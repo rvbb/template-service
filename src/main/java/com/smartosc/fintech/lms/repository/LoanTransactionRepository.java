@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LoanTransactionRepository extends JpaRepository<LoanTransactionEntity, Long> {
+
+    LoanTransactionEntity findDistinctFirstByLoanApplicationUuidAndType(String uuid, String type);
+
 }

@@ -28,7 +28,7 @@ public class LoanApplicationDto {
 
   private BigDecimal interestAccrued;
 
-  private String interestRate;
+  private BigDecimal interestRate;
 
   private String loanType;
 
