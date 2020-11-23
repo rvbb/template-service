@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -74,7 +73,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         if (loanApplicationEntity.getStatus() == ACTIVE.getValue()) {
             if (loanTransactionEntity != null) {
                 BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
-                loanApplicationDto.setInterestAccrued(interestAccrued.setScale(2, RoundingMode.CEILING));
+                loanApplicationDto.setInterestAccrued(BigDecimalMapper.mapToScale(interestAccrued));
             }
         }
 

@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @Mapper
-public  interface BigDecimalMapper {
+public interface BigDecimalMapper {
 
-    static final int scale=4;
+    int scale = 4;
 
     @Named("mapToBigDecimalScale")
     static BigDecimal mapToScale(BigDecimal bigDecimal) {
@@ -17,7 +17,7 @@ public  interface BigDecimalMapper {
     }
 
     @Named("mapStringToBigDecimalScale")
-    static BigDecimal mapStringToBigDecimalScale2(String interestRate) {
+    static BigDecimal mapStringToBigDecimalScale(String interestRate) {
         BigDecimal bigDecimal = new BigDecimal(interestRate);
         return bigDecimal.setScale(scale, RoundingMode.CEILING);
     }
