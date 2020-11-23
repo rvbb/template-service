@@ -22,7 +22,6 @@ public interface LoanApplicationMapper {
 
     @Mappings({
             @Mapping(source = "contractNumber", target = "accountNumber"),
-            @Mapping(source = "accruedInterest", target = "interestAccrued",qualifiedByName = "mapToBigDecimalScale"),
             @Mapping(source = "loanAmount", target = "loanAmount",qualifiedByName = "mapToBigDecimalScale"),
             @Mapping(source = "status", target = "loanStatus"),
             @Mapping(source = "interestRate", target = "interestRate",qualifiedByName = "mapStringToBigDecimalScale"),
