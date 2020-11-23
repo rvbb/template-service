@@ -13,14 +13,14 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Collection;
 
-@Mapper
+@Mapper(uses = {BigDecimalMapper.class})
 public interface PaymentAmountMapper {
 
   PaymentAmountMapper INSTANCE = Mappers.getMapper(PaymentAmountMapper.class);
 
   @Mappings({
-          @Mapping(source = "principalDue",target = "principal"),
-          @Mapping(source = "interestDue",target = "interest"),
+          @Mapping(source = "principalDue",target = "principal",qualifiedByName = "mapToBigDecimalScale"),
+          @Mapping(source = "interestDue",target = "interest",qualifiedByName = "mapToBigDecimalScale"),
           @Mapping(source = "dueDate",target = "dueDate",qualifiedByName = "mapDuedateToString")
   })
   PaymentAmountDto entityToDto(RepaymentEntity repaymentEntity);

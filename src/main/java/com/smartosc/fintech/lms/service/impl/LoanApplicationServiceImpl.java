@@ -13,6 +13,7 @@ import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.LoanApplicationService;
 import com.smartosc.fintech.lms.service.RepaymentService;
+import com.smartosc.fintech.lms.service.mapper.BigDecimalMapper;
 import com.smartosc.fintech.lms.service.mapper.BriefLoanMapper;
 import com.smartosc.fintech.lms.service.mapper.LoanApplicationMapper;
 import com.smartosc.fintech.lms.service.mapper.PaymentAmountMapper;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -55,7 +57,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
         if (loanApplicationEntity.getPrincipalPaid() != null)
             outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-        loanApplicationDto.setOutstandingBalance(outstandingBalance);
+        loanApplicationDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
         /*set expire date*/
@@ -70,9 +72,9 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
         /*set interest accrued*/
         if (loanApplicationEntity.getStatus() == ACTIVE.getValue()) {
-            if (loanTransactionEntity != null){
+            if (loanTransactionEntity != null) {
                 BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
-                loanApplicationDto.setInterestAccrued(interestAccrued);
+                loanApplicationDto.setInterestAccrued(interestAccrued.setScale(2, RoundingMode.CEILING));
             }
         }
 
@@ -84,6 +86,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
             loanApplicationDto.setPaymentAmount(paymentAmountDto);
         }
+
         return loanApplicationDto;
     }
 
@@ -96,7 +99,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
             if (loanApplicationEntity.getPrincipalPaid() != null)
                 outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-            briefLoanDto.setOutstandingBalance(outstandingBalance);
+
+            briefLoanDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
             briefLoanDtos.add(briefLoanDto);
         }
         return briefLoanDtos;

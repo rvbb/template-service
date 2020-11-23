@@ -43,7 +43,7 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   @Column(name = "contract_number")
   private String contractNumber;
 
-  @Column(name = "loan_amount")
+  @Column(name = "loan_amount",scale = 3)
   private BigDecimal loanAmount;
 
   @Column(name = "interest_rate")

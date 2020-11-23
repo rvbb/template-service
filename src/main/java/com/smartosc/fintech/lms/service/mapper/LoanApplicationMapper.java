@@ -13,7 +13,8 @@ import java.math.BigDecimal;
 @Mapper(uses = {LoanContactInformationMapper.class,
         LoanJobInformationMapper.class,
         LoanPersonalInformationMapper.class,
-        PaymentAmountMapper.class
+        PaymentAmountMapper.class,
+        BigDecimalMapper.class
 })
 public interface LoanApplicationMapper {
 
@@ -21,9 +22,10 @@ public interface LoanApplicationMapper {
 
     @Mappings({
             @Mapping(source = "contractNumber", target = "accountNumber"),
-            @Mapping(source = "accruedInterest", target = "interestAccrued"),
+            @Mapping(source = "accruedInterest", target = "interestAccrued",qualifiedByName = "mapToBigDecimalScale"),
+            @Mapping(source = "loanAmount", target = "loanAmount",qualifiedByName = "mapToBigDecimalScale"),
             @Mapping(source = "status", target = "loanStatus"),
-            @Mapping(source = "interestRate", target = "interestRate",qualifiedByName = "mapInterestRateToInteger"),
+            @Mapping(source = "interestRate", target = "interestRate",qualifiedByName = "mapStringToBigDecimalScale"),
             @Mapping(source = "loanContactInformation", target = "loanContactInformation",
                     qualifiedByName = "mapListContactInformationToDto"),
             @Mapping(source = "loanJobInformation", target = "loanJobInformation",
