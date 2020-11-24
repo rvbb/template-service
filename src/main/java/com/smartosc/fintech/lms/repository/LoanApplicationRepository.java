@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface LoanApplicationRepository extends JpaRepository<LoanApplicationEntity, Long> {
     Optional<LoanApplicationEntity> findLoanApplicationEntityByUuid(String uuid);
 
-    List<LoanApplicationEntity> findLoanApplicationEntityByUserId(long userId);
+    List<LoanApplicationEntity> findLoanApplicationEntityByUserIdAndStatusNot(long userId,Integer status);
 
 }

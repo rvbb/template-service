@@ -1,6 +1,6 @@
 package com.smartosc.fintech.lms.service.mapper;
 
-import com.smartosc.fintech.lms.dto.PersonalInformationDto;
+import com.smartosc.fintech.lms.dto.InputPersonalInformationDto;
 import com.smartosc.fintech.lms.entity.LoanPersonalInformationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -10,10 +10,10 @@ public interface PersonalInformationMapper {
 
     PersonalInformationMapper INSTANCE = Mappers.getMapper(PersonalInformationMapper.class);
 
-    LoanPersonalInformationEntity mapToEntity(PersonalInformationDto personalInformationDto);
+    LoanPersonalInformationEntity mapToEntity(InputPersonalInformationDto inputPersonalInformationDto);
 
-    PersonalInformationDto mapToDto(LoanPersonalInformationEntity personalInformationDto);
+    InputPersonalInformationDto mapToDto(LoanPersonalInformationEntity personalInformationDto);
 
-    PersonalInformationDto mapToListDto(LoanPersonalInformationEntity loanPersonalInformationEntity);
+    InputPersonalInformationDto mapToListDto(LoanPersonalInformationEntity loanPersonalInformationEntity);
 
 }

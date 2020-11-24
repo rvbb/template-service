@@ -1,15 +1,19 @@
 package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.constant.RepaymentState;
+import com.smartosc.fintech.lms.common.util.DateTimeUtil;
 import com.smartosc.fintech.lms.dto.BriefLoanDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.PaymentAmountDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
+import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
+import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
 import com.smartosc.fintech.lms.service.LoanApplicationService;
 import com.smartosc.fintech.lms.service.RepaymentService;
+import com.smartosc.fintech.lms.service.mapper.BigDecimalMapper;
 import com.smartosc.fintech.lms.service.mapper.BriefLoanMapper;
 import com.smartosc.fintech.lms.service.mapper.LoanApplicationMapper;
 import com.smartosc.fintech.lms.service.mapper.PaymentAmountMapper;
@@ -18,9 +22,16 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.ACTIVE;
+import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.DROP_OFF;
+import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
 
 @Service
 @AllArgsConstructor
@@ -32,6 +43,10 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private RepaymentService repaymentService;
 
+    private LoanTransactionRepository loanTransactionRepository;
+
+    private static final int LEAD_DAY = 3;
+
     @Override
     public LoanApplicationDto findLoanApplicationEntityByUuid(String uuid) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
@@ -39,32 +54,60 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
         LoanApplicationDto loanApplicationDto = LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
 
-        BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
-        if (loanApplicationEntity.getPrincipalPaid() != null)
-            outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-        loanApplicationDto.setOutstandingBalance(outstandingBalance);
+        /*set outstandingBalance*/
+
+        BigDecimal outstandingBalance = BigDecimal.ZERO;
+        if (ACTIVE.getValue() == (loanApplicationEntity.getStatus())) {
+            outstandingBalance = loanApplicationEntity.getPrincipalPaid() != null
+                    ? outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid())
+                    : loanApplicationEntity.getLoanAmount();
+        }
+        loanApplicationDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
-        List<RepaymentEntity> repaymentEntities = repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
-        if (!repaymentEntities.isEmpty()) {
-            RepaymentEntity latestPayment = repaymentEntities.get(0);
-            PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
-            paymentAmountDto.setInterest(repaymentService.calculateAccruedInterest(loanApplicationEntity));
-            loanApplicationDto.setPaymentAmount(paymentAmountDto);
+        /*set expire date*/
+        LoanTransactionEntity loanTransactionEntity =
+                loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(uuid, FUNDING.name());
+        LocalDateTime expireDate = null;
+        if (loanTransactionEntity != null) {
+            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
+            expireDate = loanTransactionEntity.getEntryDate().toLocalDateTime().plus(period);
+            Timestamp expireTimestamp = Timestamp.valueOf(expireDate);
+            loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(expireTimestamp));
+        }
+
+        /*set interest accrued*/
+        if (ACTIVE.getValue() == loanApplicationEntity.getStatus() && loanTransactionEntity != null) {
+            BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
+            loanApplicationDto.setInterestAccrued(BigDecimalMapper.mapToScale(interestAccrued));
+        }
+
+        /*set payment amount*/
+        List<RepaymentEntity> repaymentEntities =
+                repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
+        if (!repaymentEntities.isEmpty() && expireDate != null) {
+            LocalDateTime currentDate = LocalDateTime.now();
+            Period periodLead = Period.ofDays(LEAD_DAY);
+            if (currentDate.plus(periodLead).compareTo(expireDate) >= 0) {
+                RepaymentEntity latestPayment = repaymentEntities.get(0);
+                PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
+                loanApplicationDto.setPaymentAmount(paymentAmountDto);
+            }
         }
         return loanApplicationDto;
     }
 
     @Override
     public List<BriefLoanDto> findLoanApplicationByUser(long id) {
-        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserId(id);
+        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserIdAndStatusNot(id, DROP_OFF.getValue());
         List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
         for (LoanApplicationEntity loanApplicationEntity : loanApplicationEntities) {
-            BriefLoanDto briefLoanDto= BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
+            BriefLoanDto briefLoanDto = BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
             BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
             if (loanApplicationEntity.getPrincipalPaid() != null)
                 outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-            briefLoanDto.setOutstandingBalance(outstandingBalance);
+
+            briefLoanDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
             briefLoanDtos.add(briefLoanDto);
         }
         return briefLoanDtos;

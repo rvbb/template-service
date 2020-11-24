@@ -16,7 +16,7 @@ public interface BriefLoanMapper {
 
     @Mappings({
             @Mapping(source = "contractNumber", target = "accountNumber"),
-            @Mapping(source = "loanProduct.name", target = "loanType")
+            @Mapping(source = "loanProduct.name", target = "loanType"),
     })
     BriefLoanDto mapToDto(LoanApplicationEntity loanApplicationEntity);
 
