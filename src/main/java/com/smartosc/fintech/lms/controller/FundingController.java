@@ -2,6 +2,7 @@ package com.smartosc.fintech.lms.controller;
 
 import com.smartosc.fintech.lms.controller.handler.ApiError;
 import com.smartosc.fintech.lms.dto.FundingRequest;
+import com.smartosc.fintech.lms.dto.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -19,5 +20,5 @@ public interface FundingController {
             @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
     })
     @PostMapping
-    void makeFunding(@RequestBody FundingRequest request);
+    Response<Object> makeFunding(@RequestBody FundingRequest request);
 }
