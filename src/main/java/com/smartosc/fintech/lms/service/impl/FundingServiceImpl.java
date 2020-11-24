@@ -11,7 +11,7 @@ import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
-import com.smartosc.fintech.lms.repository.RepaymentRepository;
+import com.smartosc.fintech.lms.service.EmailService;
 import com.smartosc.fintech.lms.service.FundingService;
 import com.smartosc.fintech.lms.service.PaymentService;
 import com.smartosc.fintech.lms.service.RepaymentService;
@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -31,11 +32,12 @@ import java.util.UUID;
 public class FundingServiceImpl implements FundingService {
     private final LoanApplicationRepository applicationRepository;
     private final LoanTransactionRepository transactionRepository;
-    private final RepaymentRepository repaymentRepository;
     private final PaymentService paymentService;
     private final RepaymentService repaymentService;
+    private final EmailService emailService;
 
     @Override
+    @Transactional
     public void makeFunding(FundingRequest request) {
         Optional<LoanApplicationEntity> existApplication = applicationRepository.findLoanApplicationEntityByUuid(request.getApplicationUuid());
         LoanApplicationEntity application = existApplication.orElseThrow(() -> new EntityNotFoundException("Loan application not found"));
@@ -51,7 +53,7 @@ public class FundingServiceImpl implements FundingService {
 
         List<RepaymentDto> repaymentDtos = generateRepaymentPlan(application);
         BigDecimal principalDue = repaymentDtos.stream()
-                                    .map(RepaymentDto::getPrincipalDue).reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(RepaymentDto::getPrincipalDue).reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal interestDue = repaymentDtos.stream()
                 .map(RepaymentDto::getInterestDue).reduce(BigDecimal.ZERO, BigDecimal::add);
 
@@ -60,6 +62,8 @@ public class FundingServiceImpl implements FundingService {
         application.setPrincipalDue(principalDue);
         application.setInterestDue(interestDue);
         applicationRepository.save(application);
+
+        emailService.sendFundingEmail(transaction);
     }
 
     private LoanTransactionEntity createTransactionEntity(LoanApplicationEntity application) {
