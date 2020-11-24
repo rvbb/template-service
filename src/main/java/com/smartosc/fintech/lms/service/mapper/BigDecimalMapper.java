@@ -9,16 +9,16 @@ import java.math.RoundingMode;
 @Mapper
 public interface BigDecimalMapper {
 
-    int scale = 4;
+    int SCALE = 4;
 
     @Named("mapToBigDecimalScale")
     static BigDecimal mapToScale(BigDecimal bigDecimal) {
-        return bigDecimal.setScale(scale, RoundingMode.CEILING);
+        return bigDecimal.setScale(SCALE, RoundingMode.CEILING);
     }
 
     @Named("mapStringToBigDecimalScale")
     static BigDecimal mapStringToBigDecimalScale(String interestRate) {
         BigDecimal bigDecimal = new BigDecimal(interestRate);
-        return bigDecimal.setScale(scale, RoundingMode.CEILING);
+        return bigDecimal.setScale(SCALE, RoundingMode.CEILING);
     }
 }
