@@ -10,8 +10,8 @@ import java.text.SimpleDateFormat;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateTimeUtil {
-    private final static String FORMAT_DATE = "yyyy-MM-dd";
-    private final static String FORMAT_TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    private static final String FORMAT_DATE = "yyyy-MM-dd";
+    private static final String FORMAT_TIMESTAMP = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
     public static String formatDate(Date date) {
         if (date != null) {

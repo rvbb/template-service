@@ -45,6 +45,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private LoanTransactionRepository loanTransactionRepository;
 
+    private static final int LEAD_DAY = 3;
+
     @Override
     public LoanApplicationDto findLoanApplicationEntityByUuid(String uuid) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
@@ -53,39 +55,45 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         LoanApplicationDto loanApplicationDto = LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
 
         /*set outstandingBalance*/
-        BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
-        if (loanApplicationEntity.getPrincipalPaid() != null)
-            outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
+
+        BigDecimal outstandingBalance = BigDecimal.ZERO;
+        if (ACTIVE.getValue() == (loanApplicationEntity.getStatus())) {
+            outstandingBalance = loanApplicationEntity.getPrincipalPaid() != null
+                    ? outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid())
+                    : loanApplicationEntity.getLoanAmount();
+        }
         loanApplicationDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
 
         /*set expire date*/
         LoanTransactionEntity loanTransactionEntity =
                 loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(uuid, FUNDING.name());
+        LocalDateTime expireDate = null;
         if (loanTransactionEntity != null) {
             Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
-            LocalDateTime expireDate = loanTransactionEntity.getEntryDate().toLocalDateTime().plus(period);
+            expireDate = loanTransactionEntity.getEntryDate().toLocalDateTime().plus(period);
             Timestamp expireTimestamp = Timestamp.valueOf(expireDate);
             loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(expireTimestamp));
         }
 
         /*set interest accrued*/
-        if (loanApplicationEntity.getStatus() == ACTIVE.getValue()) {
-            if (loanTransactionEntity != null) {
-                BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
-                loanApplicationDto.setInterestAccrued(BigDecimalMapper.mapToScale(interestAccrued));
-            }
+        if (ACTIVE.getValue() == loanApplicationEntity.getStatus() && loanTransactionEntity != null) {
+            BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
+            loanApplicationDto.setInterestAccrued(BigDecimalMapper.mapToScale(interestAccrued));
         }
 
         /*set payment amount*/
         List<RepaymentEntity> repaymentEntities =
                 repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
-        if (!repaymentEntities.isEmpty()) {
-            RepaymentEntity latestPayment = repaymentEntities.get(0);
-            PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
-            loanApplicationDto.setPaymentAmount(paymentAmountDto);
+        if (!repaymentEntities.isEmpty() && expireDate != null) {
+            LocalDateTime currentDate = LocalDateTime.now();
+            Period periodLead = Period.ofDays(LEAD_DAY);
+            if (currentDate.plus(periodLead).compareTo(expireDate) >= 0) {
+                RepaymentEntity latestPayment = repaymentEntities.get(0);
+                PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
+                loanApplicationDto.setPaymentAmount(paymentAmountDto);
+            }
         }
-
         return loanApplicationDto;
     }
 
