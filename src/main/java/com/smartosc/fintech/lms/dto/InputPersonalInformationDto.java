@@ -1,9 +1,9 @@
 package com.smartosc.fintech.lms.dto;
 
-import com.smartosc.fintech.lms.validator.EmailConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -11,7 +11,8 @@ import javax.validation.constraints.Size;
 @Setter
 public class InputPersonalInformationDto {
 
-    @EmailConstraint
+    @Email(regexp = "^[\\w-\\.]+@([\\w-]*[A-Za-z]+[\\w-]*\\.)+[A-Za-z]+$")
+    @Size(max = 64)
     private String emailAddress;
 
     @Size(max = 100)
