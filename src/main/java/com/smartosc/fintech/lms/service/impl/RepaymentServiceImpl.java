@@ -11,6 +11,7 @@ import com.smartosc.fintech.lms.exception.BusinessServiceException;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
 import com.smartosc.fintech.lms.repository.RepaymentRepository;
+import com.smartosc.fintech.lms.service.EmailService;
 import com.smartosc.fintech.lms.service.RepaymentService;
 import com.smartosc.fintech.lms.service.mapper.RepaymentMapper;
 import com.smartosc.fintech.lms.validator.RepaymentRequestValidator;
@@ -36,6 +37,7 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final LoanApplicationRepository loanApplicationRepository;
     private final LoanTransactionRepository loanTransactionRepository;
     private final RepaymentRepository repaymentRepository;
+    private final EmailService emailService;
     private final RepaymentRequestValidator repaymentRequestValidator;
     private final ApplicationConfig applicationConfig;
 
@@ -62,7 +64,10 @@ public class RepaymentServiceImpl implements RepaymentService {
     private LoanTransactionEntity processWhenRepaySuccess(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
         calculateAndSaveRepayment(repaymentRequestDto, repaymentEntity);
         closeLoanApplication(repaymentEntity.getLoanApplication());
-        return saveRepaymentLoanTransaction(repaymentRequestDto, repaymentEntity);
+        LoanTransactionEntity transaction = saveRepaymentLoanTransaction(repaymentRequestDto, repaymentEntity);
+        emailService.sendRepaymentEmail(repaymentEntity);
+
+        return transaction;
     }
 
     private String buildPaymentUrl(RepaymentRequestDto repaymentRequestDto){
