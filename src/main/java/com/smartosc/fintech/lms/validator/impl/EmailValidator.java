@@ -7,14 +7,12 @@ import javax.validation.ConstraintValidatorContext;
 
 public class EmailValidator implements ConstraintValidator<EmailConstraint,String> {
     @Override
-    public void initialize(EmailConstraint constraintAnnotation) {
-
-    }
+    public void initialize(EmailConstraint constraintAnnotation) {}
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
 
-        String regrex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+        String regrex = "^\\w+[\\w-\\.]*\\@\\w+((-\\w+)|(\\w*))\\.[a-z]{2,3}$";
         return value != null
                 && value.matches(regrex)
                 && (value.length() > 0)
