@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
@@ -88,8 +87,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
         if (!repaymentEntities.isEmpty() && expireDate != null) {
             LocalDateTime currentDate = LocalDateTime.now();
-            long diffSeconds = Duration.between(currentDate, expireDate).getSeconds();
-            if (diffSeconds <= LEAD_DAY * 24 * 60 * 60) {
+            Period periodLead = Period.ofDays(LEAD_DAY);
+            if (currentDate.plus(periodLead).compareTo(expireDate) >= 0) {
                 RepaymentEntity latestPayment = repaymentEntities.get(0);
                 PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
                 loanApplicationDto.setPaymentAmount(paymentAmountDto);
