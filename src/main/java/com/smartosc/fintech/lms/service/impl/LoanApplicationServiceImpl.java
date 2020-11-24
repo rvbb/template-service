@@ -46,7 +46,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private LoanTransactionRepository loanTransactionRepository;
 
-    private static final int LEAD_DAY=3;
+    private static final int LEAD_DAY = 3;
 
     @Override
     public LoanApplicationDto findLoanApplicationEntityByUuid(String uuid) {
@@ -55,15 +55,13 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 () -> new EntityNotFoundException("Not found loan application with uuid : " + uuid));
         LoanApplicationDto loanApplicationDto = LoanApplicationMapper.INSTANCE.mapToDto(loanApplicationEntity);
 
-        /*set outstandingBalance
-        * oustandingBalance khac 0 voi khoan vay da duoc giai ngan
-        *  va bang 0 doi voi cac khoan vay chua gia ngan*/
-        BigDecimal outstandingBalance = new BigDecimal(0);
-        if (loanApplicationEntity.getStatus().equals(ACTIVE.getValue())) {
-            if (loanApplicationEntity.getPrincipalPaid() != null)
-                outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-            else
-                outstandingBalance = loanApplicationEntity.getLoanAmount();
+        /*set outstandingBalance*/
+
+        BigDecimal outstandingBalance = BigDecimal.ZERO;
+        if (ACTIVE.getValue() == (loanApplicationEntity.getStatus())) {
+            outstandingBalance = loanApplicationEntity.getPrincipalPaid() != null
+                    ? outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid())
+                    : loanApplicationEntity.getLoanAmount();
         }
         loanApplicationDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
         loanApplicationDto.setLoanType(loanApplicationEntity.getLoanProduct().getName());
@@ -79,20 +77,19 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(expireTimestamp));
         }
 
-        /*set interest accrued
-        * lai suat cong don chi tinh voi khoan vay da duoc giai ngan*/
-        if (loanApplicationEntity.getStatus() == ACTIVE.getValue()&&loanTransactionEntity != null) {
-                BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
-                loanApplicationDto.setInterestAccrued(BigDecimalMapper.mapToScale(interestAccrued));
+        /*set interest accrued*/
+        if (ACTIVE.getValue() == loanApplicationEntity.getStatus() && loanTransactionEntity != null) {
+            BigDecimal interestAccrued = repaymentService.calculateAccruedInterest(loanApplicationEntity, loanTransactionEntity.getEntryDate());
+            loanApplicationDto.setInterestAccrued(BigDecimalMapper.mapToScale(interestAccrued));
         }
 
         /*set payment amount*/
         List<RepaymentEntity> repaymentEntities =
                 repaymentRepository.findByLoanApplicationUuidAndStateNotOrderByDueDateAsc(uuid, RepaymentState.PAID.name());
-        if (!repaymentEntities.isEmpty()&&expireDate != null) {
+        if (!repaymentEntities.isEmpty() && expireDate != null) {
             LocalDateTime currentDate = LocalDateTime.now();
-            long diffSeconds = Duration.between(currentDate,expireDate).getSeconds();
-            if (diffSeconds<=LEAD_DAY*24*60*60) {
+            long diffSeconds = Duration.between(currentDate, expireDate).getSeconds();
+            if (diffSeconds <= LEAD_DAY * 24 * 60 * 60) {
                 RepaymentEntity latestPayment = repaymentEntities.get(0);
                 PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
                 loanApplicationDto.setPaymentAmount(paymentAmountDto);
