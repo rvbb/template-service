@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.ACTIVE;
-import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.DROP_OFF;
 import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
 
 @Service
@@ -98,7 +97,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     @Override
     public List<BriefLoanDto> findLoanApplicationByUser(long id) {
-        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserIdAndStatusNot(id, DROP_OFF.getValue());
+        List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserIdAndStatusNotDrop(id);
         List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
         for (LoanApplicationEntity loanApplicationEntity : loanApplicationEntities) {
             BriefLoanDto briefLoanDto = BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
