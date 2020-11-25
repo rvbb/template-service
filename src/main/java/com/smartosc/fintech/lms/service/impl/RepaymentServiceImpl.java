@@ -179,9 +179,10 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     private BigDecimal getDiffDays(Timestamp approveDate) {
         LocalDateTime startDate = approveDate.toLocalDateTime();
+        startDate  = LocalDateTime.of(startDate.getYear(),startDate.getMonthValue(),startDate.getDayOfMonth(),0, 0, 0, 0);
         LocalDateTime currentDay = LocalDateTime.now();
         long diffDays = Duration.between(startDate, currentDay).toDays();
-        return BigDecimal.valueOf(diffDays + 1);
+        return BigDecimal.valueOf(diffDays);
     }
 
     public void calculateAndSaveRepayment(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
