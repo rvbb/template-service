@@ -102,10 +102,12 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
         for (LoanApplicationEntity loanApplicationEntity : loanApplicationEntities) {
             BriefLoanDto briefLoanDto = BriefLoanMapper.INSTANCE.mapToDto(loanApplicationEntity);
-            BigDecimal outstandingBalance = loanApplicationEntity.getLoanAmount();
-            if (loanApplicationEntity.getPrincipalPaid() != null)
-                outstandingBalance = outstandingBalance.subtract(loanApplicationEntity.getPrincipalPaid());
-
+            BigDecimal outstandingBalance = BigDecimal.ZERO;
+            if (ACTIVE.getValue() == (loanApplicationEntity.getStatus())) {
+                outstandingBalance = loanApplicationEntity.getPrincipalPaid() != null
+                        ? loanApplicationEntity.getLoanAmount().subtract(loanApplicationEntity.getPrincipalPaid())
+                        : loanApplicationEntity.getLoanAmount();
+            }
             briefLoanDto.setOutstandingBalance(BigDecimalMapper.mapToScale(outstandingBalance));
             briefLoanDtos.add(briefLoanDto);
         }
