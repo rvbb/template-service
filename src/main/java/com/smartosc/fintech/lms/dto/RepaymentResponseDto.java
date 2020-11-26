@@ -12,6 +12,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RepaymentResponseDto implements Serializable {
-    private RepaymentDto repayment;
     private String paymentUrl;
 }
