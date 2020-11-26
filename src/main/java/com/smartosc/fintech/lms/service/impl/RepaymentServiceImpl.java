@@ -82,7 +82,6 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     private RepaymentResponseDto buildRepaymentResponse(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-        repaymentResponseDto.setRepayment(RepaymentMapper.INSTANCE.entityToDto(repaymentEntity));
         repaymentResponseDto.setPaymentUrl(buildPaymentUrl(repaymentRequestDto));
         return repaymentResponseDto;
     }
