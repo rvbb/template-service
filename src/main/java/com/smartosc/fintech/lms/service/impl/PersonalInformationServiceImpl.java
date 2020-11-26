@@ -40,6 +40,7 @@ public class PersonalInformationServiceImpl implements PersonalInformationServic
     }
 
     @Override
+    @SMFLogger
     public List<LoanPersonalInformationDto> updateLoanPersonalInformation(String uuid, InputPersonalInformationDto inputPersonalInformationDto) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
         LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(
