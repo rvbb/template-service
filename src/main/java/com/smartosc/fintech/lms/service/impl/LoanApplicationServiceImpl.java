@@ -2,6 +2,7 @@ package com.smartosc.fintech.lms.service.impl;
 
 import com.smartosc.fintech.lms.common.constant.RepaymentState;
 import com.smartosc.fintech.lms.common.util.DateTimeUtil;
+import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.dto.BriefLoanDto;
 import com.smartosc.fintech.lms.dto.LoanApplicationDto;
 import com.smartosc.fintech.lms.dto.PaymentAmountDto;
@@ -47,6 +48,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private static final int LEAD_DAY = 3;
 
     @Override
+    @SMFLogger
     public LoanApplicationDto findLoanApplicationEntityByUuid(String uuid) {
         Optional<LoanApplicationEntity> optional = loanApplicationRepository.findLoanApplicationEntityByUuid(uuid);
         LoanApplicationEntity loanApplicationEntity = optional.orElseThrow(
@@ -96,6 +98,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     }
 
     @Override
+    @SMFLogger
     public List<BriefLoanDto> findLoanApplicationByUser(long id) {
         List<LoanApplicationEntity> loanApplicationEntities = loanApplicationRepository.findLoanApplicationEntityByUserIdAndStatusNotDrop(id);
         List<BriefLoanDto> briefLoanDtos = new ArrayList<>();
