@@ -2,9 +2,11 @@ package com.smartosc.fintech.lms.repository;
 
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.LockModeType;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,4 +27,6 @@ public interface LoanApplicationRepository extends JpaRepository<LoanApplication
             "order by temp asc, last_updated_date desc;", nativeQuery = true)
     List<LoanApplicationEntity> findLoanApplicationEntityByUserIdAndStatusNotDrop(long userId);
 
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    Optional<LoanApplicationEntity> findByUuid(String uuid);
 }
