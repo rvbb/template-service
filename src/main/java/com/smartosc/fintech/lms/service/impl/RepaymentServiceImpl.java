@@ -25,8 +25,14 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.time.Period;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
 
 
 @Service
@@ -82,7 +88,6 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     private RepaymentResponseDto buildRepaymentResponse(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
-        repaymentResponseDto.setRepayment(RepaymentMapper.INSTANCE.entityToDto(repaymentEntity));
         repaymentResponseDto.setPaymentUrl(buildPaymentUrl(repaymentRequestDto));
         return repaymentResponseDto;
     }
@@ -162,6 +167,15 @@ public class RepaymentServiceImpl implements RepaymentService {
         repaymentEntity.setPrincipalDue(loanApplicationEntity.getLoanAmount());
         repaymentEntity.setUser(loanApplicationEntity.getUser());
         repaymentEntity.setLoanApplication(loanApplicationEntity);
+
+        LoanTransactionEntity transaction =
+                loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(loanApplicationEntity.getUuid(), FUNDING.name());
+        if (transaction != null) {
+            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
+            LocalDateTime dueDate = transaction.getEntryDate().toLocalDateTime().plus(period);
+            repaymentEntity.setDueDate(Timestamp.valueOf(dueDate));
+        }
+
         return Collections.singletonList(repaymentEntity);
     }
 
