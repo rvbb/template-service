@@ -22,7 +22,7 @@ public interface LoanApplicationRepository extends JpaRepository<LoanApplication
             "from `lms-service`.loan_application\n" +
             "where status!=0\n" +
             "and user_id=?1\n" +
-            "order by temp asc, created_date desc;", nativeQuery = true)
+            "order by temp asc, last_updated_date desc;", nativeQuery = true)
     List<LoanApplicationEntity> findLoanApplicationEntityByUserIdAndStatusNotDrop(long userId);
 
 }
