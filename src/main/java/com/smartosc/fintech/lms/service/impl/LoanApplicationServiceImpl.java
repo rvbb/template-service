@@ -25,6 +25,7 @@ import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,10 +71,12 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(uuid, FUNDING.name());
         LocalDateTime expireDate = null;
         if (loanTransactionEntity != null) {
-            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
-            expireDate = loanTransactionEntity.getEntryDate().toLocalDateTime().plus(period);
-            Timestamp expireTimestamp = Timestamp.valueOf(expireDate);
-            loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(expireTimestamp));
+            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm())+1);
+            LocalDateTime entryDate = LocalDateTime.of(
+                    loanTransactionEntity.getEntryDate().toLocalDateTime().toLocalDate(),
+                    LocalTime.of(0, 0));
+            expireDate = entryDate.plus(period);
+            loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(Timestamp.valueOf(expireDate)));
         }
 
         /*set interest accrued*/
