@@ -89,7 +89,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
         if (!repaymentEntities.isEmpty()) {
             LocalDateTime currentDate = LocalDateTime.now();
             Period periodLead = Period.ofDays(LEAD_DAY);
-            if (expireDate != null && currentDate.plus(periodLead).compareTo(expireDate) >= 0) {
+            if (expireDate != null && currentDate.plus(periodLead).compareTo(expireDate.toLocalDate().atStartOfDay()) >= 0) {
                 RepaymentEntity latestPayment = repaymentEntities.get(0);
                 PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
                 loanApplicationDto.setPaymentAmount(paymentAmountDto);

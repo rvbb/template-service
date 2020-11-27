@@ -1,9 +1,18 @@
 package com.smartosc.fintech.lms.service.impl;
 
-import com.smartosc.fintech.lms.common.constant.*;
+import com.smartosc.fintech.lms.common.constant.ErrorCode;
+import com.smartosc.fintech.lms.common.constant.LoanApplicationStatus;
+import com.smartosc.fintech.lms.common.constant.LoanTransactionType;
+import com.smartosc.fintech.lms.common.constant.PaymentGatewayConstants;
+import com.smartosc.fintech.lms.common.constant.PaymentGatewayStatus;
+import com.smartosc.fintech.lms.common.constant.RepaymentState;
 import com.smartosc.fintech.lms.common.util.SMFLogger;
 import com.smartosc.fintech.lms.config.ApplicationConfig;
-import com.smartosc.fintech.lms.dto.*;
+import com.smartosc.fintech.lms.dto.LoanApplicationDto;
+import com.smartosc.fintech.lms.dto.PaymentResponse;
+import com.smartosc.fintech.lms.dto.RepaymentDto;
+import com.smartosc.fintech.lms.dto.RepaymentRequestDto;
+import com.smartosc.fintech.lms.dto.RepaymentResponseDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.entity.RepaymentEntity;
@@ -25,6 +34,7 @@ import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Period;
 import java.util.Collections;
 import java.util.List;
@@ -172,7 +182,8 @@ public class RepaymentServiceImpl implements RepaymentService {
                 loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(loanApplicationEntity.getUuid(), FUNDING.name());
         if (transaction != null) {
             Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
-            LocalDateTime dueDate = transaction.getEntryDate().toLocalDateTime().plus(period);
+            LocalDateTime entryDate = transaction.getEntryDate().toLocalDateTime().toLocalDate().atTime(LocalTime.MAX);
+            LocalDateTime dueDate = entryDate.plus(period);
             repaymentEntity.setDueDate(Timestamp.valueOf(dueDate));
         }
 
