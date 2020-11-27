@@ -71,10 +71,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
                 loanTransactionRepository.findDistinctFirstByLoanApplicationUuidAndType(uuid, FUNDING.name());
         LocalDateTime expireDate = null;
         if (loanTransactionEntity != null) {
-            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm())+1);
-            LocalDateTime entryDate = LocalDateTime.of(
-                    loanTransactionEntity.getEntryDate().toLocalDateTime().toLocalDate(),
-                    LocalTime.of(0, 0));
+            Period period = Period.ofDays(Integer.parseInt(loanApplicationEntity.getLoanTerm()));
+            LocalDateTime entryDate = loanTransactionEntity.getEntryDate().toLocalDateTime().toLocalDate().atTime(LocalTime.MAX);
             expireDate = entryDate.plus(period);
             loanApplicationDto.setExpireDate(DateTimeUtil.getFormatTimestamp(Timestamp.valueOf(expireDate)));
         }
