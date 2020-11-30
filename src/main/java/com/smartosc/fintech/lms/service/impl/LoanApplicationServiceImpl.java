@@ -36,6 +36,8 @@ import java.util.Optional;
 
 import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.ACTIVE;
 import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
+import static com.smartosc.fintech.lms.common.constant.ParamsConstant.LEAD_DAY;
+import static com.smartosc.fintech.lms.common.constant.ParamsConstant.DAY_OF_YEAR;
 
 @Service
 @AllArgsConstructor
@@ -48,9 +50,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
     private RepaymentService repaymentService;
 
     private LoanTransactionRepository loanTransactionRepository;
-
-    private static final int LEAD_DAY = 3;
-    private static final BigDecimal DAY_OF_YEAR = BigDecimal.valueOf(365);
 
 
     @Override
@@ -128,7 +127,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             return latestPayment;
         }
 
-        long diffDays = ChronoUnit.DAYS.between(latestPayment.getDueDate().toLocalDateTime().toLocalDate(), currentDate);
+        long diffDays = ChronoUnit.DAYS.between(dueDate, currentDate);
         BigDecimal expiredInterest = latestPayment.getPrincipalDue()
                 .multiply(BigDecimal.valueOf(diffDays))
                 .multiply(interestRate)
