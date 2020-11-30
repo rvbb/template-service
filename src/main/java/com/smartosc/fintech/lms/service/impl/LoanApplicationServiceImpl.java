@@ -23,16 +23,21 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static com.smartosc.fintech.lms.common.constant.LoanApplicationStatus.ACTIVE;
 import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
+import static com.smartosc.fintech.lms.common.constant.ParamsConstant.LEAD_DAY;
+import static com.smartosc.fintech.lms.common.constant.ParamsConstant.DAY_OF_YEAR;
 
 @Service
 @AllArgsConstructor
@@ -46,7 +51,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 
     private LoanTransactionRepository loanTransactionRepository;
 
-    private static final int LEAD_DAY = 3;
 
     @Override
     @SMFLogger
@@ -90,7 +94,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             LocalDateTime currentDate = LocalDateTime.now();
             Period periodLead = Period.ofDays(LEAD_DAY);
             if (expireDate != null && currentDate.plus(periodLead).compareTo(expireDate.toLocalDate().atStartOfDay()) >= 0) {
-                RepaymentEntity latestPayment = repaymentEntities.get(0);
+                RepaymentEntity latestPayment = calculateInterest(LocalDate.now(), repaymentEntities.get(0), loanApplicationDto.getInterestRate());
                 PaymentAmountDto paymentAmountDto = PaymentAmountMapper.INSTANCE.entityToDto(latestPayment);
                 loanApplicationDto.setPaymentAmount(paymentAmountDto);
             }
@@ -115,6 +119,22 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
             briefLoanDtos.add(briefLoanDto);
         }
         return briefLoanDtos;
+    }
+
+    public RepaymentEntity calculateInterest(LocalDate currentDate, RepaymentEntity latestPayment, BigDecimal interestRate) {
+        LocalDate dueDate = latestPayment.getDueDate().toLocalDateTime().toLocalDate();
+        if (currentDate.isBefore(dueDate)) {
+            return latestPayment;
+        }
+
+        long diffDays = ChronoUnit.DAYS.between(dueDate, currentDate);
+        BigDecimal expiredInterest = latestPayment.getPrincipalDue()
+                .multiply(BigDecimal.valueOf(diffDays))
+                .multiply(interestRate)
+                .divide(DAY_OF_YEAR, RoundingMode.CEILING
+                );
+        latestPayment.setInterestDue(latestPayment.getInterestDue().add(expiredInterest));
+        return latestPayment;
     }
 
 }

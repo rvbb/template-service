@@ -43,6 +43,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.smartosc.fintech.lms.common.constant.LoanTransactionType.FUNDING;
+import static com.smartosc.fintech.lms.common.constant.ParamsConstant.DAY_OF_YEAR;
 
 
 @Service
@@ -56,8 +57,6 @@ public class RepaymentServiceImpl implements RepaymentService {
     private final EmailService emailService;
     private final RepaymentRequestValidator repaymentRequestValidator;
     private final ApplicationConfig applicationConfig;
-
-    private static final BigDecimal DAY_OF_YEAR = BigDecimal.valueOf(365);
 
     @Override
     public RepaymentResponseDto payBack(RepaymentRequestDto repaymentRequestDto) {
