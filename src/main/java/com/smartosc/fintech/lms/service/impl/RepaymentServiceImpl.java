@@ -216,7 +216,6 @@ public class RepaymentServiceImpl implements RepaymentService {
         this.calculateAmount(repaymentRequestDto, repaymentEntity);
         Timestamp current = new Timestamp(System.currentTimeMillis());
         repaymentEntity.setLastPaidDate(current);
-        repaymentEntity.setLastPenaltyAppliedDate(current);
         /**Carefully: this repayment just set repaid date in this MVP,
          * in the future, the repayment will be updated when all repayments were paid
          */
