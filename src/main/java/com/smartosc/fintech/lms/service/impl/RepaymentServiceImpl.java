@@ -64,7 +64,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         RepaymentEntity repaymentEntity = repaymentRepository.findFirstByUuid(repaymentRequestDto.getUuid()).orElseThrow(() -> new EntityNotFoundException("no Repayment found (id): " + repaymentRequestDto.getUuid()));
         LoanApplicationEntity loanApplicationEntity = repaymentEntity.getLoanApplication();
         validateData(loanApplicationEntity);
-        return buildRepaymentResponse(repaymentRequestDto, repaymentEntity);
+        return buildRepaymentResponse(repaymentRequestDto);
     }
 
     private void validateInput(RepaymentRequestDto repaymentRequestDto) {
@@ -95,7 +95,7 @@ public class RepaymentServiceImpl implements RepaymentService {
 
     }
 
-    private RepaymentResponseDto buildRepaymentResponse(RepaymentRequestDto repaymentRequestDto, RepaymentEntity repaymentEntity) {
+    private RepaymentResponseDto buildRepaymentResponse(RepaymentRequestDto repaymentRequestDto) {
         RepaymentResponseDto repaymentResponseDto = new RepaymentResponseDto();
         repaymentResponseDto.setPaymentUrl(buildPaymentUrl(repaymentRequestDto));
         return repaymentResponseDto;
@@ -260,7 +260,6 @@ public class RepaymentServiceImpl implements RepaymentService {
         }
 
         repaymentEntity.setInterestPaid(repaymentEntity.getInterestDue());
-        remainAmount = remainAmount.subtract(repaymentEntity.getInterestDue());
     }
 
     @Override
@@ -273,7 +272,7 @@ public class RepaymentServiceImpl implements RepaymentService {
         if (isPayResultSuccess(paymentResponse)) {
             processWhenRepaySuccess(repaymentRequestDto, repaymentEntity);
         }
-        return buildRepaymentResponse(repaymentRequestDto, repaymentEntity);
+        return buildRepaymentResponse(repaymentRequestDto);
     }
 
     private boolean isPayResultSuccess(PaymentResponse paymentResponse){

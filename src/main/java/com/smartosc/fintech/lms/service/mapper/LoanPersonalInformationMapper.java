@@ -10,7 +10,6 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.sql.Date;
-import java.text.ParseException;
 import java.util.Collection;
 
 @Mapper(uses = {LoanPersonalInformationMapper.class})
@@ -25,8 +24,8 @@ public interface LoanPersonalInformationMapper {
     Collection<LoanPersonalInformationDto> mapToListPersonalDto(Collection<LoanPersonalInformationEntity> loanPersonalInformationEntity);
 
     @Named("mapBirthdayToString")
-    static String mapBirthdayToString(Date date) throws ParseException {
-           return DateTimeUtil.formatDate(date);
+    static String mapBirthdayToString(Date date) {
+        return DateTimeUtil.formatDate(date);
     }
 
 }
