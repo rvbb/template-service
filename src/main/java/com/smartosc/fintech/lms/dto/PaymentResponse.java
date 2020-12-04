@@ -2,10 +2,12 @@ package com.smartosc.fintech.lms.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class PaymentResponse {
+public class PaymentResponse implements Serializable {
     @Data
-    public static class PaymentResponseStatus {
+    public static class PaymentResponseStatus implements Serializable {
         private int code;
         private String message;
     }

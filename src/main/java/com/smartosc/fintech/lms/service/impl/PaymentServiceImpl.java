@@ -83,11 +83,10 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResultDto processRepayLoan(RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto) {
-        PaymentResultDto paymentResultDto = new PaymentResultDto();
+    public PaymentResultDto<PaymentResponse> processRepayLoan(RepayRequestInPaymentServiceDto repayRequestInPaymentServiceDto) {
+        PaymentResultDto<PaymentResponse> paymentResultDto = new PaymentResultDto<>();
         PaymentHistoryEntity history = new PaymentHistoryEntity();
-        Timestamp creationDate = new Timestamp(new Date().getTime());
-        history.setCreationDate(creationDate);
+        history.setCreationDate( new Timestamp(new Date().getTime()));
         history.setUuid(UUID.randomUUID().toString());
         history.setAmount(repayRequestInPaymentServiceDto.getAmount());
         history.setBody(convertObject(repayRequestInPaymentServiceDto));
@@ -104,7 +103,9 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentResultDto.setFailed(true);
                 throw new BusinessServiceException(FAIL_MESSAGE, ErrorCode.PAYMENT_GATEWAY_FAIL);
             }
-            if (response.getBody().getStatus().getCode() != PaymentGatewayStatus.SUCCESS.getValue()) {
+            PaymentResponse body = response.getBody();
+            if (body != null &&
+                    PaymentGatewayStatus.SUCCESS.getValue() != body.getStatus().getCode()) {
                 history.setStatus(PaymentHistoryStatus.FAIL.getValue());
                 paymentHistoryRepository.save(history);
                 paymentResultDto.setFailed(true);

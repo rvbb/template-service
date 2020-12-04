@@ -1,5 +1,9 @@
 package com.smartosc.fintech.lms.common.constant;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaymentGatewayConstants {
     public static final String EQUAL = "=";
     public static final String AND = "&";

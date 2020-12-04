@@ -15,8 +15,8 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaymentResultDto implements Serializable {
+public class PaymentResultDto<T extends Serializable> implements Serializable {
     private boolean isSuccessful;
     private boolean isFailed;
-    private Object data;
+    private T data;
 }
