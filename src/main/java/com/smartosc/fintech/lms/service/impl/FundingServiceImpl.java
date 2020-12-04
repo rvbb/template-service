@@ -11,7 +11,6 @@ import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import com.smartosc.fintech.lms.entity.LoanTransactionEntity;
 import com.smartosc.fintech.lms.repository.LoanApplicationRepository;
 import com.smartosc.fintech.lms.repository.LoanTransactionRepository;
-import com.smartosc.fintech.lms.service.EmailService;
 import com.smartosc.fintech.lms.service.FundingService;
 import com.smartosc.fintech.lms.service.PaymentService;
 import com.smartosc.fintech.lms.service.RepaymentService;
@@ -34,11 +33,10 @@ public class FundingServiceImpl implements FundingService {
     private final LoanTransactionRepository transactionRepository;
     private final PaymentService paymentService;
     private final RepaymentService repaymentService;
-    private final EmailService emailService;
 
     @Override
     @Transactional
-    public void makeFunding(FundingRequest request) {
+    public LoanTransactionEntity makeFunding(FundingRequest request) {
         Optional<LoanApplicationEntity> existApplication = applicationRepository.findByUuid(request.getApplicationUuid());
         LoanApplicationEntity application = existApplication.orElseThrow(() -> new EntityNotFoundException("Loan application not found"));
         if (application.getStatus() != null && application.getStatus() != LoanApplicationStatus.SIGN.getValue()) {
@@ -63,7 +61,7 @@ public class FundingServiceImpl implements FundingService {
         application.setInterestDue(interestDue);
         applicationRepository.save(application);
 
-        emailService.sendFundingEmail(transaction);
+        return transaction;
     }
 
     private LoanTransactionEntity createTransactionEntity(LoanApplicationEntity application) {
