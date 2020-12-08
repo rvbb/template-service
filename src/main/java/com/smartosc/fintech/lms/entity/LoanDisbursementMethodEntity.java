@@ -27,6 +27,9 @@ public class LoanDisbursementMethodEntity implements Serializable {
     @Column(name = "disbursement_method")
     private Integer disbursementMethod;
 
+    @Column(name = "disbursement_code")
+    private String disbursementCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_disbursement_method")
     private LoanApplicationEntity loanApplication;

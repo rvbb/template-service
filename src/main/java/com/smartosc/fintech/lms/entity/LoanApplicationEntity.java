@@ -55,6 +55,15 @@ public class LoanApplicationEntity extends AuditEntity implements Serializable {
   @Column(name = "status")
   private Integer status;
 
+  @Column(name = "created_date")
+  private Timestamp createdDate;
+
+  @Column(name = "last_updated_date")
+  private Timestamp lastUpdatedDate;
+
+  @Column(name = "last_modified_date")
+  private Timestamp lastModifiedDate;
+
   @Column(name = "approve_date")
   private Timestamp approveDate;
 

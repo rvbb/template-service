@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
 @Data
@@ -30,13 +31,13 @@ public class LoanProductEntity implements Serializable {
     private String description;
 
     @Column(name = "min_amount")
-    private Long minAmount;
+    private BigDecimal minAmount;
 
     @Column(name = "max_amount")
-    private Long maxAmount;
+    private BigDecimal maxAmount;
 
     @Column(name = "interest_rate")
-    private String interestRate;
+    private BigDecimal interestRate;
 
     @Column(name = "type")
     private Integer type;
@@ -102,7 +103,7 @@ public class LoanProductEntity implements Serializable {
     private Integer daysInYear;
 
     @Column(name = "loan_penalty_rate")
-    private String loanPenaltyRate;
+    private BigDecimal loanPenaltyRate;
 
     @OneToMany(mappedBy = "loanProduct", fetch = FetchType.LAZY)
     private Collection<LoanApplicationEntity> loanApplications;
