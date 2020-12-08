@@ -39,6 +39,12 @@ public class LoanPersonalInformationEntity implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Column(name = "identification_type")
+    private Integer identificationType;
+
+    @Column(name = "identification_card_number")
+    private String identificationCardNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_personal_information")
     private LoanApplicationEntity loanApplication;

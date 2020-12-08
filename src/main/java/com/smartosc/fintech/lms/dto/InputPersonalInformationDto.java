@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Setter
 public class InputPersonalInformationDto {
 
-    @Email(regexp = "^[\\w-\\.]+@([\\w-]*[A-Za-z]+[\\w-]*\\.)+[A-Za-z]+$")
+    @Email(regexp = "^[\\w-\\.!#$%&'*+\\-\\/=?^_`{|}~]+@([\\w-]*[A-Za-z]+[\\w-]*\\.)+[A-Za-z]+$")
     @Size(max = 64)
     private String emailAddress;
 

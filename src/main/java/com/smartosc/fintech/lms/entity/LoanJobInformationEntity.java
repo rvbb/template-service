@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 @Data
@@ -26,6 +27,9 @@ public class LoanJobInformationEntity implements Serializable {
 
     @Column(name = "pre_tax_income")
     private Long preTaxIncome;
+
+    @Column(name = "expense")
+    private BigDecimal expense;
 
     @Column(name = "company_name")
     private String companyName;

@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 
 @Data
@@ -25,7 +26,7 @@ public class LoanCreditScoreEntity implements Serializable {
     private long id;
 
     @Column(name = "credit_score")
-    private Long creditScore;
+    private BigDecimal creditScore;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_credit_score")

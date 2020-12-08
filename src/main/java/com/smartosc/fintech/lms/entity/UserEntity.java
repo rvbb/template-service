@@ -41,6 +41,12 @@ public class UserEntity extends AuditEntity implements Serializable {
     @Column(name = "last_logged_in_date")
     private Timestamp lastLoggedInDate;
 
+    @Column(name = "created_date")
+    private Timestamp createdDate;
+
+    @Column(name = "last_updated_date")
+    private Timestamp lastUpdatedDate;
+
     @Column(name = "uuid")
     private String uuid;
 
