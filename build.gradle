@@ -23,7 +23,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework:spring-aop:5.2.2.RELEASE'
-    implementation 'org.springframework.integration:spring-integration-mqtt:5.1.6.RELEASE'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.mariadb.jdbc:mariadb-java-client:2.1.2'
@@ -50,20 +49,8 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     implementation 'junit:junit:4.12'
-
 }
 
-/*
-ext {
-	set('springCloudVersion', "Greenwich.SR3")
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
-}
-*/
 test {
     useJUnitPlatform()
 }
