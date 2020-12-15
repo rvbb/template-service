@@ -5,6 +5,7 @@ import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
@@ -14,7 +15,8 @@ import java.math.BigDecimal;
         LoanPersonalInformationMapper.class,
         PaymentAmountMapper.class,
         BigDecimalMapper.class
-})
+},
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LoanApplicationMapper {
 
     LoanApplicationMapper INSTANCE = Mappers.getMapper(LoanApplicationMapper.class);

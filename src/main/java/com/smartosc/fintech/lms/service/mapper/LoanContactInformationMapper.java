@@ -6,12 +6,13 @@ import com.smartosc.fintech.lms.entity.LoanContactInformationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.sql.Date;
 import java.util.Collection;
 
-@Mapper(uses = {LoanContactInformationMapper.class})
+@Mapper(uses = {LoanContactInformationMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LoanContactInformationMapper {
 
     LoanContactInformationMapper INSTANCE = Mappers.getMapper(LoanContactInformationMapper.class);

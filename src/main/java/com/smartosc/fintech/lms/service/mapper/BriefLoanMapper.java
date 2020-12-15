@@ -4,11 +4,12 @@ import com.smartosc.fintech.lms.dto.BriefLoanDto;
 import com.smartosc.fintech.lms.entity.LoanApplicationEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BriefLoanMapper {
 
     BriefLoanMapper INSTANCE = Mappers.getMapper(BriefLoanMapper.class);
