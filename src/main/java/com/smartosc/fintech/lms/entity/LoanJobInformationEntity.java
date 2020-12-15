@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 @Data
@@ -36,6 +37,9 @@ public class LoanJobInformationEntity implements Serializable {
 
     @Column(name = "company_address")
     private String companyAddress;
+
+    @Column(name = "last_update")
+    private Date lastUpdate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_job_information")
