@@ -2,6 +2,8 @@ package com.smartosc.fintech.lms.controller;
 
 import com.smartosc.fintech.lms.controller.handler.ApiError;
 import com.smartosc.fintech.lms.dto.LoanTransactionDto;
+import com.smartosc.fintech.lms.dto.LoanTransactionRequest;
+import com.smartosc.fintech.lms.dto.PagingResponse;
 import com.smartosc.fintech.lms.dto.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,4 +26,14 @@ public interface LoanTransactionController {
     })
     @GetMapping("/{uuid}")
     Response<LoanTransactionDto> getLoanTransaction(@PathVariable String uuid);
+
+    @ApiOperation(value = "Get list of loan transaction")
+    @ApiResponses(value={
+            @ApiResponse(code = 200,message = "Success",response = PagingResponse.class),
+            @ApiResponse(code = 400, message = "Bad request", response = ApiError.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = ApiError.class)
+    })
+    @GetMapping()
+    Response<PagingResponse<LoanTransactionDto>> getListLoanTransaction(LoanTransactionRequest request);
 }
