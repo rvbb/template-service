@@ -2,6 +2,7 @@ package com.rvbb.api.template.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -14,11 +15,11 @@ public class FinanceInfoInput {
     @NotBlank
     private String preTaxIncome;
 
-    @Size(max = 150, min = 15)
+    @Size(max = 300, min = 15)
     @NotBlank
     private String companyName;
 
-    @Size(max = 150, min = 15)
+    @Size(max = 500, min = 15)
     @NotBlank
     private String companyAddress;
 
@@ -26,4 +27,6 @@ public class FinanceInfoInput {
     @NotBlank
     private String expense;
 
+    @NumberFormat
+    private Byte status;
 }

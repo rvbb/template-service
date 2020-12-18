@@ -1,6 +1,7 @@
 package com.rvbb.api.template.entity;
 
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "loan_job_information")
+@Table(name = "finance_info")
 public class FinanceInfoEntity implements Serializable {
 
     @Id
@@ -36,7 +37,10 @@ public class FinanceInfoEntity implements Serializable {
     @Column(name = "last_update")
     private Date lastUpdate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "loan_application_id", referencedColumnName = "id", nullable = false, table = "loan_job_information")
-    private LoanApplicationEntity loanApplication;
+    @Column(name = "status")
+    private Byte status;
+
+    @UniqueElements
+    @Column(name = "uuid")
+    private String uuid;
 }

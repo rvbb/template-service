@@ -15,7 +15,7 @@ public interface FinanceInfoRepository extends JpaRepository<FinanceInfoEntity, 
 
     Optional<FinanceInfoEntity> findByUuid(String uuid);
 
-    @Query(value = "SELECT * FROM loan_job_information l WHERE l.uuid = :uuid and id = (select max(ll.id) from loan_job_information ll)", nativeQuery = true)
-    FinanceInfoEntity getLastFinInfoByUuid(@Param("uuid") String uuid);
+    @Query(value = "SELECT * FROM loan_job_information l WHERE id = (select max(ll.id) from loan_job_information ll)", nativeQuery = true)
+    FinanceInfoEntity getLast();
 
 }

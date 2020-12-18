@@ -18,4 +18,8 @@ public class FinanceInfoRes {
     private String latestUpdate;
 
     private BigDecimal expense;
+
+    private Byte status;
+
+    private String uuid;
 }

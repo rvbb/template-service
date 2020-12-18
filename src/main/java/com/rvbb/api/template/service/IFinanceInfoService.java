@@ -17,5 +17,5 @@ public interface IFinanceInfoService {
 
     FinanceInfoRes del(String id);
 
-    FinanceInfoRes getLast(String uuid);
+    FinanceInfoRes getLast();
 }
