@@ -8,7 +8,6 @@ import com.rvbb.api.template.config.ApplicationConfig;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
-import com.rvbb.api.template.dto.projection.IFinanceInfoProjection;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
 import com.rvbb.api.template.repository.FinanceInfoXpanRepository;
 import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
@@ -57,7 +56,6 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
     }
 
     public PagedListHolder<FinanceInfoRes> search(FinanceInfoFilterInput filter) {
-        PagedListHolder<FinanceInfoRes> result = new PagedListHolder<>();
         StringBuilder search = new StringBuilder("select ");
         search.append(FieldName.ID.toString() + ",");
         search.append(FieldName.STATUS.toString() + ",");
@@ -76,13 +74,13 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
         StringBuilder sort = new StringBuilder();
 
         if (ObjectUtils.isNotEmpty(filter.getStatus())) {
-            where.append("where " + FieldName.STATUS.toString() + "=:status");
+            where.append(" where " + FieldName.STATUS.toString() + "=" + filter.getStatus());
         }
         if (StringUtils.isNotEmpty(filter.getCompanyName())) {
             if (where.length() < 1) {
-                where.append("where " + FieldName.COMPANY_NAME.toString() + " like =%:companyName%");
+                where.append(" where lower(" + FieldName.COMPANY_NAME.toString() + ") like '%" + filter.getCompanyName().toLowerCase() + "%'");
             } else {
-                where.append(" and " + FieldName.COMPANY_NAME.toString() + "=%:companyName%");
+                where.append(" and lower(" + FieldName.COMPANY_NAME.toString() + ") like '%" + filter.getCompanyName().toLowerCase() + "%'");
             }
         }
         if (where.length() > 0) {
@@ -92,10 +90,10 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
         Query countQuery = entityManager.createNativeQuery(count.toString());
 
         int totalRow = countQuery.getFirstResult();
-        int pageSize = filter.getPageSize() | applicationConfig.getSize();
+        int pageSize = ObjectUtils.isEmpty(filter.getPageSize()) ? applicationConfig.getSize() : filter.getPageSize();
         int realtimeTotalPage = totalRow % pageSize;
-        int pageNum = filter.getPageNum() | applicationConfig.getPage();
-        result.setMaxLinkedPages(realtimeTotalPage);
+        int pageNum = ObjectUtils.isEmpty(filter.getPageNum()) ? applicationConfig.getPage() : filter.getPageNum();
+
         Map<String, String> sortFields = filter.getSorts();
 
         if (ObjectUtils.isNotEmpty(sortFields)) {
@@ -124,9 +122,10 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
         List<FinanceInfoEntity> entityList = CommonUtil.fromResultList(resultList);
         List<FinanceInfoRes> resList = FinanceInfoMapper.INSTANCE.convertList(entityList);
 
+        PagedListHolder<FinanceInfoRes> result = new PagedListHolder<>(resList);
+        result.setMaxLinkedPages(realtimeTotalPage);
         result.setPageSize(pageSize);
         result.setPage(nextPage);
-        result.setSource(resList);
 
         return result;
     }

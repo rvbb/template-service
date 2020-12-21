@@ -14,10 +14,15 @@ import java.util.Map;
 @Setter
 public class FinanceInfoFilterInput extends Filter {
 
-    @Size(max = 300, min = 15)
+    @Size(max = 300)
     @NotBlank
     private String companyName;
 
     @NumberFormat
     private Byte status;
+
+    @Override
+    public String toString(){
+        return "companyName=[" + companyName + "], status=[" + status + "]";
+    }
 }

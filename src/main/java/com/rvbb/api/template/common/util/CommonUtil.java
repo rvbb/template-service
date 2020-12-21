@@ -36,7 +36,7 @@ public class CommonUtil {
             FinanceInfoEntity entity = FinanceInfoEntity.builder()
                     .id(Long.valueOf(String.valueOf(entityAsObjectArray[0])))
                     .status(Byte.valueOf(String.valueOf(entityAsObjectArray[1])))
-                    .lastUpdate(DateTimeUtil.string2Date(String.valueOf(entityAsObjectArray[2]), false))
+                    .lastUpdate(DateTimeUtil.string2Date(String.valueOf(entityAsObjectArray[2]), true))
                     .companyName(String.valueOf(entityAsObjectArray[3]))
                     .companyAddress(String.valueOf(entityAsObjectArray[4]))
                     .uuid(String.valueOf(entityAsObjectArray[5]))

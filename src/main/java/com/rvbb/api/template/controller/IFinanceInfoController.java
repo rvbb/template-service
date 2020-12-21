@@ -93,8 +93,5 @@ public interface IFinanceInfoController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("/filter")
-    Response<PagedListHolder<FinanceInfoRes>> filter(FinanceInfoFilterInput filter);
-
-
-
+    Response<PagedListHolder<FinanceInfoRes>> filter(@Valid @RequestBody FinanceInfoFilterInput filter);
 }

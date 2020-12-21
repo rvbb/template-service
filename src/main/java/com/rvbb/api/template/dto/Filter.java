@@ -14,7 +14,7 @@ import java.util.Map;
 public abstract class Filter {
 
     private Map<String, String> sorts;
-    private int pageNum;
-    private int pageSize;
-    private int totalPage;
+    private Integer pageNum;
+    private Integer pageSize;
+    private Integer totalPage;
 }

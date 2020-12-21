@@ -21,7 +21,7 @@ public class Response<T> {
     private T data;
 
     public static <T> Response<T> ok(T data) {
-        Error status = new Error(HttpStatus.OK.value());
+        Error status = new Error("OK", HttpStatus.OK.value());
         return Response.<T>builder().status(status).data(data).build();
     }
 

@@ -56,11 +56,11 @@ public class DateTimeUtil {
             format = FORMAT_TIMESTAMP;
         }
         try {
-            return DateUtils.parseDate(dateString, format);
+            SimpleDateFormat formatter = new SimpleDateFormat(format);
+            return formatter.parse(dateString);
         } catch (ParseException e) {
             log.debug("convert string to date exception", e);
         }
         return null;
     }
-
 }

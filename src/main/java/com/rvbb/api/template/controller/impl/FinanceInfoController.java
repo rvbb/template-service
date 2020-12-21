@@ -9,12 +9,14 @@ import com.rvbb.api.template.dto.Response;
 import com.rvbb.api.template.service.IFinanceInfoService;
 import com.rvbb.api.template.validator.FinanceInfoValidator;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 public class FinanceInfoController implements IFinanceInfoController {
@@ -65,6 +67,7 @@ public class FinanceInfoController implements IFinanceInfoController {
     @Override
     @LogIt
     public Response<PagedListHolder<FinanceInfoRes>> filter(FinanceInfoFilterInput filter) {
+        log.debug("filter={}", filter);
         return Response.ok(loanFinInfoService.doFilter(filter));
     }
 

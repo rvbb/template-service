@@ -11,19 +11,19 @@ import javax.validation.constraints.Size;
 @Setter
 public class FinanceInfoInput {
 
-    @Size(max = 15, min = 1)
+    @Size(max = 15)
     @NotBlank
     private String preTaxIncome;
 
-    @Size(max = 300, min = 15)
+    @Size(max = 300)
     @NotBlank
     private String companyName;
 
-    @Size(max = 500, min = 15)
+    @Size(max = 500)
     @NotBlank
     private String companyAddress;
 
-    @Size(max = 15, min = 1)
+    @Size(max = 15)
     @NotBlank
     private String expense;
 
