@@ -22,3 +22,6 @@
 	gradlew test --tests full_package_and_ClassName
 	gradlew build test --tests *ClassName --> to test one or some classes  
 	Browse APIs via swagger: http://localhost:8080/swagger-ui.html#
+	
+	[SQL DDL](resources/static/finance_info.sql)
+	[Postman project](resource/static/postman.template-service.xml)

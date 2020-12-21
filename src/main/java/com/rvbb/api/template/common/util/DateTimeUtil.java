@@ -2,12 +2,17 @@ package com.rvbb.api.template.common.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateTimeUtil {
     private static final String FORMAT_DATE = "yyyy-MM-dd";
@@ -40,6 +45,22 @@ public class DateTimeUtil {
             return format.format(date);
         }
         return "";
+    }
+
+    public static java.util.Date string2Date(String dateString, boolean onlyDate) {
+        if (StringUtils.isEmpty(dateString)) {
+            return null;
+        }
+        String format = FORMAT_DATE;
+        if (!onlyDate) {
+            format = FORMAT_TIMESTAMP;
+        }
+        try {
+            return DateUtils.parseDate(dateString, format);
+        } catch (ParseException e) {
+            log.debug("convert string to date exception", e);
+        }
+        return null;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.rvbb.api.template.dto;
+package com.rvbb.api.template.dto.financeinfo;
 
 import lombok.Data;
 

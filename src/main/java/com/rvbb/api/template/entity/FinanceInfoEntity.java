@@ -40,7 +40,6 @@ public class FinanceInfoEntity implements Serializable {
     @Column(name = "status")
     private Byte status;
 
-    @UniqueElements
-    @Column(name = "uuid")
+    @Column(name = "uuid", unique = true)
     private String uuid;
 }

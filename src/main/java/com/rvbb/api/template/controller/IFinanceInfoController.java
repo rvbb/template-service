@@ -1,13 +1,15 @@
 package com.rvbb.api.template.controller;
 
 import com.rvbb.api.template.controller.handler.Error;
-import com.rvbb.api.template.dto.FinanceInfoInput;
-import com.rvbb.api.template.dto.FinanceInfoRes;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.dto.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -81,5 +83,18 @@ public interface IFinanceInfoController {
     })
     @DeleteMapping("/{uuid}")
     Response<FinanceInfoRes> del(@PathVariable String uuid);
+
+    @ApiOperation(value = "Filter")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = FinanceInfoInput.class, responseContainer = "PagedListHolder"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 404, message = "Not Found Exception", response = Error.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
+    })
+    @PostMapping("/filter")
+    Response<PagedListHolder<FinanceInfoRes>> filter(FinanceInfoFilterInput filter);
+
+
 
 }

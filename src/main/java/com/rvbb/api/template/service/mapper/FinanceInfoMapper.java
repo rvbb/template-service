@@ -1,8 +1,8 @@
 package com.rvbb.api.template.service.mapper;
 
 
-import com.rvbb.api.template.dto.FinanceInfoInput;
-import com.rvbb.api.template.dto.FinanceInfoRes;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
 import com.rvbb.api.template.common.util.DateTimeUtil;
 import org.mapstruct.Mapper;
@@ -14,6 +14,7 @@ import org.mapstruct.factory.Mappers;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.Collection;
+import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FinanceInfoMapper {
@@ -25,8 +26,8 @@ public interface FinanceInfoMapper {
     @Mapping(source = "preTaxIncome", target = "preTaxIncome", qualifiedByName = "round")
     FinanceInfoRes toDto(FinanceInfoEntity loanJobInformationEntity);
 
-    @Named("mapToListJobInformationDto")
-    Collection<FinanceInfoRes> mapToListJobInformationDto(Collection<FinanceInfoEntity> loanJobInformationEntity);
+    @Named("convertList")
+    List<FinanceInfoRes> convertList(Collection<FinanceInfoEntity> entities);
 
     FinanceInfoEntity toEntity(FinanceInfoInput request);
 

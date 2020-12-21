@@ -1,13 +1,15 @@
 package com.rvbb.api.template.controller.impl;
 
 import com.rvbb.api.template.common.util.LogIt;
-import com.rvbb.api.template.dto.FinanceInfoInput;
-import com.rvbb.api.template.dto.FinanceInfoRes;
-import com.rvbb.api.template.dto.Response;
-import com.rvbb.api.template.validator.FinanceInfoValidator;
 import com.rvbb.api.template.controller.IFinanceInfoController;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
+import com.rvbb.api.template.dto.Response;
 import com.rvbb.api.template.service.IFinanceInfoService;
+import com.rvbb.api.template.validator.FinanceInfoValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -21,10 +23,8 @@ public class FinanceInfoController implements IFinanceInfoController {
     private final FinanceInfoValidator loanFinInfoValidator;
 
     @Override
+    @LogIt
     public Response<FinanceInfoRes> create(@Valid FinanceInfoInput request) {
-        FinanceInfoRes lastFinInfo = loanFinInfoService.getLast();
-        loanFinInfoValidator.validateInputType(request);
-        loanFinInfoValidator.checkSimilarWithLast(lastFinInfo, request);
         FinanceInfoRes result = loanFinInfoService.create(request);
         return Response.ok(result);
     }
@@ -35,8 +35,9 @@ public class FinanceInfoController implements IFinanceInfoController {
     }
 
     @Override
+    @LogIt
     public Response<FinanceInfoRes> update(String uuid, @Valid FinanceInfoInput request) {
-        FinanceInfoRes lastFinInfo = loanFinInfoService.getLast();
+        FinanceInfoRes lastFinInfo = loanFinInfoService.get(uuid);
         loanFinInfoValidator.validateInputType(request);
         loanFinInfoValidator.checkSimilarWithLast(lastFinInfo, request);
         FinanceInfoRes result = loanFinInfoService.update(uuid, request);
@@ -44,17 +45,27 @@ public class FinanceInfoController implements IFinanceInfoController {
     }
 
     @Override
+    @LogIt
     public Response<FinanceInfoRes> get(String uuid) {
         return Response.ok(loanFinInfoService.get(uuid));
     }
 
     @Override
+    @LogIt
     public Response<List<FinanceInfoRes>> list() {
         return Response.ok(loanFinInfoService.list());
     }
 
     @Override
+    @LogIt
     public Response<FinanceInfoRes> del(String uuid) {
         return Response.ok(loanFinInfoService.del(uuid));
     }
+
+    @Override
+    @LogIt
+    public Response<PagedListHolder<FinanceInfoRes>> filter(FinanceInfoFilterInput filter) {
+        return Response.ok(loanFinInfoService.doFilter(filter));
+    }
+
 }
