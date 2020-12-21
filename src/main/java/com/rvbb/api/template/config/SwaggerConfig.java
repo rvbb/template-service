@@ -20,19 +20,19 @@ public class SwaggerConfig {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("LMS-Service")
+                .groupName("Template-Service")
                 .apiInfo(apiInfo())
                 .enable(true)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.smartosc.fintech.lms.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.rvbb.api.template.controller"))
                 .build();
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo("LMS#lms-service APIs",
-                "SmartOSC fintech | Lending | LMS | All PoC functions Services", "1.0.0-dev",
-                "https://developer.smartosc.com/policy", null, "Copyright of SmartOSC Fintech",
-                "https://developer.smartosc.com/license", Collections.emptyList());
+        return new ApiInfo("RVBB#template-service APIs",
+                "Template Services", "1.0.0-dev",
+                "https://code.rvbb.com/policy", null, "Copyright of Hoang N.V",
+                "https://code.rvbb.com/license", Collections.emptyList());
     }
 
     /* enabling swagger-ui part for visual documentation */
