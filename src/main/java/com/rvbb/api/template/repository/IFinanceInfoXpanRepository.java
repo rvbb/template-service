@@ -5,6 +5,7 @@ import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -12,5 +13,6 @@ public interface FinanceInfoXpanRepository {
 
     boolean updateByStatus(FinanceInfoInput request, Short status);
     PagedListHolder<FinanceInfoRes> search(FinanceInfoFilterInput filter);
+    Page<FinanceInfoRes> search(String[] sort, String[] condition, int page, int size);
 
 }
