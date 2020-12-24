@@ -11,9 +11,11 @@ import com.rvbb.api.template.validator.FinanceInfoValidator;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Slf4j
@@ -66,9 +68,16 @@ public class FinanceInfoController implements IFinanceInfoController {
 
     @Override
     @LogIt
-    public Response<PagedListHolder<FinanceInfoRes>> filter(FinanceInfoFilterInput filter) {
+    public Response<Page<FinanceInfoRes>> filter(FinanceInfoFilterInput filter) {
         log.debug("filter={}", filter);
         return Response.ok(loanFinInfoService.doFilter(filter));
+    }
+
+    @Override
+    public Response<Page<FinanceInfoRes>> filter(String[] sort, String[] condition,
+                                                 @Valid @Min(value = 0L, message = "The value must be positive") int page,
+                                                 @Valid @Min(value = 0L, message = "The value must be positive") int size) {
+        return Response.ok(loanFinInfoService.doFilter(sort, condition, page, size));
     }
 
 }

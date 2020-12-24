@@ -1,21 +1,23 @@
 package com.rvbb.api.template.repository.impl;
 
 
-import com.rvbb.api.template.common.constant.FieldName;
+import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
 import com.rvbb.api.template.common.constant.TableName;
-import com.rvbb.api.template.common.util.CommonUtil;
+import com.rvbb.api.template.common.util.SqlUtils;
 import com.rvbb.api.template.config.ApplicationConfig;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
-import com.rvbb.api.template.repository.FinanceInfoXpanRepository;
+import com.rvbb.api.template.repository.IFinanceInfoRepository;
+import com.rvbb.api.template.repository.IFinanceInfoXpanRepository;
 import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -29,12 +31,14 @@ import java.util.Map;
 @Slf4j
 @Repository
 @AllArgsConstructor
-public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository {
+public abstract class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     private final ApplicationConfig applicationConfig;
+
+    private final IFinanceInfoRepository financeInfoRepository;
 
     @Transactional
     @Override
@@ -55,16 +59,16 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
         return countUpdated > 0;
     }
 
-    public PagedListHolder<FinanceInfoRes> search(FinanceInfoFilterInput filter) {
+    public Page<FinanceInfoRes> search(FinanceInfoFilterInput filter) {
         StringBuilder search = new StringBuilder("select ");
-        search.append(FieldName.ID.toString() + ",");
-        search.append(FieldName.STATUS.toString() + ",");
-        search.append(FieldName.LAST_UPDATE.toString() + ",");
-        search.append(FieldName.COMPANY_NAME.toString() + ",");
-        search.append(FieldName.COMPANY_ADDRESS.toString() + ",");
-        search.append(FieldName.UUID.toString() + ",");
-        search.append(FieldName.PRE_TAX_INCOME.toString() + ",");
-        search.append(FieldName.EXPENSE.toString() + "");
+        search.append(FinanceInfoFieldName.ID.toString() + ",");
+        search.append(FinanceInfoFieldName.STATUS.toString() + ",");
+        search.append(FinanceInfoFieldName.LAST_UPDATE.toString() + ",");
+        search.append(FinanceInfoFieldName.COMPANY_NAME.toString() + ",");
+        search.append(FinanceInfoFieldName.COMPANY_ADDRESS.toString() + ",");
+        search.append(FinanceInfoFieldName.UUID.toString() + ",");
+        search.append(FinanceInfoFieldName.PRE_TAX_INCOME.toString() + ",");
+        search.append(FinanceInfoFieldName.EXPENSE.toString() + "");
 
         search.append(" from " + TableName.FINANCE_INFO.toString().toLowerCase());
 
@@ -74,13 +78,13 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
         StringBuilder sort = new StringBuilder();
 
         if (ObjectUtils.isNotEmpty(filter.getStatus())) {
-            where.append(" where " + FieldName.STATUS.toString() + "=" + filter.getStatus());
+            where.append(" where " + FinanceInfoFieldName.STATUS.toString() + "=" + filter.getStatus());
         }
         if (StringUtils.isNotEmpty(filter.getCompanyName())) {
             if (where.length() < 1) {
-                where.append(" where lower(" + FieldName.COMPANY_NAME.toString() + ") like '%" + filter.getCompanyName().toLowerCase() + "%'");
+                where.append(" where lower(" + FinanceInfoFieldName.COMPANY_NAME.toString() + ") like '%" + filter.getCompanyName().toLowerCase() + "%'");
             } else {
-                where.append(" and lower(" + FieldName.COMPANY_NAME.toString() + ") like '%" + filter.getCompanyName().toLowerCase() + "%'");
+                where.append(" and lower(" + FinanceInfoFieldName.COMPANY_NAME.toString() + ") like '%" + filter.getCompanyName().toLowerCase() + "%'");
             }
         }
         if (where.length() > 0) {
@@ -107,7 +111,7 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
                 }
             }
         } else {
-            sort.append(FieldName.ID.toString() + " ASC");
+            sort.append(FinanceInfoFieldName.ID.toString() + " ASC");
         }
         if (sort.length() > 0) {
             search.append(" order by " + sort);
@@ -119,14 +123,27 @@ public class FinanceInfoXpanRepositoryImpl implements FinanceInfoXpanRepository 
         Query querySearch = entityManager.createNativeQuery(search.toString());
 
         List<Object[]> resultList = querySearch.getResultList();
-        List<FinanceInfoEntity> entityList = CommonUtil.fromResultList(resultList);
+        List<FinanceInfoEntity> entityList = SqlUtils.fromResultList(resultList);
         List<FinanceInfoRes> resList = FinanceInfoMapper.INSTANCE.convertList(entityList);
 
-        PagedListHolder<FinanceInfoRes> result = new PagedListHolder<>(resList);
-        result.setMaxLinkedPages(realtimeTotalPage);
-        result.setPageSize(pageSize);
-        result.setPage(nextPage);
+        Pageable pageable = PageRequest.of(nextPage, resList.size());
+        Page<FinanceInfoRes> result = new PageImpl<FinanceInfoRes>(resList, pageable, resList.size());
 
         return result;
     }
+
+    @Override
+    public Page<FinanceInfoRes> search(String[] sort, String[] condition, int page, int size) {
+        Page<FinanceInfoEntity> searchedList = null;
+        Specification spec = SqlUtils.buildSpec(condition, FinanceInfoEntity.class);
+        Sort sortClause = SqlUtils.buildSort(sort);
+        Pageable pageable = PageRequest.of(page + 1, size, sortClause);
+        if(ObjectUtils.isNotEmpty(spec)) {
+            searchedList = findAll(spec, pageable);
+        }else{
+            searchedList = findAll(pageable);
+        }
+        return FinanceInfoMapper.INSTANCE.convertPage(searchedList);
+    }
+
 }

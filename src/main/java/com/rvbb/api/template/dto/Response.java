@@ -21,13 +21,12 @@ public class Response<T> {
     private T data;
 
     public static <T> Response<T> ok(T data) {
-        Error status = new Error("OK", HttpStatus.OK.value());
+        Error status = Error.builder().message("OK").code(HttpStatus.OK.value()).build();
         return Response.<T>builder().status(status).data(data).build();
     }
 
     public static <T> Response<T> fail(String message, int code) {
-        Error status = new Error(message, code);
-        return Response.<T>builder().status(status).build();
+        return Response.<T>builder().status(Error.builder().message(message).code(code).build()).build();
     }
 
     public static <T> Response<T> fail(Error status) {

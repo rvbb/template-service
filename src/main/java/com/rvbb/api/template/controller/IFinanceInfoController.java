@@ -5,14 +5,14 @@ import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.dto.Response;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @Api(value = "Loan financial information API")
@@ -93,5 +93,44 @@ public interface IFinanceInfoController {
             @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
     })
     @PostMapping("/filter")
-    Response<PagedListHolder<FinanceInfoRes>> filter(@Valid @RequestBody FinanceInfoFilterInput filter);
+    Response<Page<FinanceInfoRes>> filter(@Valid @RequestBody FinanceInfoFilterInput filter);
+
+    @ApiOperation(value = "Filter with Pageable")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = FinanceInfoInput.class, responseContainer = "PagedListHolder"),
+            @ApiResponse(code = 400, message = "Bad request", response = Error.class),
+            @ApiResponse(code = 404, message = "Not Found Exception", response = Error.class),
+            @ApiResponse(code = 409, message = "Conflict Exception", response = Error.class),
+            @ApiResponse(code = 500, message = "Internal Server Error", response = Error.class)
+    })
+    @GetMapping("/filter")
+    Response<Page<FinanceInfoRes>> filter(
+            @ApiParam(
+                    name = "sort",
+                    type = "String",
+                    value = "multi column/field name and value",
+                    example = "sort=col1,desc&sort=col2,asc,col3,asc",
+                    required = false)
+            @RequestParam(defaultValue = "id,desc") String[] sort,
+            @ApiParam(
+                    name = "condition",
+                    type = "String",
+                    value = "multi column/field name and value",
+                    example = "condition=equal,col1,1&condition=greater,col2,abc,col3,asc",
+                    required = false)
+            @RequestParam String[] condition,
+            @ApiParam(
+                    name = "page",
+                    type = "String",
+                    value = "current page number into ",
+                    example = "1",
+                    required = false)
+            @RequestParam(defaultValue = "0") @Valid @Min(value = 0L, message = "The value must be positive") int page,
+            @ApiParam(
+                    name = "size",
+                    type = "int",
+                    value = "page size - number of item per page",
+                    example = "50",
+                    required = false)
+            @RequestParam(defaultValue = "50") @Valid @Min(value = 0L, message = "The value must be positive") int size);
 }

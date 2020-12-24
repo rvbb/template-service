@@ -5,13 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum FieldName {
+public enum CommonFieldName {
     STATUS,
-    ID,
-    COMPANY_NAME,
-    COMPANY_ADDRESS,
-    UUID,
-    LAST_UPDATE,
-    PRE_TAX_INCOME,
-    EXPENSE;
+    ID;
 }

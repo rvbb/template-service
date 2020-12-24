@@ -25,43 +25,20 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
+import static org.springframework.http.HttpStatus.*;
 
 @ControllerAdvice
 @Slf4j
 public class BizLogicExceptionHandler extends ResponseEntityExceptionHandler {
 
-
-  /**
-   * Handle MissingServletRequestParameterException. Triggered when a 'required' request parameter is missing.
-   *
-   * @param ex      MissingServletRequestParameterException
-   * @param headers HttpHeaders
-   * @param status  HttpStatus
-   * @param request WebRequest
-   * @return the ApiError object
-   */
   @Override
   @NonNull
   protected ResponseEntity<Object> handleMissingServletRequestParameter(
       MissingServletRequestParameterException ex, @NonNull HttpHeaders headers, @NonNull HttpStatus status, @NonNull WebRequest request) {
     String message = ex.getParameterName() + " parameter is missing";
-    return buildResponseEntity(BAD_REQUEST, new Error(message, BAD_REQUEST.value()));
+    return buildResponseEntity(BAD_REQUEST, Error.builder().message(message).code(BAD_REQUEST.value()).build());
   }
 
-  /**
-   * Handle HttpMediaTypeNotSupportedException. This one triggers when JSON is invalid as well.
-   *
-   * @param ex      HttpMediaTypeNotSupportedException
-   * @param headers HttpHeaders
-   * @param status  HttpStatus
-   * @param request WebRequest
-   * @return the ApiError object
-   */
   @Override
   @NonNull
   protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
@@ -74,18 +51,9 @@ public class BizLogicExceptionHandler extends ResponseEntityExceptionHandler {
     builder.append(" media type is not supported. Supported media types are ");
     ex.getSupportedMediaTypes().forEach(t -> builder.append(t).append(", "));
     return buildResponseEntity(UNSUPPORTED_MEDIA_TYPE,
-            new Error(builder.substring(0, builder.length() - 2), UNSUPPORTED_MEDIA_TYPE.value()));
+            Error.builder().message(builder.substring(0, builder.length() - 2)).code(UNSUPPORTED_MEDIA_TYPE.value()).build());
   }
 
-  /**
-   * Handle MethodArgumentNotValidException. Triggered when an object fails @Valid validation.
-   *
-   * @param ex      the MethodArgumentNotValidException that is thrown when @Valid validation fails
-   * @param headers HttpHeaders
-   * @param status  HttpStatus
-   * @param request WebRequest
-   * @return the ApiError object
-   */
   @Override
   @NonNull
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -94,48 +62,27 @@ public class BizLogicExceptionHandler extends ResponseEntityExceptionHandler {
       @NonNull HttpStatus status,
       @NonNull WebRequest request) {
 
-    Error apiError = new Error("Validation error", BAD_REQUEST.value());
+    Error apiError = Error.builder().message("Validation error").code(BAD_REQUEST.value()).build();
     apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
     apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
 
     return buildResponseEntity(BAD_REQUEST, apiError);
   }
 
-  /**
-   * Handles javax.validation.ConstraintViolationException. Thrown when @Validated fails.
-   *
-   * @param ex the ConstraintViolationException
-   * @return the ApiError object
-   */
   @ExceptionHandler(javax.validation.ConstraintViolationException.class)
   protected ResponseEntity<Object> handleConstraintViolation(
       javax.validation.ConstraintViolationException ex) {
-    Error apiError = new Error("Validation error", BAD_REQUEST.value());
+    Error apiError = Error.builder().message("Validation error").code(BAD_REQUEST.value()).build();
     apiError.addValidationErrors(ex.getConstraintViolations());
     return buildResponseEntity(BAD_REQUEST, apiError);
   }
 
-  /**
-   * Handles EntityNotFoundException. Created to encapsulate errors with more detail than javax.persistence.EntityNotFoundException.
-   *
-   * @param ex the EntityNotFoundException
-   * @return the ApiError object
-   */
   @ExceptionHandler(EntityNotFoundException.class)
   protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
-    Error error = new Error(ex.getMessage(), NOT_FOUND.value());
+    Error error = Error.builder().message(ex.getMessage()).code(NOT_FOUND.value()).build();
     return buildResponseEntity(NOT_FOUND, error);
   }
 
-  /**
-   * Handle HttpMessageNotReadableException. Happens when request JSON is malformed.
-   *
-   * @param ex      HttpMessageNotReadableException
-   * @param headers HttpHeaders
-   * @param status  HttpStatus
-   * @param request WebRequest
-   * @return the ApiError object
-   */
   @Override
   @NonNull
   protected ResponseEntity<Object> handleHttpMessageNotReadable(
@@ -146,18 +93,9 @@ public class BizLogicExceptionHandler extends ResponseEntityExceptionHandler {
     ServletWebRequest servletWebRequest = (ServletWebRequest) request;
     log.info("{} to {}", servletWebRequest.getHttpMethod(), servletWebRequest.getRequest().getServletPath());
     String message = "Malformed JSON request";
-    return buildResponseEntity(BAD_REQUEST, new Error(message, BAD_REQUEST.value()));
+    return buildResponseEntity(BAD_REQUEST, Error.builder().message(message).code(BAD_REQUEST.value()).build());
   }
-
-  /**
-   * Handle HttpMessageNotWritableException.
-   *
-   * @param ex      HttpMessageNotWritableException
-   * @param headers HttpHeaders
-   * @param status  HttpStatus
-   * @param request WebRequest
-   * @return the ApiError object
-   */
+  
   @Override
   @NonNull
   protected ResponseEntity<Object> handleHttpMessageNotWritable(
@@ -166,18 +104,9 @@ public class BizLogicExceptionHandler extends ResponseEntityExceptionHandler {
       @NonNull HttpStatus status,
       @NonNull WebRequest request) {
     String message = "Error writing JSON output";
-    return buildResponseEntity(INTERNAL_SERVER_ERROR, new Error(message, INTERNAL_SERVER_ERROR.value()));
+    return buildResponseEntity(INTERNAL_SERVER_ERROR, Error.builder().message(message).code(INTERNAL_SERVER_ERROR.value()).build());
   }
 
-  /**
-   * Handle NoHandlerFoundException.
-   *
-   * @param ex      NoHandlerFoundException
-   * @param headers HttpHeaders
-   * @param status  HttpStatus
-   * @param request WebRequest
-   * @return the ApiError object
-   */
   @Override
   @NonNull
   protected ResponseEntity<Object> handleNoHandlerFoundException(
@@ -186,47 +115,34 @@ public class BizLogicExceptionHandler extends ResponseEntityExceptionHandler {
       @NonNull HttpStatus status,
       @NonNull WebRequest request) {
     String message = String.format("Could not find the %s method for URL %s", ex.getHttpMethod(), ex.getRequestURL());
-    Error error = new Error(message, BAD_REQUEST.value());
+    Error error = Error.builder().message(message).code(BAD_REQUEST.value()).build();
     return buildResponseEntity(BAD_REQUEST, error);
   }
-
-  /**
-   * Handle DataIntegrityViolationException, inspects the cause for different DB causes.
-   *
-   * @param ex the DataIntegrityViolationException
-   * @return the ApiError object
-   */
   @ExceptionHandler(DataIntegrityViolationException.class)
   protected ResponseEntity<Object> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
     if (ex.getCause() instanceof ConstraintViolationException) {
-      return buildResponseEntity(CONFLICT, new Error("Database error", CONFLICT.value()));
+      return buildResponseEntity(CONFLICT, Error.builder().message("Database error").code(CONFLICT.value()).build());
     }
-    return buildResponseEntity(INTERNAL_SERVER_ERROR, new Error("Internal Server Error", INTERNAL_SERVER_ERROR.value()));
+    return buildResponseEntity(INTERNAL_SERVER_ERROR, Error.builder().message("Internal Server Error").code( INTERNAL_SERVER_ERROR.value()).build());
   }
 
-  /**
-   * Handle Exception, handle generic Exception.class
-   *
-   * @param ex the Exception
-   * @return the ApiError object
-   */
   @ExceptionHandler(MethodArgumentTypeMismatchException.class)
   protected ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
     String message = String.format("The parameter '%s' of value '%s' could not be converted to type '%s'",
             ex.getName(), ex.getValue(), Objects.requireNonNull(ex.getRequiredType()).getSimpleName());
-    Error error = new Error(message, BAD_REQUEST.value());
+    Error error = Error.builder().message(message).code(BAD_REQUEST.value()).build();
     return buildResponseEntity(BAD_REQUEST, error);
   }
 
   @ExceptionHandler(BizLogicException.class)
   protected ResponseEntity<Object> handleBusinessService(BizLogicException ex) {
-    Error error = new Error(ex.getMessage(), ex.getCode());
+    Error error = Error.builder().message(ex.getMessage()).code(ex.getCode()).build();
     return buildResponseEntity(CONFLICT, error);
   }
 
   @ExceptionHandler
   protected ResponseEntity<Object> handleInternalException(Exception ex) {
-    Error error = new Error(ex.getMessage(), INTERNAL_SERVER_ERROR.value());
+    Error error = Error.builder().message(ex.getMessage()).code( INTERNAL_SERVER_ERROR.value()).build();
     return buildResponseEntity(INTERNAL_SERVER_ERROR, error);
   }
 

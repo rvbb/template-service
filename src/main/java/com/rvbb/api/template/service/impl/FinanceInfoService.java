@@ -9,13 +9,14 @@ import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
 import com.rvbb.api.template.exception.BizLogicException;
-import com.rvbb.api.template.repository.FinanceInfoRepository;
-import com.rvbb.api.template.repository.FinanceInfoXpanRepository;
+import com.rvbb.api.template.repository.IFinanceInfoRepository;
+import com.rvbb.api.template.repository.IFinanceInfoXpanRepository;
 import com.rvbb.api.template.service.IFinanceInfoService;
 import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -28,8 +29,8 @@ import static java.util.stream.Collectors.toCollection;
 @AllArgsConstructor
 public class FinanceInfoService implements IFinanceInfoService {
 
-    private final FinanceInfoRepository finInfoRepository;
-    private final FinanceInfoXpanRepository financeInfoXpanRepository;
+    private final IFinanceInfoRepository finInfoRepository;
+    private final IFinanceInfoXpanRepository financeInfoXpanRepository;
 
     @Override
     @LogIt
@@ -39,11 +40,6 @@ public class FinanceInfoService implements IFinanceInfoService {
             throw new EntityNotFoundException("Not found last financial information");
         }
         return FinanceInfoMapper.INSTANCE.toDto(entity);
-    }
-
-    @Override
-    public PagedListHolder<FinanceInfoRes> doFilter(FinanceInfoFilterInput filter) {
-        return financeInfoXpanRepository.search(filter);
     }
 
     @Override
@@ -112,5 +108,16 @@ public class FinanceInfoService implements IFinanceInfoService {
         return optional.orElseThrow(
                 () -> new EntityNotFoundException("Not found finance information with uuid : " + uuid));
     }
+
+    @Override
+    public Page<FinanceInfoRes> doFilter(FinanceInfoFilterInput filter) {
+        return financeInfoXpanRepository.search(filter);
+    }
+
+    @Override
+    public Page<FinanceInfoRes> doFilter(String[] sort, String[] condition, int page, int size) {
+        return financeInfoXpanRepository.search(sort, condition, page, size);
+    }
+
 
 }

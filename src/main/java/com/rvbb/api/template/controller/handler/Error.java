@@ -1,5 +1,6 @@
 package com.rvbb.api.template.controller.handler;
 
+import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.validation.FieldError;
@@ -11,31 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Builder
 @Data
 public class Error {
-  private LocalDateTime timestamp;
+  private LocalDateTime timestamp = LocalDateTime.now();
   private int code;
   private String message;
   private List<NestedError> nestedErrors;
-
-  public Error() {
-    this.timestamp = LocalDateTime.now();
-  }
-
-  public Error(String message) {
-    this();
-    this.message = message;
-  }
-
-  public Error(int code) {
-    this();
-    this.code = code;
-  }
-
-  public Error(String message, int code) {
-    this(message);
-    this.code = code;
-  }
 
   private void addSubError(NestedError subError) {
     if (nestedErrors == null) {

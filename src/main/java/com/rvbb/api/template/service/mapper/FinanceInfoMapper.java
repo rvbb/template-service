@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -41,5 +42,7 @@ public interface FinanceInfoMapper {
         return BigDecimal.valueOf(Math.floor(val.doubleValue() * 100) / 100);
     }
 
+    @Named("convertList")
+    Page<FinanceInfoRes> convertPage(Page<FinanceInfoEntity> entities);
 }
 
