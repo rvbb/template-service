@@ -3,13 +3,14 @@ package com.rvbb.api.template.repository;
 
 import com.rvbb.api.template.entity.FinanceInfoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface IFinanceInfoRepository extends JpaRepository<FinanceInfoEntity, Long> {
+public interface IFinanceInfoRepository extends JpaRepository<FinanceInfoEntity, Long>, JpaSpecificationExecutor {
 
     Optional<FinanceInfoEntity> findByUuid(String uuid);
 

@@ -31,7 +31,7 @@ import java.util.Map;
 @Slf4j
 @Repository
 @AllArgsConstructor
-public abstract class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository {
+public class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -136,14 +136,17 @@ public abstract class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanR
     public Page<FinanceInfoRes> search(String[] sort, String[] condition, int page, int size) {
         Page<FinanceInfoEntity> searchedList = null;
         Specification spec = SqlUtils.buildSpec(condition, FinanceInfoEntity.class);
-        Sort sortClause = SqlUtils.buildSort(sort);
-        Pageable pageable = PageRequest.of(page + 1, size, sortClause);
-        if(ObjectUtils.isNotEmpty(spec)) {
-            searchedList = findAll(spec, pageable);
-        }else{
-            searchedList = findAll(pageable);
+        Sort order = SqlUtils.buildSort(sort);
+        Pageable pageable = PageRequest.of(page + 1, size);
+        if(ObjectUtils.isEmpty(order)){
+            pageable = PageRequest.of(page + 1, size, order);
         }
-        return FinanceInfoMapper.INSTANCE.convertPage(searchedList);
+        if(ObjectUtils.isNotEmpty(spec)) {
+            searchedList = financeInfoRepository.findAll(spec, pageable);
+        }else{
+            searchedList = financeInfoRepository.findAll(pageable);
+        }
+        return SqlUtils.convertPage(searchedList);
     }
 
 }

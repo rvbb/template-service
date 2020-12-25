@@ -4,13 +4,17 @@ import com.rvbb.api.template.common.constant.CommonFieldName;
 import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
 import com.rvbb.api.template.common.constant.FinanceInfoStatus;
 import com.rvbb.api.template.common.constant.SqlOperationName;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
 import com.rvbb.api.template.repository.spec.SpecCustom;
+import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.hibernate.type.SpecialOneToOneType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -61,61 +65,76 @@ public class SqlUtils {
     }
 
     /**
-     * sort=col1,desc&sort=col2,asc&sort=col3,asc
+     * sort=desc(col1)&sort=asc(col3)
      * need to validate before in Controller
      **/
     public static Sort buildSort(String[] sort) {
-        Sort result = Sort.by(Sort.Direction.ASC, CommonFieldName.ID.toString());
-        if (ObjectUtils.isEmpty(sort)) {
-            return result;
-        }
-
-        for (String oneSort : sort) {
-            String[] fieldAndVal = oneSort.split(",");
-            if (ObjectUtils.isNotEmpty(getSortValue(sort[1]))) {
-                result.by(getSortValue(fieldAndVal[1]), fieldAndVal[0]);
+        Sort result = null;
+        if (ObjectUtils.isNotEmpty(sort)) {
+            for (String oneSort : sort) {
+                String direction = oneSort.substring(0, oneSort.indexOf("("));
+                String field = oneSort.substring(oneSort.indexOf("(") + 1, oneSort.indexOf(")"));
+                if (ObjectUtils.isNotEmpty(getSortValue(direction))) {
+                    if (result == null) {
+                        result = Sort.by(getSortValue(direction), field);
+                    } else {
+                        result.by(getSortValue(direction), field);
+                    }
+                }
             }
         }
+        log.debug("Sort=[{}]", result);
         return result;
     }
 
     /**
-     * condition=equal,col1,1&condition=greater,col2,abc
+     * condition=condition=equal(col1:1)&condition=greater(col2:abc)
      * need to validate before in Controller
      **/
     public static <T> Specification buildSpec(String[] condition, T claxx) {
+        if (ObjectUtils.isEmpty(condition)) {
+            return null;
+        }
         Specification<T> result = null;
         List<SpecCustom> and = new ArrayList<>();
         List<SpecCustom> or = new ArrayList<>();
-        if (claxx instanceof FinanceInfoStatus) {
-            FinanceInfoStatus financeInfoStatus = (FinanceInfoStatus) claxx;
-            for (String oneCondition : condition) {
-                String[] oneCondition_ = oneCondition.split(",");
-                String operator = oneCondition_[0];
-                String field = oneCondition_[1];
-                String val = oneCondition_[2];
-                switch (SqlOperationName.valueOf(operator.toLowerCase())) {
-                    case equal:
-                        if (ObjectUtils.isNotEmpty(result)) {
-                            result = result.and(SpecCustom.equal(field, val));
-                        } else {
-                            result = Specification.where(SpecCustom.equal(field, val));
-                        }
-                        break;
-                    case like:
-                        if (ObjectUtils.isNotEmpty(result)) {
-                            result = result.and(SpecCustom.like(field, val));
-                        } else {
-                            result = Specification.where(SpecCustom.like(field, val));
-                        }
-                        break;
-                    case greaterorequal:
-                        break;
-                    case less:
-                        break;
-                }
+//        if (claxx instanceof FinanceInfoEntity) {
+        for (String oneCondition : condition) {
+            String operator = oneCondition.substring(0, oneCondition.indexOf("("));
+            String fieldAndVal[] = oneCondition.substring(oneCondition.indexOf("(") + 1, oneCondition.indexOf(")")).split(":");
+            String field = fieldAndVal[0];
+            String val = fieldAndVal[1];
+            String fieldPojo = FinanceInfoFieldName.getAttrByName(field);
+            switch (SqlOperationName.valueOf(operator.toLowerCase())) {
+                case equal:
+                    if (ObjectUtils.isNotEmpty(result)) {
+                        result = result.and(SpecCustom.equal(fieldPojo, val));
+                    } else {
+                        result = Specification.where(SpecCustom.equal(fieldPojo, val));
+                    }
+                    break;
+                case like:
+                    if (ObjectUtils.isNotEmpty(result)) {
+                        result = result.and(SpecCustom.like(fieldPojo, val));
+                    } else {
+                        result = Specification.where(SpecCustom.like(fieldPojo, val));
+                    }
+                    break;
+                case greaterorequal:
+                    break;
             }
         }
+//        }
+        log.debug("Specification=[{}]", result);
         return result;
+    }
+
+    public static Page<FinanceInfoRes> convertPage(Page<FinanceInfoEntity> page) {
+        if (ObjectUtils.isEmpty(page)) {
+            log.debug("Page<FinanceInfoEntity> is null");
+            return null;
+        }
+        List<FinanceInfoRes> entities = FinanceInfoMapper.INSTANCE.convertList(page.getContent());
+        return new PageImpl<>(entities, page.getPageable(), page.getTotalElements());
     }
 }

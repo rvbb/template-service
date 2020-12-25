@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.util.List;
 
@@ -74,9 +75,11 @@ public class FinanceInfoController implements IFinanceInfoController {
     }
 
     @Override
+    @LogIt
     public Response<Page<FinanceInfoRes>> filter(String[] sort, String[] condition,
                                                  @Valid @Min(value = 0L, message = "The value must be positive") int page,
                                                  @Valid @Min(value = 0L, message = "The value must be positive") int size) {
+        loanFinInfoValidator.validateFilter(sort, condition, page, size);
         return Response.ok(loanFinInfoService.doFilter(sort, condition, page, size));
     }
 

@@ -97,7 +97,7 @@ public class FinanceInfoService implements IFinanceInfoService {
         try {
             oldEntity = getByUuid(uuid);
         }catch (EntityNotFoundException e){
-            throw new BizLogicException("The finanace information is not existence", ErrorCode.EMPTY_RESULT);
+            throw new BizLogicException("The finanace information is not existence", ErrorCode.EMPTY_RESULT.val);
         }
         finInfoRepository.delete(oldEntity);
         return FinanceInfoMapper.INSTANCE.toDto(oldEntity);
@@ -118,6 +118,5 @@ public class FinanceInfoService implements IFinanceInfoService {
     public Page<FinanceInfoRes> doFilter(String[] sort, String[] condition, int page, int size) {
         return financeInfoXpanRepository.search(sort, condition, page, size);
     }
-
 
 }

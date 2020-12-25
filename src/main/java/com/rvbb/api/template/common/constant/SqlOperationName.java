@@ -30,7 +30,9 @@ public enum SqlOperationName {
 
     public static boolean contains(String enumAsString){
         for(SqlOperationName item : SqlOperationName.values()){
-            return item.toString().equalsIgnoreCase(enumAsString);
+            if(item.toString().equalsIgnoreCase(enumAsString)){
+                return true;
+            }
         }
         return false;
     }

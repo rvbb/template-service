@@ -15,63 +15,61 @@ import java.util.Set;
 @Builder
 @Data
 public class Error {
-  private LocalDateTime timestamp = LocalDateTime.now();
-  private int code;
-  private String message;
-  private List<NestedError> nestedErrors;
+    @Builder.Default
+    private LocalDateTime timestamp = LocalDateTime.now();
+    private int code;
+    @Builder.Default
+    private String message = "";
+    @Builder.Default
+    private List<NestedError> nestedErrors = new ArrayList<>();
 
-  private void addSubError(NestedError subError) {
-    if (nestedErrors == null) {
-      nestedErrors = new ArrayList<>();
+    private void addSubError(NestedError subError) {
+        if (nestedErrors == null) {
+            nestedErrors = new ArrayList<>();
+        }
+        nestedErrors.add(subError);
     }
-    nestedErrors.add(subError);
-  }
 
-  private void addValidationError(String object, String field, Object rejectedValue, String message) {
-    addSubError(new InputValidationError<>(object, field, rejectedValue, message));
-  }
+    private void addValidationError(String object, String field, Object rejectedValue, String message) {
+        addSubError(new InputValidationError<>(object, field, rejectedValue, message));
+    }
 
-  private void addValidationError(String object, String message) {
-    addSubError(new InputValidationError<>(object, message));
-  }
+    private void addValidationError(String object, String message) {
+        addSubError(new InputValidationError<>(object, message));
+    }
 
-  private void addValidationError(FieldError fieldError) {
-    this.addValidationError(
-        fieldError.getObjectName(),
-        fieldError.getField(),
-        fieldError.getRejectedValue(),
-        fieldError.getDefaultMessage());
-  }
+    private void addValidationError(FieldError fieldError) {
+        this.addValidationError(
+                fieldError.getObjectName(),
+                fieldError.getField(),
+                fieldError.getRejectedValue(),
+                fieldError.getDefaultMessage());
+    }
 
-  public void addValidationErrors(List<FieldError> fieldErrors) {
-    fieldErrors.forEach(this::addValidationError);
-  }
+    public void addValidationErrors(List<FieldError> fieldErrors) {
+        fieldErrors.forEach(this::addValidationError);
+    }
 
-  private void addValidationError(ObjectError objectError) {
-    this.addValidationError(
-        objectError.getObjectName(),
-        objectError.getDefaultMessage());
-  }
+    private void addValidationError(ObjectError objectError) {
+        this.addValidationError(
+                objectError.getObjectName(),
+                objectError.getDefaultMessage());
+    }
 
-  public void addValidationError(List<ObjectError> globalErrors) {
-    globalErrors.forEach(this::addValidationError);
-  }
+    public void addValidationError(List<ObjectError> globalErrors) {
+        globalErrors.forEach(this::addValidationError);
+    }
 
-  /**
-   * Utility method for adding error of ConstraintViolation. Usually when a @Validated validation fails.
-   *
-   * @param cv the ConstraintViolation
-   */
-  private void addValidationError(ConstraintViolation<?> cv) {
-    this.addValidationError(
-        cv.getRootBeanClass().getSimpleName(),
-        ((PathImpl) cv.getPropertyPath()).getLeafNode().asString(),
-        cv.getInvalidValue(),
-        cv.getMessage());
-  }
+    private void addValidationError(ConstraintViolation<?> cv) {
+        this.addValidationError(
+                cv.getRootBeanClass().getSimpleName(),
+                ((PathImpl) cv.getPropertyPath()).getLeafNode().asString(),
+                cv.getInvalidValue(),
+                cv.getMessage());
+    }
 
-  public void addValidationErrors(Set<ConstraintViolation<?>> constraintViolations) {
-    constraintViolations.forEach(this::addValidationError);
-  }
+    public void addValidationErrors(Set<ConstraintViolation<?>> constraintViolations) {
+        constraintViolations.forEach(this::addValidationError);
+    }
 
 }

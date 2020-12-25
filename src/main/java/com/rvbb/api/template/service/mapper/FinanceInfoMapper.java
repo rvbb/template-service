@@ -5,10 +5,7 @@ import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
 import com.rvbb.api.template.common.util.DateTimeUtil;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
@@ -41,8 +38,8 @@ public interface FinanceInfoMapper {
     static BigDecimal roundDouble(BigDecimal val) {
         return BigDecimal.valueOf(Math.floor(val.doubleValue() * 100) / 100);
     }
-
-    @Named("convertList")
-    Page<FinanceInfoRes> convertPage(Page<FinanceInfoEntity> entities);
+//
+//    @Named("convertPage")
+//    Page<FinanceInfoRes> convertPage(Page<FinanceInfoEntity> entities);
 }
 

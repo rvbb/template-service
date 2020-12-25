@@ -2,7 +2,6 @@ package com.rvbb.api.template.common.constant;
 
 public enum ErrorCode {
     NOT_ALLOWED(5001),
-    EXPECTONE_GETTOOMANY(5002),
     EMPTY_RESULT(5002),
     INVALID_INPUT(5004);
 

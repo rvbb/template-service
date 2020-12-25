@@ -4,9 +4,11 @@ import com.rvbb.api.template.common.constant.ErrorCode;
 import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
 import com.rvbb.api.template.common.constant.SqlOperationName;
 import com.rvbb.api.template.common.util.SqlUtils;
+import com.rvbb.api.template.config.ApplicationConfig;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.exception.BizLogicException;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +17,10 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@AllArgsConstructor
 public class FinanceInfoValidator {
+
+    private final ApplicationConfig applicationConfig;
 
     public void checkSimilarWithLast(FinanceInfoRes old, FinanceInfoInput request) {
         double expense = Math.floor(Double.valueOf(request.getExpense()) * 100) / 100;
@@ -42,39 +47,80 @@ public class FinanceInfoValidator {
     }
 
     public void validateFilter(String sort[], String condition[], int page, int size) {
+        log.info("sort={}, condition={}", sort, condition);
         StringBuilder errorMessage = new StringBuilder();
         if (ObjectUtils.isNotEmpty(sort)) {
             for (String oneSort : sort) {
-                String[] fieldAndVal = oneSort.split(",");
-                if (fieldAndVal.length != 2 || ObjectUtils.isEmpty(SqlUtils.getSortValue(sort[1])) || StringUtils.isEmpty(fieldAndVal[0])) {
-                    errorMessage.append("The sort [" + oneSort + "] is invalid. ");
-                } else if (StringUtils.isEmpty(sort[1]) || !FinanceInfoFieldName.contains(sort[1])) {
-                    errorMessage.append("The sort is not supported [" + SqlOperationName.asString() + "] is invalid. ");
+                try {
+                    log.info("one sort={}", oneSort);
+                    if (StringUtils.isEmpty(oneSort)) {
+                        errorMessage.append("The sort require at least one value. ");
+                        continue;
+                    }
+                    String direction = oneSort.substring(0, oneSort.indexOf("("));
+                    String field = oneSort.substring(oneSort.indexOf("(") + 1, oneSort.indexOf(")"));
+                    if (StringUtils.isEmpty(direction) || StringUtils.isEmpty(field)
+                            || ObjectUtils.isEmpty(SqlUtils.getSortValue(direction))
+                            || !FinanceInfoFieldName.contains(field)) {
+                        errorMessage.append("The sort [" + oneSort + "] is invalid. ");
+                    }
+                } catch (Exception e) {
+                    errorMessage.append("The parameter [" + oneSort + "] parser exception. ");
+                    log.debug("Detail condition parser exception: ", e);
                 }
-
             }
             if (errorMessage.length() > 0) {
-                errorMessage.append("The 'sort' need to follow format sort=col1,desc&sort=col2,asc,col3,asc");
+                errorMessage.append("The 'sort' need to follow format sort=desc(col1)&sort=asc(col3). ");
             }
         }
-        if (ObjectUtils.isNotEmpty(sort)) {
+        if (ObjectUtils.isNotEmpty(condition)) {
             for (String oneCondition : condition) {
-                String[] fieldAndVal = oneCondition.split(",");
-                if (fieldAndVal.length != 3 || ObjectUtils.isEmpty(SqlUtils.getSortValue(sort[1])) || StringUtils.isEmpty(fieldAndVal[0])
-                        || SqlOperationName.values().toString().equalsIgnoreCase(sort[1])) {
-                    errorMessage.append("The parameter [" + oneCondition + "] is invalid. ");
-
-                } else if (StringUtils.isEmpty(sort[1]) || !SqlOperationName.contains(sort[1])) {
-                    errorMessage.append("The condition is not supported [" + SqlOperationName.asString() + "] is invalid. ");
-                }
-                if (errorMessage.length() > 0) {
-                    errorMessage.append("The 'condition' need to follow format condition=equal,col1,1&condition=greater,col2,abc");
+                try {
+                    if (StringUtils.isEmpty(oneCondition)) {
+                        errorMessage.append("condition param require at least one value");
+                        continue;
+                    }
+                    String operator = oneCondition.substring(0, oneCondition.indexOf("("));
+                    if (StringUtils.isEmpty(operator) || !SqlOperationName.contains(operator)) {
+                        errorMessage.append("Wrong '" + operator + "', the condition is supported only [" + SqlOperationName.asString() + "] operations| ");
+                        continue;
+                    }
+                    String fieldAndVal = oneCondition.substring(oneCondition.indexOf("(") + 1, oneCondition.indexOf(")"));
+                    if (StringUtils.isEmpty(fieldAndVal)) {
+                        errorMessage.append("The condition parameter [" + oneCondition + "] is invalid. ");
+                        continue;
+                    }
+                    String fieldAndValSeparated[] = fieldAndVal.split(":");
+                    if (ObjectUtils.isEmpty(fieldAndValSeparated) || fieldAndValSeparated.length != 2) {
+                        errorMessage.append("The condition parameter [" + oneCondition + "] is invalid. ");
+                        continue;
+                    }
+                    String field = fieldAndValSeparated[0];
+                    String val = fieldAndValSeparated[1];
+                    if (StringUtils.isEmpty(field) || StringUtils.isEmpty(val) || !FinanceInfoFieldName.contains(field)) {
+                        errorMessage.append("The parameter [" + oneCondition + "] is invalid. ");
+                    }
+                } catch (Exception e) {
+                    errorMessage.append("The parameter '" + oneCondition + "' parser exception. ");
+                    log.debug("Detail condition parser exception: ", e);
                 }
             }
-
             if (errorMessage.length() > 0) {
-                throw new BizLogicException("", ErrorCode.INVALID_INPUT.val);
+                errorMessage.append("The 'condition' need to follow format condition=equal(col1,1)&condition=greater(col2,abc). ");
             }
+        }
+        if (page < 0) {
+            errorMessage.append("The 'page' must be positive integer| ");
+        }
+        if (size < 0) {
+            errorMessage.append("The 'size' must be positive integer| ");
+        }
+        if (size > applicationConfig.getAllowedMaxSize()) {
+            errorMessage.append("The 'size' could not allowed over " + applicationConfig.getAllowedMaxSize());
+        }
+        log.debug("errorMessage=[{}]", errorMessage.toString());
+        if (errorMessage.length() > 0) {
+            throw new BizLogicException(ErrorCode.INVALID_INPUT.toString() + ": " + errorMessage.toString(), ErrorCode.INVALID_INPUT.val);
         }
     }
 }

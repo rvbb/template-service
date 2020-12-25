@@ -4,16 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public enum FinanceInfoFieldName {
-    STATUS,
-    ID,
-    COMPANY_NAME,
-    COMPANY_ADDRESS,
-    UUID,
-    LAST_UPDATE,
-    PRE_TAX_INCOME,
-    EXPENSE;
+    STATUS("status"),
+    ID("id"),
+    COMPANY_NAME("companyName"),
+    COMPANY_ADDRESS("companyAddress"),
+    UUID("uuid"),
+    LAST_UPDATE("lastUpdate"),
+    PRE_TAX_INCOME("preTaxIncome"),
+    EXPENSE("expense");
+
+    private String attribute;
+    FinanceInfoFieldName(String attribute) {
+        this.attribute = attribute;
+    }
 
     public static String asString() {
         return STATUS.toString()
@@ -21,10 +25,21 @@ public enum FinanceInfoFieldName {
                 + ", " + COMPANY_NAME.toString();
     }
 
-    public static boolean contains(String enumAsString){
-        for(FinanceInfoFieldName item : FinanceInfoFieldName.values()){
-            return item.toString().equalsIgnoreCase(enumAsString);
+    public static boolean contains(String enumAsString) {
+        for (FinanceInfoFieldName item : FinanceInfoFieldName.values()) {
+            if (item.toString().equalsIgnoreCase(enumAsString)) {
+                return true;
+            }
         }
         return false;
+    }
+
+    public static String getAttrByName(String name) {
+        for (FinanceInfoFieldName item : FinanceInfoFieldName.values()) {
+            if (item.toString().equalsIgnoreCase(name)) {
+                return item.getAttribute();
+            }
+        }
+        return "";
     }
 }

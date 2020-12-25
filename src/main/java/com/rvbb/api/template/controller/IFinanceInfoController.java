@@ -109,28 +109,28 @@ public interface IFinanceInfoController {
                     name = "sort",
                     type = "String",
                     value = "multi column/field name and value",
-                    example = "sort=col1,desc&sort=col2,asc,col3,asc",
+                    example = "sort=desc(col1)&sort=asc(col3)",
                     required = false)
-            @RequestParam(defaultValue = "id,desc") String[] sort,
+            @RequestParam(defaultValue = "desc(id)", required=false) String[] sort,
             @ApiParam(
                     name = "condition",
                     type = "String",
                     value = "multi column/field name and value",
-                    example = "condition=equal,col1,1&condition=greater,col2,abc,col3,asc",
+                    example = "condition=condition=equal(col1:1)&condition=greater(col2:abc)",
                     required = false)
-            @RequestParam String[] condition,
+            @RequestParam(required=false) String[] condition,
             @ApiParam(
                     name = "page",
                     type = "String",
                     value = "current page number into ",
                     example = "1",
                     required = false)
-            @RequestParam(defaultValue = "0") @Valid @Min(value = 0L, message = "The value must be positive") int page,
+            @RequestParam(defaultValue = "0", required=false) @Valid @Min(value = 0L, message = "The value must be positive") int page,
             @ApiParam(
                     name = "size",
                     type = "int",
                     value = "page size - number of item per page",
                     example = "50",
                     required = false)
-            @RequestParam(defaultValue = "50") @Valid @Min(value = 0L, message = "The value must be positive") int size);
+            @RequestParam(defaultValue = "50", required=false) @Valid @Min(value = 0L, message = "The value must be positive") int size);
 }

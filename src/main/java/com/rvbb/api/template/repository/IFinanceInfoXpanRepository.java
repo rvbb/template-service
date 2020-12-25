@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IFinanceInfoXpanRepository extends JpaRepository<FinanceInfoEntity, Long>, JpaSpecificationExecutor {
+public interface IFinanceInfoXpanRepository {
 
     boolean updateByStatus(FinanceInfoInput request, Short status);
     Page<FinanceInfoRes> search(FinanceInfoFilterInput filter);

@@ -11,4 +11,6 @@ public class ApplicationConfig {
     private int page;
     @Value("${paging.size:50}")
     private int size;
+    @Value("${paging.size.allowed_max:500}")
+    private int allowedMaxSize;
 }
