@@ -10,12 +10,12 @@ version = '1.0.0-dev'
 sourceCompatibility = '1.8'
 
 repositories {
+    mavenCentral()
     maven { url 'https://repo.spring.io/plugins-release' }
     maven { url 'https://repo.spring.io/milestone' }
     maven { url 'https://repo.spring.io/snapshot' }
     maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local' }
     jcenter()
-    mavenCentral()
 }
 
 dependencies {
