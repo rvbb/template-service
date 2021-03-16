@@ -1,15 +1,15 @@
 package com.rvbb.api.template.repository.impl;
 
 
+import com.rvbb.api.template.common.util.SqlUtils;
+import com.rvbb.api.template.repository.IFinanceInfoRepository;
 import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
 import com.rvbb.api.template.common.constant.TableName;
-import com.rvbb.api.template.common.util.SqlUtils;
 import com.rvbb.api.template.config.ApplicationConfig;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
-import com.rvbb.api.template.repository.IFinanceInfoRepository;
 import com.rvbb.api.template.repository.IFinanceInfoXpanRepository;
 import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
 import lombok.AllArgsConstructor;
@@ -44,7 +44,11 @@ public class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository
     @Override
     public boolean updateByStatus(FinanceInfoInput request, Short status) {
         String updateQuery = "update " + TableName.FINANCE_INFO.toString().toLowerCase() + " l " +
-                "set l.company_address = ?1, l.company_name = ?2,l.pre_tax_income = ?3, l.expense = ?4, l.last_update = ?5 " +
+                "set l.company_address = ?1, " +
+                "l.company_name = ?2," +
+                "l.pre_tax_income = ?3, " +
+                "l.expense = ?4, " +
+                "l.last_update = ?5 " +
                 "where l.status = ?6";
         Query query = entityManager.createNativeQuery(updateQuery);
         query.setParameter(1, request.getCompanyAddress());
@@ -125,7 +129,7 @@ public class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository
         List<FinanceInfoEntity> entityList = SqlUtils.fromResultList(resultList);
         List<FinanceInfoRes> resList = FinanceInfoMapper.instance.convertList(entityList);
 
-        if(resList.size() != totalRow){
+        if (resList.size() != totalRow) {
             log.debug("Wrong in pagination - total record in db does not equals fetched records");
         }
         Pageable pageable = PageRequest.of(nextPage, resList.size());
@@ -138,12 +142,12 @@ public class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository
         Specification<FinanceInfoEntity> spec = SqlUtils.buildSpec(condition, FinanceInfoEntity.class);
         Sort order = SqlUtils.buildSort(sort);
         Pageable pageable = PageRequest.of(page + 1, size);
-        if(ObjectUtils.isEmpty(order)){
+        if (ObjectUtils.isEmpty(order)) {
             pageable = PageRequest.of(page + 1, size, order);
         }
-        if(ObjectUtils.isNotEmpty(spec)) {
+        if (ObjectUtils.isNotEmpty(spec)) {
             searchedList = financeInfoRepository.findAll(spec, pageable);
-        }else{
+        } else {
             searchedList = financeInfoRepository.findAll(pageable);
         }
         return SqlUtils.convertPage(searchedList);

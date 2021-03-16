@@ -1,18 +1,18 @@
 package com.rvbb.api.template.service.impl;
 
 import com.rvbb.api.template.common.constant.ErrorCode;
-import com.rvbb.api.template.common.constant.FinanceInfoStatus;
-import com.rvbb.api.template.common.util.CommonUtil;
 import com.rvbb.api.template.common.util.LogIt;
-import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
-import com.rvbb.api.template.exception.BizLogicException;
 import com.rvbb.api.template.repository.IFinanceInfoRepository;
+import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
+import com.rvbb.api.template.common.constant.FinanceInfoStatus;
+import com.rvbb.api.template.common.util.CommonUtil;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoFilterInput;
+import com.rvbb.api.template.exception.BizLogicException;
 import com.rvbb.api.template.repository.IFinanceInfoXpanRepository;
 import com.rvbb.api.template.service.IFinanceInfoService;
-import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.domain.Page;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static java.util.stream.Collectors.toCollection;
@@ -58,10 +59,10 @@ public class FinanceInfoService implements IFinanceInfoService {
                 .companyAddress(request.getCompanyAddress())
                 .companyName(request.getCompanyName())
                 .expense(BigDecimal.valueOf(expense))
-                .lastUpdate(new Date())
                 .status(FinanceInfoStatus.XX.getValue())
                 .uuid(CommonUtil.unique())
                 .build();
+        newEntity.setLastUpdated(new Timestamp(System.currentTimeMillis()));
         finInfoRepository.save(newEntity);
         return FinanceInfoMapper.instance.toDto(newEntity);
     }
@@ -76,7 +77,7 @@ public class FinanceInfoService implements IFinanceInfoService {
         financeInfo.setCompanyAddress(request.getCompanyAddress());
         financeInfo.setCompanyName(request.getCompanyName());
         financeInfo.setExpense(BigDecimal.valueOf(expense));
-        financeInfo.setLastUpdate(new Date());
+        financeInfo.setLastUpdated(new Timestamp(System.currentTimeMillis()));
         financeInfo.setStatus(request.getStatus());
         return FinanceInfoMapper.instance.toDto(finInfoRepository.save(financeInfo));
     }

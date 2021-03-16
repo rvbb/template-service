@@ -1,10 +1,10 @@
 package com.rvbb.api.template.service.mapper;
 
 
-import com.rvbb.api.template.common.util.DateTimeUtil;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
-import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import com.rvbb.api.template.entity.FinanceInfoEntity;
+import com.rvbb.api.template.common.util.DateTimeUtil;
+import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -13,6 +13,7 @@ import org.mapstruct.factory.Mappers;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface FinanceInfoMapper {
 
     FinanceInfoMapper instance = Mappers.getMapper(FinanceInfoMapper.class);
 
-    @Mapping(source = "lastUpdate", target = "latestUpdate", qualifiedByName = "convertDateToString")
+    @Mapping(source = "lastUpdated", target = "latestUpdate", qualifiedByName = "convertTimeStampToString")
     @Mapping(source = "expense", target = "expense", qualifiedByName = "round")
     @Mapping(source = "preTaxIncome", target = "preTaxIncome", qualifiedByName = "round")
     FinanceInfoRes toDto(FinanceInfoEntity loanJobInformationEntity);
@@ -34,6 +35,11 @@ public interface FinanceInfoMapper {
     @Named("convertDateToString")
     static String convertDateToString(Date date) {
         return DateTimeUtil.date2string(date, false);
+    }
+
+    @Named("convertTimeStampToString")
+    static String convertTimeStampToString(Timestamp timestamp) {
+        return timestamp.toString();
     }
 
     @Named("round")

@@ -2,12 +2,12 @@ package com.rvbb.api.template.validator;
 
 import com.rvbb.api.template.common.constant.ErrorCode;
 import com.rvbb.api.template.common.constant.ErrorMessage;
-import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
 import com.rvbb.api.template.common.constant.SqlOperationName;
 import com.rvbb.api.template.common.util.SqlUtils;
-import com.rvbb.api.template.config.ApplicationConfig;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoInput;
 import com.rvbb.api.template.dto.financeinfo.FinanceInfoRes;
+import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
+import com.rvbb.api.template.config.ApplicationConfig;
 import com.rvbb.api.template.exception.BizLogicException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,6 @@ public class FinanceInfoValidator {
     }
 
     public void validateSort(String[] sort) {
-        log.info("sort={}", sort);
         StringBuilder errorMessage = new StringBuilder();
         if (ObjectUtils.isNotEmpty(sort)) {
             for (String oneSort : sort) {
@@ -82,7 +81,6 @@ public class FinanceInfoValidator {
     }
 
     public void validateFilter(String[] sort, String[] condition, int page, int size) {
-        log.info("condition={}", condition);
         StringBuilder errorMessage = new StringBuilder();
        validateSort(sort);
         if (ObjectUtils.isNotEmpty(condition)) {

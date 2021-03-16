@@ -65,7 +65,7 @@ public class DateTimeUtil {
         return null;
     }
 
-    public static LocalDateTime string2Timestamp(String timestampString) {
+    public static LocalDateTime getLocalDateTime(String timestampString) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TIMESTAMP);
         return LocalDateTime.from(formatter.parse(timestampString));
     }
