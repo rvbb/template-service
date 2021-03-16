@@ -95,7 +95,6 @@ public class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository
 
         int totalRow = countQuery.getFirstResult();
         int pageSize = ObjectUtils.isEmpty(filter.getPageSize()) ? applicationConfig.getSize() : filter.getPageSize();
-        int realtimeTotalPage = totalRow % pageSize;
         int pageNum = ObjectUtils.isEmpty(filter.getPageNum()) ? applicationConfig.getPage() : filter.getPageNum();
 
         Map<String, String> sortFields = filter.getSorts();
@@ -124,18 +123,19 @@ public class FinanceInfoXpanRepositoryImpl implements IFinanceInfoXpanRepository
 
         List<Object[]> resultList = querySearch.getResultList();
         List<FinanceInfoEntity> entityList = SqlUtils.fromResultList(resultList);
-        List<FinanceInfoRes> resList = FinanceInfoMapper.INSTANCE.convertList(entityList);
+        List<FinanceInfoRes> resList = FinanceInfoMapper.instance.convertList(entityList);
 
+        if(resList.size() != totalRow){
+            log.debug("Wrong in pagination - total record in db does not equals fetched records");
+        }
         Pageable pageable = PageRequest.of(nextPage, resList.size());
-        Page<FinanceInfoRes> result = new PageImpl<FinanceInfoRes>(resList, pageable, resList.size());
-
-        return result;
+        return new PageImpl<>(resList, pageable, totalRow);
     }
 
     @Override
     public Page<FinanceInfoRes> search(String[] sort, String[] condition, int page, int size) {
         Page<FinanceInfoEntity> searchedList = null;
-        Specification spec = SqlUtils.buildSpec(condition, FinanceInfoEntity.class);
+        Specification<FinanceInfoEntity> spec = SqlUtils.buildSpec(condition, FinanceInfoEntity.class);
         Sort order = SqlUtils.buildSort(sort);
         Pageable pageable = PageRequest.of(page + 1, size);
         if(ObjectUtils.isEmpty(order)){

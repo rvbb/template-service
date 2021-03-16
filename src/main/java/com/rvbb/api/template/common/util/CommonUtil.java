@@ -10,7 +10,7 @@ import java.security.SecureRandom;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommonUtil {
 
-    private static volatile SecureRandom numberGenerator = null;
+    private static SecureRandom numberGenerator = null;
     private static final long MSB = 0x3200000000000000L;
 
     public static String unique() {

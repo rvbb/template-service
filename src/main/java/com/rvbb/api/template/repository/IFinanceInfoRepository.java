@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface IFinanceInfoRepository extends JpaRepository<FinanceInfoEntity, Long>, JpaSpecificationExecutor {
+public interface IFinanceInfoRepository extends JpaRepository<FinanceInfoEntity, Long>, JpaSpecificationExecutor<FinanceInfoEntity> {
 
     Optional<FinanceInfoEntity> findByUuid(String uuid);
 

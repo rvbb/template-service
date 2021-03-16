@@ -1,6 +1,7 @@
 package com.rvbb.api.template.validator;
 
 import com.rvbb.api.template.common.constant.ErrorCode;
+import com.rvbb.api.template.common.constant.ErrorMessage;
 import com.rvbb.api.template.common.constant.FinanceInfoFieldName;
 import com.rvbb.api.template.common.constant.SqlOperationName;
 import com.rvbb.api.template.common.util.SqlUtils;
@@ -32,7 +33,7 @@ public class FinanceInfoValidator {
                 && old.getCompanyName().equalsIgnoreCase(request.getCompanyName())
                 && expense == lastExpense
                 && preTaxIncome == lastPreTaxIncome
-                && request.getStatus() == old.getStatus()) {
+                && request.getStatus().equals(old.getStatus())) {
             throw new BizLogicException("Your inputted data is similar(not care sensitive case) with last finance information", ErrorCode.NOT_ALLOWED.val);
         }
     }
@@ -46,8 +47,8 @@ public class FinanceInfoValidator {
         }
     }
 
-    public void validateFilter(String sort[], String condition[], int page, int size) {
-        log.info("sort={}, condition={}", sort, condition);
+    public void validateSort(String[] sort) {
+        log.info("sort={}", sort);
         StringBuilder errorMessage = new StringBuilder();
         if (ObjectUtils.isNotEmpty(sort)) {
             for (String oneSort : sort) {
@@ -62,7 +63,7 @@ public class FinanceInfoValidator {
                     if (StringUtils.isEmpty(direction) || StringUtils.isEmpty(field)
                             || ObjectUtils.isEmpty(SqlUtils.getSortValue(direction))
                             || !FinanceInfoFieldName.contains(field)) {
-                        errorMessage.append("The sort [" + oneSort + "] is invalid. ");
+                        errorMessage.append("The sort [" + oneSort + "] " + ErrorMessage.INVALID.getVal());
                     }
                 } catch (Exception e) {
                     errorMessage.append("The parameter [" + oneSort + "] parser exception. ");
@@ -73,6 +74,17 @@ public class FinanceInfoValidator {
                 errorMessage.append("The 'sort' need to follow format sort=desc(col1)&sort=asc(col3). ");
             }
         }
+
+        log.debug("errorMessage=[{}]", errorMessage.toString());
+        if (errorMessage.length() > 0) {
+            throw new BizLogicException(ErrorCode.INVALID_INPUT.toString() + ": " + errorMessage.toString(), ErrorCode.INVALID_INPUT.val);
+        }
+    }
+
+    public void validateFilter(String[] sort, String[] condition, int page, int size) {
+        log.info("condition={}", condition);
+        StringBuilder errorMessage = new StringBuilder();
+       validateSort(sort);
         if (ObjectUtils.isNotEmpty(condition)) {
             for (String oneCondition : condition) {
                 try {
@@ -87,18 +99,18 @@ public class FinanceInfoValidator {
                     }
                     String fieldAndVal = oneCondition.substring(oneCondition.indexOf("(") + 1, oneCondition.indexOf(")"));
                     if (StringUtils.isEmpty(fieldAndVal)) {
-                        errorMessage.append("The condition parameter [" + oneCondition + "] is invalid. ");
+                        errorMessage.append("The condition parameter [" + oneCondition + "]"+ ErrorMessage.INVALID.getVal());
                         continue;
                     }
-                    String fieldAndValSeparated[] = fieldAndVal.split(":");
+                    String[] fieldAndValSeparated = fieldAndVal.split(":");
                     if (ObjectUtils.isEmpty(fieldAndValSeparated) || fieldAndValSeparated.length != 2) {
-                        errorMessage.append("The condition parameter [" + oneCondition + "] is invalid. ");
+                        errorMessage.append("The condition parameter [" + oneCondition + "] "+ ErrorMessage.INVALID.getVal());
                         continue;
                     }
                     String field = fieldAndValSeparated[0];
                     String val = fieldAndValSeparated[1];
                     if (StringUtils.isEmpty(field) || StringUtils.isEmpty(val) || !FinanceInfoFieldName.contains(field)) {
-                        errorMessage.append("The parameter [" + oneCondition + "] is invalid. ");
+                        errorMessage.append("The parameter [" + oneCondition + "] "+ ErrorMessage.INVALID.getVal());
                     }
                 } catch (Exception e) {
                     errorMessage.append("The parameter '" + oneCondition + "' parser exception. ");

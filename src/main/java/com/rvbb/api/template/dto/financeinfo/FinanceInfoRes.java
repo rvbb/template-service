@@ -3,7 +3,6 @@ package com.rvbb.api.template.dto.financeinfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Data
 public class FinanceInfoRes {

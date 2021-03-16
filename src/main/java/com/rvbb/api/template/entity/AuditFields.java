@@ -16,13 +16,13 @@ import java.sql.Timestamp;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public class AuditEntity implements Serializable {
+public class AuditFields implements Serializable {
 
   @CreatedDate
   @Column(name = "created_date", updatable = false)
-  private Timestamp created;
+  public Timestamp created;
 
   @LastModifiedDate
-  @Column(name = "last_updated_date")
-  private Timestamp lastUpdated;
+  @Column(name = "updated_date")
+  public Timestamp lastUpdated;
 }

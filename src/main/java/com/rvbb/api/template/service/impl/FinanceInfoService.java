@@ -15,7 +15,6 @@ import com.rvbb.api.template.service.IFinanceInfoService;
 import com.rvbb.api.template.service.mapper.FinanceInfoMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -39,14 +38,14 @@ public class FinanceInfoService implements IFinanceInfoService {
         if (ObjectUtils.isEmpty(entity)) {
             throw new EntityNotFoundException("Not found last financial information");
         }
-        return FinanceInfoMapper.INSTANCE.toDto(entity);
+        return FinanceInfoMapper.instance.toDto(entity);
     }
 
     @Override
     @LogIt
     public FinanceInfoRes get(String uuid) {
         FinanceInfoEntity financeInfo = getByUuid(uuid);
-        return FinanceInfoMapper.INSTANCE.toDto(financeInfo);
+        return FinanceInfoMapper.instance.toDto(financeInfo);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class FinanceInfoService implements IFinanceInfoService {
                 .uuid(CommonUtil.unique())
                 .build();
         finInfoRepository.save(newEntity);
-        return FinanceInfoMapper.INSTANCE.toDto(newEntity);
+        return FinanceInfoMapper.instance.toDto(newEntity);
     }
 
     @Override
@@ -79,14 +78,14 @@ public class FinanceInfoService implements IFinanceInfoService {
         financeInfo.setExpense(BigDecimal.valueOf(expense));
         financeInfo.setLastUpdate(new Date());
         financeInfo.setStatus(request.getStatus());
-        return FinanceInfoMapper.INSTANCE.toDto(finInfoRepository.save(financeInfo));
+        return FinanceInfoMapper.instance.toDto(finInfoRepository.save(financeInfo));
     }
 
     @Override
     @LogIt
     public List<FinanceInfoRes> list() {
         Collection<FinanceInfoEntity> collection = finInfoRepository.findAll();
-        Collection<FinanceInfoRes> response = FinanceInfoMapper.INSTANCE.convertList(collection);
+        Collection<FinanceInfoRes> response = FinanceInfoMapper.instance.convertList(collection);
         return response.stream().collect(toCollection(ArrayList::new));
     }
 
@@ -100,7 +99,7 @@ public class FinanceInfoService implements IFinanceInfoService {
             throw new BizLogicException("The finanace information is not existence", ErrorCode.EMPTY_RESULT.val);
         }
         finInfoRepository.delete(oldEntity);
-        return FinanceInfoMapper.INSTANCE.toDto(oldEntity);
+        return FinanceInfoMapper.instance.toDto(oldEntity);
     }
 
     private FinanceInfoEntity getByUuid(String uuid){

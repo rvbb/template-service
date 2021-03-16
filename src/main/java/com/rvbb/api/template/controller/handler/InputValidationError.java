@@ -2,12 +2,10 @@ package com.rvbb.api.template.controller.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-public class InputValidationError<T> extends NestedError {
+public class InputValidationError<T> implements NestedError {
   private String object;
 
   private String field;

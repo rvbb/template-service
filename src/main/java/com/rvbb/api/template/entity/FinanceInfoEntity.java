@@ -1,12 +1,10 @@
 package com.rvbb.api.template.entity;
 
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -15,7 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "finance_info")
-public class FinanceInfoEntity implements Serializable {
+public class FinanceInfoEntity extends AuditFields implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -33,9 +31,6 @@ public class FinanceInfoEntity implements Serializable {
 
     @Column(name = "company_address")
     private String companyAddress;
-
-    @Column(name = "last_update")
-    private Date lastUpdate;
 
     @Column(name = "status")
     private Byte status;

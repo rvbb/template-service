@@ -4,13 +4,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
 
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -63,4 +64,10 @@ public class DateTimeUtil {
         }
         return null;
     }
+
+    public static LocalDateTime string2Timestamp(String timestampString) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_TIMESTAMP);
+        return LocalDateTime.from(formatter.parse(timestampString));
+    }
+
 }

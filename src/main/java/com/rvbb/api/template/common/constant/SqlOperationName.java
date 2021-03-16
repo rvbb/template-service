@@ -6,26 +6,26 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SqlOperationName {
-    equal,
-    greater,
-    less,
-    greaterorequal,
-    lessorequal,
-    like,
-    notlike,
-    in,
-    notin,
-    likeleft,
-    likeright,
-    exists;
+    EQUALS,
+    GREATER,
+    LESS,
+    GREATEROREQUALS,
+    LESSOREQUALS,
+    LIKE,
+    NOTLINE,
+    IN,
+    NOTIN,
+    LIKELEFT,
+    LIKERIGHT,
+    EXISTS;
 
     public static String asString() {
-        return equal.toString()
-                + ", " + greater.toString()
-                + ", " + less.toString()
-                + ", " + greaterorequal.toString()
-                + ", " + lessorequal.toString()
-                + ", " + like.toString();
+        return EQUALS.toString()
+                + ", " + GREATER.toString()
+                + ", " + LESS.toString()
+                + ", " + GREATEROREQUALS.toString()
+                + ", " + LESSOREQUALS.toString()
+                + ", " + LIKE.toString();
     }
 
     public static boolean contains(String enumAsString){
