@@ -1,15 +1,13 @@
 package com.rvbb.api.template.dto.adapter;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @Getter @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class BankListDemo {
     private long id;
     private String bankName;

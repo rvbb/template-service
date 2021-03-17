@@ -2,16 +2,22 @@ package com.rvbb.api.template.service.adapter;
 
 import com.rvbb.api.template.dto.adapter.Cif;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.repository.query.Param;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.context.annotation.Scope;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
+@Scope("prototype")
 @FeignClient(value = "cif", url = "${cif.apis}")
 public interface CifClient {
 
-    @GetMapping
-    Cif getCif(@Param("base") String base);
+    @GetMapping(consumes = "application/json")
+    List<Cif> getCif(@RequestParam("base") String base);
 
-    @PostMapping(produces = "application/json")
+    @PostMapping(produces = "application/json", consumes = "application/json")
     Cif createNewCif(@RequestBody Cif request);
 
 }

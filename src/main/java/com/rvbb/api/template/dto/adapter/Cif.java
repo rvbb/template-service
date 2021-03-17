@@ -1,9 +1,7 @@
 package com.rvbb.api.template.dto.adapter;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
@@ -12,12 +10,14 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Cif {
     private String id;
     private String description;
     private String base;
     private Boolean strict;
     private Boolean idInjection;
-    private List<BankListDemo> banklist;
+    private List<BankListDemo> bankList;
     private Date created;
 }
