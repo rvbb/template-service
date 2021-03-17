@@ -24,7 +24,7 @@ class CifServiceTest {
     }*/
 	@Test
 	void givenBaseValue_whenGetCif_thenReturnOneCif() {
-d		String base = "User";
+		String base = "User";
 		Cif cif = service.getCif(base);
 		assertEquals("User", cif.getBase());
 	}
