@@ -2,7 +2,6 @@ package com.rvbb.api.template.service.adapter;
 
 import com.rvbb.api.template.dto.adapter.Cif;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@Scope("prototype")
 @FeignClient(value = "cif", url = "${cif.apis}")
 public interface CifClient {
 

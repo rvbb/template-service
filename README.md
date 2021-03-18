@@ -8,6 +8,7 @@
 	> Spring AOP
 	> Spring Data with 
 	> Swagger 2
+	> Openfeign & OkHttp3
 
 ### Features
 	* Provide simple crud 
@@ -16,12 +17,13 @@
 	+ [configuration] use K8s ConfigMap
 
 ### Unit Test
-	gradlew build -x test to ignore unit tests
-	gradlew bootRun  --> run application
-	test one or many Class :   
-	gradlew test --tests full_package_and_ClassName
-	gradlew build test --tests *ClassName --> to test one or some classes  
-	Browse APIs via swagger: http://localhost:8080/swagger-ui.html#
-	
-	[SQL DDL](resources/static/finance_info.sql)
-	[Postman project](resource/static/postman.template-service.xml)
+	API docs:  
+	    Browse APIs via swagger: http://localhost:8080/swagger-ui.html#
+	SQL: 
+	    [SQL DDL](resources/static/finance_info.sql)
+	Postman:    
+	    [Postman project](resource/static/postman.template-service.xml)
+	Cif APIs:    
+	    - Clone https://github.com/rvbb/webflux-demo.git
+	    - Run webflux-demo
+	    - Build template-service
