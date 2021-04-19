@@ -1,5 +1,5 @@
-<h2>LMS#lms-service APIs</h2>
-<br>created date: 18 Dec, 2019, by Hoang N.V
+<h2>LMS#template-service APIs</h2>
+<br>created date: Mar 1, 2021, by Hoang N.V
 
 ********************************************************************************************************* 
 # Technology
@@ -24,6 +24,5 @@
 	Postman:    
 	    [Postman project](resource/static/postman.template-service.xml)
 	Cif APIs:    
-	    - Clone https://github.com/rvbb/webflux-demo.git
-	    - Run webflux-demo
+	    - Clone https://github.com/rvbb/webflux-demo.git	    
 	    - Build template-service
